@@ -1,6 +1,6 @@
 package com.gym.gym;
 
-import com.gym.gym.storages.TrainingDataStorage;
+import com.gym.gym.storages.TraineeDataStorage;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -18,10 +18,10 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TrainingDataStorageTests {
+public class TraineeDataStorageTests {
 
     @Autowired
-    TrainingDataStorage t1;
+    TraineeDataStorage t1;
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();

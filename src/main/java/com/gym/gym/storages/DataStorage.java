@@ -20,25 +20,26 @@ public abstract class DataStorage {
         }
     }
 
-    public Map<Long, Object> readFromFile(String filepath){
+    public Map<Long, Object> readFromFile(String filepath) {
+
+        Map<Long, Object> data = new HashMap<>();
         try {
             ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filepath));
 
-            Map<Long, Object> data = null;
             Object object = inputStream.readObject();
 
-            if (object instanceof Map){
+            if (object instanceof Map) {
                 data = (HashMap<Long, Object>) object;
                 //Aqui va un log
-            }
-            else {
+            } else {
                 System.out.println("Data file corrupted...");
             }
 
-            return data;
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            System.err.println("Error reading from file: " + e.getMessage());
         }
+
+        return data;
     }
 
 }
