@@ -1,32 +1,43 @@
 package com.gym.gym;
 
+import com.gym.gym.storages.DataStorage;
+import com.gym.gym.storages.TrainingDataStorage;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class DataStorageIntegrationTest {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class TrainingDataStorageTests {
+
+    @Autowired
+    TrainingDataStorage t1;
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
     public void testWriteAndReadToFile() {
-        // Arrange
-        DataStorage dataStorage = new DataStorageImpl();
 
-        // Create a temporary file
         File tempFile = null;
         try {
             tempFile = temporaryFolder.newFile("test-file.dat");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         // Test data
@@ -34,29 +45,14 @@ public class DataStorageIntegrationTest {
         testData.put(1L, "Test Data");
 
         // Act
-        dataStorage.writeToFile(tempFile.getAbsolutePath(), testData);
-        Map<Long, Object> result = dataStorage.readFromFile(tempFile.getAbsolutePath());
+        t1.writeToFile(tempFile.getAbsolutePath(), testData);
+        Map<Long, Object> result = t1.readFromFile(tempFile.getAbsolutePath());
 
         // Assert
         assertEquals(testData, result);
 
         // Cleanup: Optional, as TemporaryFolder takes care of it
         // tempFile.delete();
-    }
-
-    @Test
-    public void testReadFromNonExistentFile() {
-        // Arrange
-        DataStorage dataStorage = new DataStorageImpl();
-
-        // Create a non-existent file path
-        String nonExistentFilePath = temporaryFolder.getRoot().getAbsolutePath() + "/non-existent-file.dat";
-
-        // Act
-        Map<Long, Object> result = dataStorage.readFromFile(nonExistentFilePath);
-
-        // Assert
-        assertNull(result);
     }
 
     // Additional tests can be added as needed

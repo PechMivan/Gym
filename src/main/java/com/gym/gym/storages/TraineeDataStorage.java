@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Component
+//@Component
 @SuppressWarnings("unused")
 public class TraineeDataStorage extends DataStorage {
 
