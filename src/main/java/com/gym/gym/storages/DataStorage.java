@@ -1,6 +1,5 @@
 package com.gym.gym.storages;
 
-import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -11,7 +10,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public abstract class DataStorage {
 
-    public void writeToFile(Resource filepath, Map<Long, Object> data){
+    public void writeToFile(String filepath, Map<Long, Object> data){
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filepath));
             outputStream.writeObject(data);
@@ -21,7 +20,7 @@ public abstract class DataStorage {
         }
     }
 
-    public Map<Long, Object> readFromFile(Resource filepath){
+    public Map<Long, Object> readFromFile(String filepath){
         try {
             ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filepath));
 
