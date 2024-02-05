@@ -10,21 +10,15 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class TraineeDataStorage extends DataStorage {
 
-    @Value("${trainingDataStorage.filepath}")
-    private String filepath;
     private Map<Long, Object> traineeMap;
+
+    public TraineeDataStorage(@Value("${trainingDataStorage.filepath}") String filepath){
+        super(filepath, "trainee");
+    }
 
     @PostConstruct
     public void init() {
-        this.traineeMap = super.readFromFile(filepath);
-    }
-
-    public String getFilepath() {
-        return filepath;
-    }
-
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
+        this.traineeMap = super.readFromFile();
     }
 
     public Map<Long, Object> getTraineeMap() {

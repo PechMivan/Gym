@@ -10,21 +10,15 @@ import java.util.Map;
 @Component
 public class TrainerDataStorage extends DataStorage {
 
-    @Value("${trainerDataStorage.filepath}")
-    private String filepath;
     private Map<Long, Object> trainerMap;
+
+    public TrainerDataStorage(@Value("${trainingDataStorage.filepath}") String filepath){
+        super(filepath, "trainer");
+    }
 
     @PostConstruct
     public void customInit() {
-        this.trainerMap = super.readFromFile(filepath);
-    }
-
-    public String getFilepath() {
-        return filepath;
-    }
-
-    public void setFilepath(String filepath) {
-        this.filepath = filepath;
+        this.trainerMap = super.readFromFile();
     }
 
     public Map<Long, Object> getTrainerMap() {
@@ -34,4 +28,5 @@ public class TrainerDataStorage extends DataStorage {
     public void setTrainerMap(Map<Long, Object> trainerMap) {
         this.trainerMap = trainerMap;
     }
+
 }

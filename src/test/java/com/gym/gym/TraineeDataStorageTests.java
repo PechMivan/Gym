@@ -41,8 +41,8 @@ public class TraineeDataStorageTests {
         testData.put(1L, "Test Data");
 
         // Act
-        t1.writeToFile(tempFile.getAbsolutePath(), testData);
-        Map<Long, Object> result = t1.readFromFile(tempFile.getAbsolutePath());
+        t1.writeToFile(testData);
+        Map<Long, Object> result = t1.readFromFile();
 
         // Assert
         assertEquals(testData, result);

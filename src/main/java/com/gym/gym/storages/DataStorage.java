@@ -10,9 +10,17 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public abstract class DataStorage {
 
-    public void writeToFile(String filepath, Map<Long, Object> data){
+    private final String storageType;
+    private final String FILEPATH;
+
+    protected DataStorage(String FILEPATH, String storageType){
+        this.FILEPATH = FILEPATH;
+        this.storageType = storageType;
+    }
+
+    public void writeToFile(Map<Long, Object> data){
         try {
-            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filepath));
+            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(FILEPATH));
             outputStream.writeObject(data);
             //Aqui va un log
         } catch (IOException e) {
@@ -20,11 +28,11 @@ public abstract class DataStorage {
         }
     }
 
-    public Map<Long, Object> readFromFile(String filepath) {
+    public Map<Long, Object> readFromFile() {
 
         Map<Long, Object> data = new HashMap<>();
         try {
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filepath));
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(FILEPATH));
 
             Object object = inputStream.readObject();
 
@@ -42,4 +50,11 @@ public abstract class DataStorage {
         return data;
     }
 
+    public String getStorageType() {
+        return storageType;
+    }
+
+    public String getFILEPATH() {
+        return FILEPATH;
+    }
 }
