@@ -10,12 +10,12 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public abstract class DataStorage {
 
-    private final String storageType;
+    private final String STORAGE_TYPE;
     private final String FILEPATH;
 
-    protected DataStorage(String FILEPATH, String storageType){
+    protected DataStorage(String FILEPATH, String STORAGE_TYPE){
         this.FILEPATH = FILEPATH;
-        this.storageType = storageType;
+        this.STORAGE_TYPE = STORAGE_TYPE;
     }
 
     public void writeToFile(Map<Long, Object> data){
@@ -50,8 +50,8 @@ public abstract class DataStorage {
         return data;
     }
 
-    public String getStorageType() {
-        return storageType;
+    public String getSTORAGE_TYPE() {
+        return STORAGE_TYPE;
     }
 
     public String getFILEPATH() {

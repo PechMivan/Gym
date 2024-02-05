@@ -12,7 +12,7 @@ public class TraineeDataStorage extends DataStorage {
 
     private Map<Long, Object> traineeMap;
 
-    public TraineeDataStorage(@Value("${trainingDataStorage.filepath}") String filepath){
+    public TraineeDataStorage(@Value("${traineeDataStorage.filepath}") String filepath){
         super(filepath, "trainee");
     }
 
