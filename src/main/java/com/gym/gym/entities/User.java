@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Data
 @SuppressWarnings("unused")
 @SuperBuilder
+@NoArgsConstructor
 public class User implements Serializable {
     private String firstName;
     private String lastName;

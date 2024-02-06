@@ -41,7 +41,7 @@ public class TrainingDataStorageTests {
 
         // Test data
         Map<Long, Training> testData = new HashMap<>();
-        testData.put(1L, new Training(1L, 1L, "Super-Cardio", TrainingType.CARDIO, new Date(), 10));
+        testData.put(1L, new Training(1L,1L, 1L, "Super-Cardio", TrainingType.CARDIO, new Date(), 10));
 
         // Act
         t1.writeToFile(testData);

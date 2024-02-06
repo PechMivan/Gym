@@ -4,11 +4,13 @@ import com.gym.gym.daos.DAO;
 import com.gym.gym.entities.Training;
 import com.gym.gym.storages.DataStorageManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Component
 public class TrainingDAOImpl implements DAO<Training> {
 
     @Autowired

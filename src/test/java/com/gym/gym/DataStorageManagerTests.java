@@ -4,6 +4,7 @@ import com.gym.gym.storages.DataStorage;
 import com.gym.gym.storages.DataStorageManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -19,12 +20,12 @@ public class DataStorageManagerTests {
     @Mock
     private DataStorage dataStorageMock;
 
+    @InjectMocks
     private DataStorageManager dataStorageManager;
 
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        dataStorageManager = new DataStorageManager();
     }
 
     @Test
