@@ -10,11 +10,10 @@ import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
+@SuperBuilder
 @SuppressWarnings("unused")
 public class Trainee extends User implements Serializable {
     private long userId;
     private Date dateOfBirth;
     private String address;
-
 }

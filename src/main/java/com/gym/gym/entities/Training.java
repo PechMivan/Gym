@@ -9,6 +9,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 public class Training implements Serializable {
+    private long trainingId;
     private long traineeId;
     private long trainerId;
     private String trainingName;

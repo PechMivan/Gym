@@ -3,6 +3,7 @@ package com.gym.gym.daos;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public interface DAO<T> {
 
     Optional<T> get(long id);
@@ -11,7 +12,7 @@ public interface DAO<T> {
 
     void save(T t);
 
-    void update(T t, String[] params);
+    void update(long id, T t);
 
     void delete(long id);
 }

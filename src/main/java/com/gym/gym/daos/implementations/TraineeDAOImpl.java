@@ -37,7 +37,28 @@ public class TraineeDAOImpl implements DAO<Trainee> {
     }
 
     @Override
-    public void update(Trainee trainee, String[] params) {
+    public void update(long id, Trainee updatedTrainee) {
+        Optional<Trainee> existingTraineeOptional = get(id);
+
+        if (existingTraineeOptional.isPresent()) {
+            Trainee existingTrainee = existingTraineeOptional.get();
+
+            // Update existing trainee with fields from updatedTrainee
+            existingTrainee.setFirstName(updatedTrainee.getFirstName());
+            existingTrainee.setLastName(updatedTrainee.getLastName());
+            existingTrainee.setUsername(updatedTrainee.getUsername());
+            existingTrainee.setPassword(updatedTrainee.getPassword());
+            existingTrainee.setActive(updatedTrainee.isActive());
+            existingTrainee.setDateOfBirth(updatedTrainee.getDateOfBirth());
+            existingTrainee.setAddress(updatedTrainee.getAddress());
+
+            Map<Long, Trainee> traineeMap = dataStorageManager.read("trainee");
+            traineeMap.put(id, existingTrainee);
+            dataStorageManager.write("trainee", traineeMap);
+        } else {
+            // Handle case where trainee with given id is not found
+            System.out.println("Trainee with id " + id + " not found.");
+        }
 
     }
 

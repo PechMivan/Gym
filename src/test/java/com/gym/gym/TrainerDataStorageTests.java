@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +43,19 @@ public class TrainerDataStorageTests {
 
         // Test data
         Map<Long, Trainer> testData = new HashMap<>();
-        testData.put(1L, new Trainer(1L, TrainingType.YOGA));
+        Trainer newTrainer = Trainer.builder()
+                .firstName("Mario")
+                .lastName("Pech")
+                .username("Mapech")
+                .password("pass")
+                .specialization(TrainingType.YOGA)
+                .isActive(true)
+                .userId(1L)
+                .build();
+
+        System.out.println(newTrainer.toString());
+
+        testData.put(1L, newTrainer);
 
         // Act
         t1.writeToFile(testData);

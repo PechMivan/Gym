@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor
+@SuperBuilder
 public class Trainer extends User implements Serializable {
     private long userId;
     private TrainingType specialization;

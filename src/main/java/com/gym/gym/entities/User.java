@@ -3,10 +3,12 @@ package com.gym.gym.entities;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-@Getter
-@Setter
+import java.io.Serializable;
+
+@Data
 @SuppressWarnings("unused")
-public abstract class User {
+@SuperBuilder
+public class User implements Serializable {
     private String firstName;
     private String lastName;
     private String username;
