@@ -1,6 +1,7 @@
 package com.gym.gym.entities;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter

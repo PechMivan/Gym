@@ -40,7 +40,8 @@ public class TraineeDataStorageTests {
 
         // Test data
         Map<Long, Trainee> testData = new HashMap<>();
-        testData.put(1L, new Trainee(1L, new Date(), "Street 20"));
+        testData.put(1L, new Trainee(1L, new Date(), "street 20"));
+
 
         // Act
         t1.writeToFile(testData);

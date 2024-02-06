@@ -1,5 +1,6 @@
 package com.gym.gym;
 
+import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.storages.TrainerDataStorage;

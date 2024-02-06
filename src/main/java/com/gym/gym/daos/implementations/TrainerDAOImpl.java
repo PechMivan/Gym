@@ -29,7 +29,7 @@ public class TrainerDAOImpl implements DAO<Trainer> {
     }
 
     @Override
-    public void delete(Trainer trainer) {
+    public void delete(long id) {
 
     }
 }
