@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Component
 @SuppressWarnings("unused")
-public abstract class DataStorage {
+public abstract class DataStorage<T> {
 
     private final String STORAGE_TYPE;
     private final String FILEPATH;
@@ -18,7 +18,7 @@ public abstract class DataStorage {
         this.STORAGE_TYPE = STORAGE_TYPE;
     }
 
-    public void writeToFile(Map<Long, Object> data){
+    public void writeToFile(Map<Long, T> data){
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(FILEPATH));
             outputStream.writeObject(data);
@@ -28,16 +28,16 @@ public abstract class DataStorage {
         }
     }
 
-    public Map<Long, Object> readFromFile() {
+    public Map<Long, T> readFromFile() {
 
-        Map<Long, Object> data = new HashMap<>();
+        Map<Long, T> data = new HashMap<>();
         try {
             ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(FILEPATH));
 
             Object object = inputStream.readObject();
 
             if (object instanceof Map) {
-                data = (HashMap<Long, Object>) object;
+                data = (Map<Long, T>) object;
                 //Aqui va un log
             } else {
                 System.out.println("Data file corrupted...");

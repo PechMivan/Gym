@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class TrainerDataStorage extends DataStorage {
+public class TrainerDataStorage extends DataStorage<Trainer> {
 
-    private Map<Long, Object> trainerMap;
+    private Map<Long, Trainer> trainerMap;
 
     public TrainerDataStorage(@Value("${trainerDataStorage.filepath}") String filepath){
         super(filepath, "trainer");
@@ -21,11 +21,11 @@ public class TrainerDataStorage extends DataStorage {
         this.trainerMap = super.readFromFile();
     }
 
-    public Map<Long, Object> getTrainerMap() {
+    public Map<Long, Trainer> getTrainerMap() {
         return trainerMap;
     }
 
-    public void setTrainerMap(Map<Long, Object> trainerMap) {
+    public void setTrainerMap(Map<Long, Trainer> trainerMap) {
         this.trainerMap = trainerMap;
     }
 
