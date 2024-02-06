@@ -1,5 +1,7 @@
 package com.gym.gym;
 
+import com.gym.gym.entities.Training;
+import com.gym.gym.entities.TrainingType;
 import com.gym.gym.storages.TrainingDataStorage;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,12 +40,12 @@ public class TrainingDataStorageTests {
         }
 
         // Test data
-        Map<Long, Object> testData = new HashMap<>();
-        testData.put(1L, "Test Data");
+        Map<Long, Training> testData = new HashMap<>();
+        testData.put(1L, new Training(1L, 1L, "Super-Cardio", TrainingType.CARDIO, new Date(), 10));
 
         // Act
         t1.writeToFile(testData);
-        Map<Long, Object> result = t1.readFromFile();
+        Map<Long, Training> result = t1.readFromFile();
 
         // Assert
         assertEquals(testData, result);

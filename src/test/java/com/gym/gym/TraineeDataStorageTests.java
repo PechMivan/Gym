@@ -1,5 +1,6 @@
 package com.gym.gym;
 
+import com.gym.gym.entities.Trainee;
 import com.gym.gym.storages.TraineeDataStorage;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,10 +12,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,15 +39,15 @@ public class TraineeDataStorageTests {
         }
 
         // Test data
-        Map<Long, Object> testData = new HashMap<>();
-        testData.put(1L, "Test Data");
+        Map<Long, Trainee> testData = new HashMap<>();
+        testData.put(1L, new Trainee(1L, new Date(), "Street 20"));
 
         // Act
         t1.writeToFile(testData);
-        Map<Long, Object> result = t1.readFromFile();
+        Map<Long, Trainee> result = t1.readFromFile();
 
         // Assert
-        assertEquals(testData, result);
+        assertThat(result).containsExactlyEntriesOf(testData);
 
         // Cleanup: Optional, as TemporaryFolder takes care of it
         // tempFile.delete();

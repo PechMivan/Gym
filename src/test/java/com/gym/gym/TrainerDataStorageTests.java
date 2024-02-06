@@ -1,5 +1,7 @@
 package com.gym.gym;
 
+import com.gym.gym.entities.Trainer;
+import com.gym.gym.entities.TrainingType;
 import com.gym.gym.storages.TrainerDataStorage;
 import com.gym.gym.storages.TrainingDataStorage;
 import org.junit.Rule;
@@ -38,12 +40,12 @@ public class TrainerDataStorageTests {
         }
 
         // Test data
-        Map<Long, Object> testData = new HashMap<>();
-        testData.put(1L, "Test Data");
+        Map<Long, Trainer> testData = new HashMap<>();
+        testData.put(1L, new Trainer(1L, TrainingType.YOGA));
 
         // Act
         t1.writeToFile(testData);
-        Map<Long, Object> result = t1.readFromFile();
+        Map<Long, Trainer> result = t1.readFromFile();
 
         // Assert
         assertEquals(testData, result);

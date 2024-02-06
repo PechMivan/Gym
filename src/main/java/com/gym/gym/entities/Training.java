@@ -15,4 +15,5 @@ public class Training implements Serializable {
     private TrainingType trainingType;
     private Date trainingDate;
     private int trainingDuration;
+
 }

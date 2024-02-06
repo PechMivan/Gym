@@ -11,37 +11,36 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class DataStorageManager {
 
-    private final Map<String, DataStorage> mainDataStorage;
+    private final Map<String, DataStorage<?>> mainDataStorage;
 
     public DataStorageManager(){
         this.mainDataStorage = new HashMap<>();
     }
 
     @Autowired
-    public void setMainDataStorage(List<DataStorage> dataStorageList){
+    public void setMainDataStorage(List<DataStorage<?>> dataStorageList){
         dataStorageList.forEach(ds -> mainDataStorage.put(ds.getSTORAGE_TYPE(), ds));
     }
 
-    public void write(String storageType, Map<Long, Object> data){
-        DataStorage dataStorage = mainDataStorage.get(storageType);
+    public <T> void write(String storageType, Map<Long, T> data){
+        DataStorage<T> dataStorage = (DataStorage<T>) mainDataStorage.get(storageType);
         if(dataStorage == null){
-            //Aqui va un log
+            // Log the error
             return;
         }
         dataStorage.writeToFile(data);
     }
 
-    public Map<Long, Object> read(String storageType){
-        Map<Long, Object> data = new HashMap<>();
-        DataStorage dataStorage = mainDataStorage.get(storageType);
+    public <T> Map<Long, T> read(String storageType){
+        Map<Long, T> data = new HashMap<>();
+        DataStorage<T> dataStorage = (DataStorage<T>) mainDataStorage.get(storageType);
 
         if(dataStorage == null){
-            //Aqui va un log
+            // Log the error
             return data;
         }
 
         data = dataStorage.readFromFile();
         return data;
     }
-
 }

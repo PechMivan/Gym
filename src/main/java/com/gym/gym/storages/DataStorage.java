@@ -1,5 +1,6 @@
 package com.gym.gym.storages;
 
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@Getter
 @SuppressWarnings("unused")
 public abstract class DataStorage<T> {
 
@@ -48,13 +50,5 @@ public abstract class DataStorage<T> {
         }
 
         return data;
-    }
-
-    public String getSTORAGE_TYPE() {
-        return STORAGE_TYPE;
-    }
-
-    public String getFILEPATH() {
-        return FILEPATH;
     }
 }

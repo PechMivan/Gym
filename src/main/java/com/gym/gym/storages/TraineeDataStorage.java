@@ -2,11 +2,15 @@ package com.gym.gym.storages;
 
 import com.gym.gym.entities.Trainee;
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
+@Getter
+@Setter
 @Component
 @SuppressWarnings("unused")
 public class TraineeDataStorage extends DataStorage<Trainee> {
@@ -22,11 +26,4 @@ public class TraineeDataStorage extends DataStorage<Trainee> {
         this.traineeMap = super.readFromFile();
     }
 
-    public Map<Long, Trainee> getTraineeMap() {
-        return traineeMap;
-    }
-
-    public void setTraineeMap(Map<Long, Trainee> traineeMap) {
-        this.traineeMap = traineeMap;
-    }
 }
