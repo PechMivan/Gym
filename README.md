@@ -78,7 +78,7 @@ Tests are implemented...
 
 SonarQube and Jacoco report are pending**
 
-9. For Trainee and Trainer create profile functionality implement username and password 
+6. For Trainee and Trainer create profile functionality implement username and password 
 calculation by follow rules:   
 • Username going to be calculated from Trainer/Trainee first name and last name 
 by concatenation by using dot as a separator (eg. John.Smith)  
