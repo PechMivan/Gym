@@ -9,11 +9,5 @@ public interface TrainingService {
 
     Optional<Training> getTrainingById(long id);
 
-    List<Training> getAllTrainings();
-
-    void saveTraining(Training training);
-
-    void updateTraining(long id, Training updatedTraining);
-
-    void deleteTraining(long id);
+    void createTraining(Training training);
 }

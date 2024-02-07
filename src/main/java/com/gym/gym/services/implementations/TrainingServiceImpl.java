@@ -4,10 +4,12 @@ import com.gym.gym.daos.implementations.TrainingDAOImpl;
 import com.gym.gym.entities.Training;
 import com.gym.gym.services.TrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class TrainingServiceImpl implements TrainingService {
 
     @Autowired
@@ -19,22 +21,8 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public List<Training> getAllTrainings() {
-        return trainingDAO.getAll();
-    }
-
-    @Override
-    public void saveTraining(Training training) {
+    public void createTraining(Training training) {
         trainingDAO.save(training);
     }
 
-    @Override
-    public void updateTraining(long id, Training updatedTraining) {
-        trainingDAO.update(id, updatedTraining);
-    }
-
-    @Override
-    public void deleteTraining(long id) {
-        trainingDAO.delete(id);
-    }
 }

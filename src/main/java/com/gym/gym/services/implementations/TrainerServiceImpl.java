@@ -4,10 +4,12 @@ import com.gym.gym.daos.implementations.TrainerDAOImpl;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.services.TrainerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class TrainerServiceImpl implements TrainerService {
 
     @Autowired

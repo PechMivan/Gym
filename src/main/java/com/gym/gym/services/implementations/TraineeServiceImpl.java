@@ -4,10 +4,12 @@ import com.gym.gym.daos.implementations.TraineeDAOImpl;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.services.TraineeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class TraineeServiceImpl implements TraineeService {
 
     @Autowired
@@ -26,6 +28,7 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public void saveTrainee(Trainee trainee) {
         traineeDAO.save(trainee);
+        System.out.println("Trainee successfully saved!");
     }
 
     @Override

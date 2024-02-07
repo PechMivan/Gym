@@ -1,6 +1,7 @@
 package com.gym.gym.services;
 
 import com.gym.gym.entities.Trainer;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
