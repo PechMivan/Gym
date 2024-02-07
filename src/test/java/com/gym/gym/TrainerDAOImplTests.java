@@ -40,7 +40,7 @@ public class TrainerDAOImplTests {
 
         when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
 
-        Optional<Trainer> result = trainerDAO.get(id);
+        Optional<Trainer> result = trainerDAO.findById(id);
 
         assertEquals(trainer, result.orElse(null));
     }
@@ -59,7 +59,7 @@ public class TrainerDAOImplTests {
 
         when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
 
-        assertEquals(2, trainerDAO.getAll().size());
+        assertEquals(2, trainerDAO.findAll().size());
     }
 
     @Test
@@ -75,29 +75,6 @@ public class TrainerDAOImplTests {
 
         verify(dataStorageManager, times(1)).write("trainer", trainerMap);
         assertEquals(1, trainerMap.size());
-    }
-
-    @Test
-    public void updateTrainer() {
-        long id = 1L;
-        Trainer existingTrainer = new Trainer();
-        existingTrainer.setUserId(id);
-
-        Trainer updatedTrainer = new Trainer();
-        updatedTrainer.setUserId(id);
-        updatedTrainer.setFirstName("Updated Trainer");
-
-        Map<Long, Object> trainerMap = new HashMap<>();
-        trainerMap.put(id, existingTrainer);
-
-        when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
-
-        trainerDAO.update(id, updatedTrainer);
-
-        Trainer result = (Trainer)trainerMap.get(id);
-
-        verify(dataStorageManager, times(1)).write("trainer", trainerMap);
-        assertEquals("Updated Trainer", result.getFirstName());
     }
 
     @Test

@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 public class DataStorageManagerTests {
 
     @Mock
-    private DataStorage dataStorageMock;
+    private DataStorage<Object> dataStorageMock;
 
     @InjectMocks
     private DataStorageManager dataStorageManager;

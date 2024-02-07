@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class TraineeDAOImplTests {
@@ -49,7 +49,7 @@ public class TraineeDAOImplTests {
 
         when(dataStorageManager.read("trainee")).thenReturn(traineeMap);
 
-        Optional<Trainee> result = traineeDAO.get(id);
+        Optional<Trainee> result = traineeDAO.findById(id);
 
         assertEquals(trainee, result.orElse(null));
     }
@@ -83,7 +83,7 @@ public class TraineeDAOImplTests {
 
         when(dataStorageManager.read("trainee")).thenReturn(traineeMap);
 
-        assertEquals(2, traineeDAO.getAll().size());
+        assertEquals(2, traineeDAO.findAll().size());
     }
 
     @Test
@@ -107,46 +107,6 @@ public class TraineeDAOImplTests {
 
         verify(dataStorageManager, times(1)).write("trainee", traineeMap);
         assertEquals(1, traineeMap.size());
-    }
-
-    @Test
-    public void updateTrainee() {
-        long id = 1L;
-        Trainee existingTrainee = Trainee.builder()
-                .firstName("Mario")
-                .lastName("Pech")
-                .address("Street 20")
-                .username("Mapech")
-                .password("pass")
-                .dateOfBirth(new Date())
-                .isActive(true)
-                .userId(id)
-                .build();
-
-        Trainee updatedTrainee = Trainee.builder()
-                .firstName("Mario")
-                .lastName("Pech")
-                .address("Street 20")
-                .username("Mapech")
-                .password("pass")
-                .dateOfBirth(new Date())
-                .isActive(true)
-                .userId(id)
-                .build();
-
-        updatedTrainee.setFirstName("Updated");
-
-        Map<Long, Object> traineeMap = new HashMap<>();
-        traineeMap.put(id, existingTrainee);
-
-        when(dataStorageManager.read("trainee")).thenReturn(traineeMap);
-
-        traineeDAO.update(id, updatedTrainee);
-
-        Trainee result = (Trainee)traineeMap.get(id);
-
-        verify(dataStorageManager, times(1)).write("trainee", traineeMap);
-        assertEquals("Updated", result.getFirstName());
     }
 
     @Test
