@@ -38,30 +38,6 @@ public class TrainerDAOImpl implements DAO<Trainer> {
     }
 
     @Override
-    public void update(long id, Trainer updatedTrainer) {
-        Optional<Trainer> existingTrainerOptional = get(id);
-
-        if (existingTrainerOptional.isPresent()) {
-            Trainer existingTrainer = existingTrainerOptional.get();
-
-            // Update existing trainer with fields from updatedTrainer
-            existingTrainer.setFirstName(updatedTrainer.getFirstName());
-            existingTrainer.setLastName(updatedTrainer.getLastName());
-            existingTrainer.setUsername(updatedTrainer.getUsername());
-            existingTrainer.setPassword(updatedTrainer.getPassword());
-            existingTrainer.setActive(updatedTrainer.isActive());
-            existingTrainer.setSpecialization(updatedTrainer.getSpecialization());
-
-            Map<Long, Trainer> trainerMap = dataStorageManager.read("trainer");
-            trainerMap.put(id, existingTrainer);
-            dataStorageManager.write("trainer", trainerMap);
-        } else {
-            // Handle case where trainer with given id is not found
-            System.out.println("Trainer with id " + id + " not found.");
-        }
-    }
-
-    @Override
     public void delete(long id) {
         Map<Long, Trainer> trainerMap = dataStorageManager.read("trainer");
         trainerMap.remove(id);
