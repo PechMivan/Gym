@@ -1,7 +1,6 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.daos.implementations.TrainerDAOImpl;
-import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.services.TrainerService;
 import org.springframework.beans.BeanUtils;
@@ -16,6 +15,7 @@ import java.util.*;
 @Component
 public class TrainerServiceImpl implements TrainerService {
 
+    Random random = new Random();
     @Autowired
     private TrainerDAOImpl trainerDAO;
 
@@ -77,7 +77,6 @@ public class TrainerServiceImpl implements TrainerService {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         int length = 10;
 
-        Random random = new Random();
         StringBuilder password = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             int index = random.nextInt(characters.length());

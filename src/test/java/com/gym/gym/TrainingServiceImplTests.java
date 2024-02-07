@@ -14,7 +14,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
 
-public class TrainingServiceImplTests {
+ class TrainingServiceImplTests {
 
     @Mock
     private TrainingDAOImpl trainingDAO;
@@ -23,12 +23,12 @@ public class TrainingServiceImplTests {
     private TrainingServiceImpl trainingService;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void getTrainingById() {
+     void getTrainingById() {
         // Mock
         long id = 1L;
         Training training = new Training();
@@ -41,7 +41,7 @@ public class TrainingServiceImplTests {
     }
 
     @Test
-    public void createTraining() {
+     void createTraining() {
         // Mock
         Training training = new Training();
 

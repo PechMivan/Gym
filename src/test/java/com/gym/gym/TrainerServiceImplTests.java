@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TrainerServiceImplTests {
+ class TrainerServiceImplTests {
 
     @Mock
     private TrainerDAOImpl trainerDAO;
@@ -27,12 +27,12 @@ public class TrainerServiceImplTests {
     private TrainerServiceImpl trainerService;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void getTrainerById_Exists_ReturnsTrainee() {
+     void getTrainerById_Exists_ReturnsTrainee() {
         long id = 1L;
         Trainer trainer = new Trainer();
         trainer.setUserId(id);
@@ -45,7 +45,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void getTrainerById_NotExists_ThrowsException() {
+     void getTrainerById_NotExists_ThrowsException() {
         long id = 1L;
 
         when(trainerDAO.findById(id)).thenReturn(Optional.empty());
@@ -54,7 +54,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void getAllTrainers() {
+     void getAllTrainers() {
         List<Trainer> trainers = new ArrayList<>();
         trainers.add(new Trainer());
         trainers.add(new Trainer());
@@ -67,7 +67,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void createTrainer() {
+     void createTrainer() {
         Trainer trainer = new Trainer();
         trainer.setFirstName("John");
         trainer.setLastName("Doe");
@@ -82,7 +82,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void createUsername() {
+     void createUsername() {
         // Mocking existing trainers with similar username
         Trainer trainer1 = new Trainer();
         trainer1.setFirstName("John");
@@ -106,14 +106,14 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void createPassword() {
+     void createPassword() {
         // Test
         String password = trainerService.createPassword();
         assertEquals(10, password.length()); // Expecting a password of length 10
     }
 
     @Test
-    public void updateTrainer() {
+     void updateTrainer() {
         // Mock existing trainer
         long id = 1L;
         Trainer existingTrainer = new Trainer();
@@ -134,7 +134,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void deleteTrainer() {
+     void deleteTrainer() {
         // Mock
         long id = 1L;
 

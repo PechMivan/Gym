@@ -15,7 +15,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class DataStorageManagerTests {
+ class DataStorageManagerTests {
 
     @Mock
     private DataStorage<Object> dataStorageMock;
@@ -24,12 +24,12 @@ public class DataStorageManagerTests {
     private DataStorageManager dataStorageManager;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testWrite() {
+     void testWrite() {
         // Arrange
         String storageType = "testType";
         Map<Long, Object> testData = new HashMap<>();
@@ -47,7 +47,7 @@ public class DataStorageManagerTests {
     }
 
     @Test
-    public void testRead() {
+     void testRead() {
         // Arrange
         String storageType = "testType";
         Map<Long, Object> expectedData = new HashMap<>();
@@ -66,7 +66,7 @@ public class DataStorageManagerTests {
     }
 
     @Test
-    public void testWriteWithUnknownStorageType() {
+     void testWriteWithUnknownStorageType() {
         // Arrange
         String unknownStorageType = "unknownType";
         Map<Long, Object> testData = new HashMap<>();
@@ -80,7 +80,7 @@ public class DataStorageManagerTests {
     }
 
     @Test
-    public void testReadWithUnknownStorageType() {
+     void testReadWithUnknownStorageType() {
         // Arrange
         String unknownStorageType = "unknownType";
 

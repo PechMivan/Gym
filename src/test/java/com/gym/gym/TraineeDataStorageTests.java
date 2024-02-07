@@ -15,13 +15,13 @@ import java.util.Map;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class TraineeDataStorageTests {
+ class TraineeDataStorageTests {
 
     @Autowired
     TraineeDataStorage t1;
 
     @Test
-    public void testWriteAndReadToFile() {
+     void testWriteAndReadToFile() {
 
         // Test data
         Map<Long, Trainee> testData = new HashMap<>();

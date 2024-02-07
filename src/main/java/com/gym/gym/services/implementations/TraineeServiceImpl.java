@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 
 import java.beans.PropertyDescriptor;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class TraineeServiceImpl implements TraineeService {
 
+    Random random = new Random();
     @Autowired
     private TraineeDAOImpl traineeDAO;
 
@@ -77,7 +77,6 @@ public class TraineeServiceImpl implements TraineeService {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         int length = 10;
 
-        Random random = new Random();
         StringBuilder password = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             int index = random.nextInt(characters.length());

@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class TrainingDataStorageTests {
+ class TrainingDataStorageTests {
 
     @Autowired
     TrainingDataStorage t1;
 
     @Test
-    public void testWriteAndReadToFile() {
+     void testWriteAndReadToFile() {
 
         // Test data
         Map<Long, Training> testData = new HashMap<>();

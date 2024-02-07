@@ -16,7 +16,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class TrainingDAOImplTests {
+ class TrainingDAOImplTests {
 
     @Mock
     DataStorageManager dataStorageManager;
@@ -25,12 +25,12 @@ public class TrainingDAOImplTests {
     TrainingDAOImpl trainingDAO;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void getTrainerById() {
+     void getTrainerById() {
         long id = 1L;
         Training training = new Training();
         training.setTrainingId(id);
@@ -46,7 +46,7 @@ public class TrainingDAOImplTests {
     }
 
     @Test
-    public void getAllTrainers() {
+     void getAllTrainers() {
         Training training1 = new Training();
         training1.setTrainingId(1L);
 
@@ -63,7 +63,7 @@ public class TrainingDAOImplTests {
     }
 
     @Test
-    public void saveTrainer() {
+     void saveTrainer() {
         Training training = new Training();
         training.setTrainingId(1L);
 
@@ -78,7 +78,7 @@ public class TrainingDAOImplTests {
     }
 
     @Test
-    public void deleteTrainer() {
+     void deleteTrainer() {
         long id = 1L;
         Training training = new Training();
         training.setTrainingId(id);

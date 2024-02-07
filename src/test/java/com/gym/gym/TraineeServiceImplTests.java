@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TraineeServiceImplTests {
+ class TraineeServiceImplTests {
 
     @Mock
     private TraineeDAOImpl traineeDAO;
@@ -25,12 +25,12 @@ public class TraineeServiceImplTests {
     private TraineeServiceImpl traineeService;
 
     @BeforeEach
-    public void setUp() {
+     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void getTraineeById_Exists_ReturnsTrainee() {
+     void getTraineeById_Exists_ReturnsTrainee() {
         long id = 1L;
         Trainee trainee = new Trainee();
         trainee.setUserId(id);
@@ -43,7 +43,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void getTraineeById_NotExists_ThrowsException() {
+     void getTraineeById_NotExists_ThrowsException() {
         long id = 1L;
 
         when(traineeDAO.findById(id)).thenReturn(Optional.empty());
@@ -52,7 +52,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void getAllTrainees() {
+     void getAllTrainees() {
         List<Trainee> trainees = new ArrayList<>();
         trainees.add(new Trainee());
         trainees.add(new Trainee());
@@ -65,7 +65,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void createTrainee() {
+     void createTrainee() {
         Trainee trainee = new Trainee();
         trainee.setFirstName("John");
         trainee.setLastName("Doe");
@@ -80,7 +80,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void createUsername() {
+     void createUsername() {
         // Mocking existing trainees with similar username
         Trainee trainee1 = new Trainee();
         trainee1.setFirstName("John");
@@ -104,14 +104,14 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void createPassword() {
+     void createPassword() {
         // Test
         String password = traineeService.createPassword();
         assertEquals(10, password.length()); // Expecting a password of length 10
     }
 
     @Test
-    public void updateTrainee() {
+     void updateTrainee() {
         // Mock existing trainee
         long id = 1L;
         Trainee existingTrainee = new Trainee();
@@ -132,7 +132,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void deleteTrainee() {
+     void deleteTrainee() {
         // Mock
         long id = 1L;
 

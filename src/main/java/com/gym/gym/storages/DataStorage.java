@@ -20,35 +20,35 @@ public abstract class DataStorage<T> {
         this.STORAGE_TYPE = STORAGE_TYPE;
     }
 
-    public void writeToFile(Map<Long, T> data){
-        try {
-            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(FILEPATH));
+    public void writeToFile(Map<Long, T> data) {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
             outputStream.writeObject(data);
-            //Aqui va un log
+            // Add logging here if necessary
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error writing data to file: " + e.getMessage(), e);
         }
     }
 
     public Map<Long, T> readFromFile() {
-
         Map<Long, T> data = new HashMap<>();
-        try {
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(FILEPATH));
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(FILEPATH))) {
 
             Object object = inputStream.readObject();
 
             if (object instanceof Map) {
-                data = (Map<Long, T>) object;
-                //Aqui va un log
+                @SuppressWarnings("unchecked")
+                Map<Long, T> map = (Map<Long, T>) object;
+                data.putAll(map);
+                // Log the successful read
             } else {
-                System.out.println("Data file corrupted...");
+                System.out.println("Data file is corrupted.");
             }
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             System.err.println("Error reading from file: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error deserializing object: " + e.getMessage());
         }
-
         return data;
     }
 }
