@@ -1,13 +1,13 @@
 package com.gym.gym;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import com.gym.gym.daos.implementations.TrainingDAOImpl;
 import com.gym.gym.entities.Training;
 import com.gym.gym.services.implementations.TrainingServiceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -22,7 +22,7 @@ public class TrainingServiceImplTests {
     @InjectMocks
     private TrainingServiceImpl trainingService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }

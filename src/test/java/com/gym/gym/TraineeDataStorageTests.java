@@ -2,19 +2,18 @@ package com.gym.gym;
 
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.storages.TraineeDataStorage;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class TraineeDataStorageTests {
 
@@ -45,7 +44,7 @@ public class TraineeDataStorageTests {
         Map<Long, Trainee> result = t1.readFromFile();
 
         // Assert
-        assertEquals(testData, result);
+        Assertions.assertEquals(testData, result);
 
     }
 

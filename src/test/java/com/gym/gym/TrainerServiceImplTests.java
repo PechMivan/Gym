@@ -1,16 +1,18 @@
 package com.gym.gym;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 import com.gym.gym.daos.implementations.TrainerDAOImpl;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ public class TrainerServiceImplTests {
     @InjectMocks
     private TrainerServiceImpl trainerService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }

@@ -3,8 +3,8 @@ package com.gym.gym;
 import com.gym.gym.daos.implementations.TraineeDAOImpl;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.storages.DataStorageManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class TraineeDAOImplTests {
@@ -25,7 +25,7 @@ public class TraineeDAOImplTests {
     @InjectMocks
     TraineeDAOImpl traineeDAO;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }

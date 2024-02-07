@@ -2,8 +2,8 @@ package com.gym.gym;
 
 import com.gym.gym.storages.DataStorage;
 import com.gym.gym.storages.DataStorageManager;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class DataStorageManagerTests {
@@ -23,7 +23,7 @@ public class DataStorageManagerTests {
     @InjectMocks
     private DataStorageManager dataStorageManager;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
