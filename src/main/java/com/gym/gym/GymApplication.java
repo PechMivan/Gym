@@ -60,32 +60,38 @@ public class GymApplication {
 				.isActive(true)
 				.userId(2L)
 				.build();
-		traineeService.saveTrainee(traineeTest1);
-		traineeService.saveTrainee(traineeTest2);
+		Trainee traineeTest3 = Trainee.builder()
+				.firstName("Mario")
+				.lastName("Pech")
+				.address("Street 20")
+				.username("user")
+				.password("pass")
+				.dateOfBirth(new Date())
+				.isActive(true)
+				.userId(3L)
+				.build();
+
+		traineeService.createTrainee(traineeTest1);
+		traineeService.createTrainee(traineeTest2);
+		traineeService.createTrainee(traineeTest3);
 		List<Trainee> traineeList = traineeService.getAllTrainees();
-		traineeList.forEach(trainee -> System.out.println(trainee.getUsername()));
-		Optional<Trainee> trainee = traineeService.getTraineeById(2L);
-		trainee.ifPresentOrElse(t -> System.out.println(t.toString()),
-				() -> System.out.println("Trainee not found!"));
+		traineeList.forEach(trainee -> System.out.println(trainee.toString()));
+		Trainee trainee = traineeService.getTraineeById(2L);
+		System.out.println(trainee.toString());
 		traineeService.deleteTrainee(2L);
-		trainee = traineeService.getTraineeById(2L);
-		trainee.ifPresentOrElse(t -> System.out.println(t.toString()),
-				() -> System.out.println("Trainee not found!"));
 
 		Trainee UpdatedTrainee = Trainee.builder()
-				.firstName("testName")
 				.lastName("testLastname")
 				.username("user")
 				.password("pass")
 				.dateOfBirth(new Date())
 				.isActive(true)
-				.userId(2L)
+				.userId(1L)
 				.build();
 
 		traineeService.updateTrainee(1L, UpdatedTrainee);
 		trainee = traineeService.getTraineeById(1L);
-		trainee.ifPresentOrElse(t -> System.out.println(t.toString()),
-				() -> System.out.println("Trainee not found!"));
+		System.out.println("updated trainee: " + trainee.toString());
 	}
 
 	public static void callTrainerService(){

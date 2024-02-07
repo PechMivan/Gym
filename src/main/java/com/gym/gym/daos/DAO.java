@@ -6,9 +6,9 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 public interface DAO<T> {
 
-    Optional<T> get(long id);
+    Optional<T> findById(long id);
 
-    List<T> getAll();
+    List<T> findAll();
 
     void save(T t);
 

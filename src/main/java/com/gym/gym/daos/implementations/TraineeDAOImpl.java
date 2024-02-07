@@ -17,15 +17,14 @@ public class TraineeDAOImpl implements DAO<Trainee> {
     DataStorageManager dataStorageManager;
 
     @Override
-    public Optional<Trainee> get(long id) {
-
+    public Optional<Trainee> findById(long id) {
         Map<Long, Trainee> traineeMap = dataStorageManager.read("trainee");
         Trainee trainee = traineeMap.get(id);
         return Optional.ofNullable(trainee);
     }
 
     @Override
-    public List<Trainee> getAll() {
+    public List<Trainee> findAll() {
         Map<Long, Trainee> traineeMap = dataStorageManager.read("trainee");
         return traineeMap.values().stream()
                 .toList();
@@ -43,6 +42,5 @@ public class TraineeDAOImpl implements DAO<Trainee> {
         Map<Long, Trainee> traineeMap = dataStorageManager.read("trainee");
         traineeMap.remove(id);
         dataStorageManager.write("trainee", traineeMap);
-
     }
 }

@@ -17,7 +17,7 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public Optional<Training> getTrainingById(long id) {
-        return trainingDAO.get(id);
+        return trainingDAO.findById(id);
     }
 
     @Override

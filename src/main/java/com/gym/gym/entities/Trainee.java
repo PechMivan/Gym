@@ -18,4 +18,13 @@ public class Trainee extends User implements Serializable {
     private long userId;
     private Date dateOfBirth;
     private String address;
+
+    @Override
+    public String toString() {
+        return super.toString() + "Trainee{" +
+                "userId=" + userId +
+                ", dateOfBirth=" + dateOfBirth +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }

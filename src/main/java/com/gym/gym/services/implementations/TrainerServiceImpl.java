@@ -17,12 +17,12 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Optional<Trainer> getTrainerById(long id) {
-        return trainerDAO.get(id);
+        return trainerDAO.findById(id);
     }
 
     @Override
     public List<Trainer> getAllTrainers() {
-        return trainerDAO.getAll();
+        return trainerDAO.findAll();
     }
 
     @Override
@@ -32,7 +32,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public void updateTrainer(long id, Trainer updatedTrainer) {
-        trainerDAO.update(id, updatedTrainer);
+
     }
 
     @Override

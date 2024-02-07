@@ -17,14 +17,14 @@ public class TrainingDAOImpl implements DAO<Training> {
     DataStorageManager dataStorageManager;
 
     @Override
-    public Optional<Training> get(long id) {
+    public Optional<Training> findById(long id) {
         Map<Long, Training> trainingMap = dataStorageManager.read("training");
         Training training = trainingMap.get(id);
         return Optional.ofNullable(training);
     }
 
     @Override
-    public List<Training> getAll() {
+    public List<Training> findAll() {
         Map<Long, Training> trainingMap = dataStorageManager.read("training");
         return trainingMap.values().stream()
                 .toList();

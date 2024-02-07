@@ -7,9 +7,11 @@ import java.util.Optional;
 
 public interface TraineeService {
 
-    Optional<Trainee> getTraineeById(long id);
+    Trainee getTraineeById(long id);
 
     List<Trainee> getAllTrainees();
+
+    Trainee createTrainee(Trainee trainee);
 
     void saveTrainee(Trainee trainee);
 
