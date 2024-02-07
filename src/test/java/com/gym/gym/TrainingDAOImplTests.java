@@ -1,7 +1,7 @@
 package com.gym.gym;
 
-import com.gym.gym.daos.implementations.TrainerDAOImpl;
-import com.gym.gym.entities.Trainer;
+import com.gym.gym.daos.implementations.TrainingDAOImpl;
+import com.gym.gym.entities.Training;
 import com.gym.gym.storages.DataStorageManager;
 import org.junit.Test;
 import org.junit.Before;
@@ -22,7 +22,7 @@ public class TrainingDAOImplTests {
     DataStorageManager dataStorageManager;
 
     @InjectMocks
-    TrainerDAOImpl trainerDAO;
+    TrainingDAOImpl trainingDAO;
 
     @Before
     public void setUp() {
@@ -32,65 +32,65 @@ public class TrainingDAOImplTests {
     @Test
     public void getTrainerById() {
         long id = 1L;
-        Trainer trainer = new Trainer();
-        trainer.setUserId(id);
+        Training training = new Training();
+        training.setTrainingId(id);
 
         Map<Long, Object> trainerMap = new HashMap<>();
-        trainerMap.put(id, trainer);
+        trainerMap.put(id, training);
 
-        when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
+        when(dataStorageManager.read("training")).thenReturn(trainerMap);
 
-        Optional<Trainer> result = trainerDAO.findById(id);
+        Optional<Training> result = trainingDAO.findById(id);
 
-        assertEquals(trainer, result.orElse(null));
+        assertEquals(training, result.orElse(null));
     }
 
     @Test
     public void getAllTrainers() {
-        Trainer trainer1 = new Trainer();
-        trainer1.setUserId(1L);
+        Training training1 = new Training();
+        training1.setTrainingId(1L);
 
-        Trainer trainer2 = new Trainer();
-        trainer2.setUserId(2L);
+        Training training2 = new Training();
+        training2.setTrainingId(2L);
 
-        Map<Long, Object> trainerMap = new HashMap<>();
-        trainerMap.put(1L, trainer1);
-        trainerMap.put(2L, trainer2);
+        Map<Long, Object> trainingMap = new HashMap<>();
+        trainingMap.put(1L, training1);
+        trainingMap.put(2L, training2);
 
-        when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
+        when(dataStorageManager.read("training")).thenReturn(trainingMap);
 
-        assertEquals(2, trainerDAO.findAll().size());
+        assertEquals(2, trainingDAO.findAll().size());
     }
 
     @Test
     public void saveTrainer() {
-        Trainer trainer = new Trainer();
-        trainer.setUserId(1L);
+        Training training = new Training();
+        training.setTrainingId(1L);
 
-        Map<Long, Object> trainerMap = new HashMap<>();
+        Map<Long, Object> trainingMap = new HashMap<>();
 
-        when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
+        when(dataStorageManager.read("training")).thenReturn(trainingMap);
 
-        trainerDAO.save(trainer);
+        trainingDAO.save(training);
 
-        verify(dataStorageManager, times(1)).write("trainer", trainerMap);
-        assertEquals(1, trainerMap.size());
+        verify(dataStorageManager, times(1)).write("training", trainingMap);
+        assertEquals(1, trainingMap.size());
     }
 
     @Test
     public void deleteTrainer() {
         long id = 1L;
-        Trainer trainer = new Trainer();
-        trainer.setUserId(id);
+        Training training = new Training();
+        training.setTrainingId(id);
 
-        Map<Long, Object> trainerMap = new HashMap<>();
-        trainerMap.put(id, trainer);
+        Map<Long, Object> trainingMap = new HashMap<>();
+        trainingMap.put(id, training);
 
-        when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
+        when(dataStorageManager.read("training")).thenReturn(trainingMap);
 
-        trainerDAO.delete(id);
+        trainingDAO.delete(id);
 
-        verify(dataStorageManager, times(1)).write("trainer", trainerMap);
-        assertEquals(0, trainerMap.size());
+        verify(dataStorageManager, times(1)).write("training", trainingMap);
+        assertEquals(0, trainingMap.size());
     }
 }
