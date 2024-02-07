@@ -16,8 +16,9 @@ public class TrainingServiceImpl implements TrainingService {
     private TrainingDAOImpl trainingDAO;
 
     @Override
-    public Optional<Training> getTrainingById(long id) {
-        return trainingDAO.findById(id);
+    public Training getTrainingById(long id) {
+        return trainingDAO.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Trainer doesn't exist with id: " + id));
     }
 
     @Override

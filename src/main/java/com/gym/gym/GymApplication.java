@@ -34,6 +34,7 @@ public class GymApplication {
 		SpringApplication.run(GymApplication.class, args);
 
 		callTraineeService();
+		System.out.println();
 		callTrainerService();
 		callTrainingService();
 
@@ -113,18 +114,39 @@ public class GymApplication {
 				.isActive(false)
 				.userId(2L)
 				.build();
-		trainerService.saveTrainer(trainerTest1);
-		trainerService.saveTrainer(trainerTest2);
+		Trainer trainerTest3 = Trainer.builder()
+				.firstName("Mario")
+				.lastName("Perez")
+				.username("pECH")
+				.password("asdas")
+				.specialization(TrainingType.CARDIO)
+				.isActive(false)
+				.userId(3L)
+				.build();
+		trainerService.createTrainer(trainerTest1);
+		trainerService.createTrainer(trainerTest2);
+		trainerService.createTrainer(trainerTest3);
 
 		List<Trainer> trainerList = trainerService.getAllTrainers();
-		trainerList.forEach(trainer -> System.out.println(trainer.getUsername()));
-		Optional<Trainer> trainer = trainerService.getTrainerById(2L);
-		trainer.ifPresentOrElse(t -> System.out.println(t.toString()),
-				() -> System.out.println("Trainer not found!"));
+		trainerList.forEach(trainer -> System.out.println(trainer.toString()));
+		Trainer trainer = trainerService.getTrainerById(2L);
+		System.out.println(trainer.toString());
 		trainerService.deleteTrainer(2L);
-		trainer = trainerService.getTrainerById(2L);
-		trainer.ifPresentOrElse(t -> System.out.println(t.toString()),
-				() -> System.out.println("Trainer not found!"));
+		System.out.println(trainer.toString());
+
+		Trainer updateTrainer = Trainer.builder()
+				.firstName("Mario")
+				.lastName("Pech")
+				.username("usernameTest")
+				.password("usernamePass")
+				.specialization(TrainingType.SPINNING)
+				.isActive(false)
+				.userId(1L)
+				.build();
+
+		trainerService.updateTrainer(1L, updateTrainer);
+		trainer = trainerService.getTrainerById(1L);
+		System.out.println(trainer.toString());
 	}
 
 	public static void callTrainingService(){
@@ -149,17 +171,14 @@ public class GymApplication {
 		trainingService.createTraining(trainingTest1);
 		trainingService.createTraining(trainingTest2);
 
-		Optional<Training> training = trainingService.getTrainingById(1L);
-		training.ifPresentOrElse(t -> System.out.println(t.toString()),
-								 () -> System.out.println("Training not found!"));
+		Training training = trainingService.getTrainingById(1L);
+		System.out.println(training.toString());
 
 		training = trainingService.getTrainingById(2L);
-		training.ifPresentOrElse(t -> System.out.println(t.toString()),
-				() -> System.out.println("Training not found!"));
+		System.out.println(training.toString());
 
 		training = trainingService.getTrainingById(3L);
-		training.ifPresentOrElse(t -> System.out.println(t.toString()),
-				() -> System.out.println("Training not found!"));
+		System.out.println(training.toString());
 	}
 
 

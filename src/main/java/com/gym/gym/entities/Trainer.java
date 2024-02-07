@@ -15,4 +15,12 @@ import java.io.Serializable;
 public class Trainer extends User implements Serializable {
     private long userId;
     private TrainingType specialization;
+
+    @Override
+    public String toString() {
+        return super.toString() + "Trainer{" +
+                "userId=" + userId +
+                ", specialization=" + specialization +
+                '}';
+    }
 }

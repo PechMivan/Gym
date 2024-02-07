@@ -8,9 +8,11 @@ import java.util.Optional;
 
 public interface TrainerService {
 
-    Optional<Trainer> getTrainerById(long id);
+    Trainer getTrainerById(long id);
 
     List<Trainer> getAllTrainers();
+
+    Trainer createTrainer(Trainer trainer);
 
     void saveTrainer(Trainer trainer);
 
