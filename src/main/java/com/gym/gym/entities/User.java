@@ -9,7 +9,7 @@ import java.io.Serializable;
 @SuppressWarnings("unused")
 @SuperBuilder
 @NoArgsConstructor
-public class User implements Serializable {
+public abstract class User implements Serializable {
     private String firstName;
     private String lastName;
     private String username;

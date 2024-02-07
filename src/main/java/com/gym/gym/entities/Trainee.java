@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @SuperBuilder
 @SuppressWarnings("unused")
-public class Trainee extends User implements Serializable {
+public class Trainee extends User {
     private long userId;
     private Date dateOfBirth;
     private String address;
