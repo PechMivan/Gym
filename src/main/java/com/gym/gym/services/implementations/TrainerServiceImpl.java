@@ -64,7 +64,7 @@ public class TrainerServiceImpl implements TrainerService {
         username.append(lastname);
 
         long repeatedUsernameSize = getAllTrainers().stream()
-                .filter(trainee -> trainee.getUsername().contains(username))
+                .filter(trainee -> trainee.getUsername().toLowerCase().contains(username.toString().toLowerCase()))
                 .count();
 
         if(repeatedUsernameSize > 0){
