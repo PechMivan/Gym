@@ -19,7 +19,7 @@ public class DataStorageManager {
 
     @Autowired
     public void setMainDataStorage(List<DataStorage<?>> dataStorageList){
-        dataStorageList.forEach(ds -> mainDataStorage.put(ds.getSTORAGE_TYPE(), ds));
+        dataStorageList.forEach(ds -> mainDataStorage.put(ds.getStorageType(), ds));
     }
 
     public <T> void write(String storageType, Map<Long, T> data){

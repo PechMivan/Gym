@@ -12,26 +12,26 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public abstract class DataStorage<T> {
 
-    private final String STORAGE_TYPE;
-    private final String FILEPATH;
+    private final String storageType;
+    private final String filepath;
 
-    protected DataStorage(String FILEPATH, String STORAGE_TYPE){
-        this.FILEPATH = FILEPATH;
-        this.STORAGE_TYPE = STORAGE_TYPE;
+    protected DataStorage(String filepath, String storageType){
+        this.storageType = storageType;
+        this.filepath = filepath;
     }
 
     public void writeToFile(Map<Long, T> data) {
-        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(FILEPATH))) {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filepath))) {
             outputStream.writeObject(data);
             // Add logging here if necessary
         } catch (IOException e) {
-            throw new RuntimeException("Error writing data to file: " + e.getMessage(), e);
+            throw new RuntimeException("Error writing data to file: " + e.getMessage(), e); //NOSONAR
         }
     }
 
     public Map<Long, T> readFromFile() {
         Map<Long, T> data = new HashMap<>();
-        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(FILEPATH))) {
+        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filepath))) {
 
             Object object = inputStream.readObject();
 

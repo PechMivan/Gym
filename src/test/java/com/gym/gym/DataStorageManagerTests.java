@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
         String storageType = "testType";
         Map<Long, Object> testData = new HashMap<>();
 
-        when(dataStorageMock.getSTORAGE_TYPE()).thenReturn(storageType);
+        when(dataStorageMock.getStorageType()).thenReturn(storageType);
         when(dataStorageMock.readFromFile()).thenReturn(new HashMap<>());
 
         dataStorageManager.setMainDataStorage(List.of(dataStorageMock));
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.*;
         String storageType = "testType";
         Map<Long, Object> expectedData = new HashMap<>();
 
-        when(dataStorageMock.getSTORAGE_TYPE()).thenReturn(storageType);
+        when(dataStorageMock.getStorageType()).thenReturn(storageType);
         when(dataStorageMock.readFromFile()).thenReturn(expectedData);
 
         dataStorageManager.setMainDataStorage(List.of(dataStorageMock));

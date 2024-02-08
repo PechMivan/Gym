@@ -1,6 +1,5 @@
 package com.gym.gym.services.implementations;
 
-import com.gym.gym.daos.implementations.TraineeDAOImpl;
 import com.gym.gym.daos.implementations.TrainingDAOImpl;
 import com.gym.gym.entities.Training;
 import com.gym.gym.services.TrainingService;
