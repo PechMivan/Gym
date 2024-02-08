@@ -16,8 +16,12 @@ import java.util.*;
 public class TrainerServiceImpl implements TrainerService {
 
     Random random = new Random();
-    @Autowired
     private TrainerDAOImpl trainerDAO;
+
+    @Autowired
+    public void setTrainerDAOImpl(TrainerDAOImpl trainerDAO){
+        this.trainerDAO = trainerDAO;
+    }
 
     @Override
     public Trainer getTrainerById(long id) {

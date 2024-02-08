@@ -16,8 +16,13 @@ import java.util.*;
 public class TraineeServiceImpl implements TraineeService {
 
     Random random = new Random();
-    @Autowired
+
     private TraineeDAOImpl traineeDAO;
+
+    @Autowired
+    public void setTraineeDAOImpl(TraineeDAOImpl traineeDAO){
+        this.traineeDAO = traineeDAO;
+    }
 
     @Override
     public Trainee getTraineeById(long id) {

@@ -13,8 +13,12 @@ import java.util.Optional;
 @Component
 public class TraineeDAOImpl implements DAO<Trainee> {
 
-    @Autowired
     DataStorageManager dataStorageManager;
+
+    @Autowired
+    public void setDataStorageManager(DataStorageManager dataStorageManager){
+        this.dataStorageManager = dataStorageManager;
+    }
 
     @Override
     public Optional<Trainee> findById(long id) {
