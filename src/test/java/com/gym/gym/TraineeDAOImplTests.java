@@ -32,6 +32,7 @@ import static org.mockito.Mockito.*;
 
     @Test
      void getTraineeById() {
+        // Arrange
         long id = 1L;
         Trainee trainee = Trainee.builder()
                 .firstName("Mario")
@@ -49,13 +50,16 @@ import static org.mockito.Mockito.*;
 
         when(dataStorageManager.read("trainee")).thenReturn(traineeMap);
 
+        // Act
         Optional<Trainee> result = traineeDAO.findById(id);
 
+        // Assert
         assertEquals(trainee, result.orElse(null));
     }
 
     @Test
      void getAllTrainees() {
+        // Arrange
         Trainee trainee1 = Trainee.builder()
                 .firstName("Mario")
                 .lastName("Pech")
@@ -83,11 +87,13 @@ import static org.mockito.Mockito.*;
 
         when(dataStorageManager.read("trainee")).thenReturn(traineeMap);
 
+        // Act and Assert
         assertEquals(2, traineeDAO.findAll().size());
     }
 
     @Test
      void saveTrainee() {
+        // Arrange
         Trainee trainee = Trainee.builder()
                 .firstName("Mario")
                 .lastName("Pech")
@@ -103,14 +109,17 @@ import static org.mockito.Mockito.*;
 
         when(dataStorageManager.read("trainee")).thenReturn(traineeMap);
 
+        // Act
         traineeDAO.save(trainee);
 
+        // Assert
         verify(dataStorageManager, times(1)).write("trainee", traineeMap);
         assertEquals(1, traineeMap.size());
     }
 
     @Test
      void deleteTrainee() {
+        // Arrange
         long id = 1L;
         Trainee trainee = Trainee.builder()
                 .firstName("Mario")
@@ -129,8 +138,10 @@ import static org.mockito.Mockito.*;
 
         when(dataStorageManager.read("trainee")).thenReturn(traineeMap);
 
+        // Act
         traineeDAO.delete(id);
 
+        // Assert
         verify(dataStorageManager, times(1)).write("trainee", traineeMap);
         assertEquals(0, traineeMap.size());
     }

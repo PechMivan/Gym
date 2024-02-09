@@ -17,6 +17,7 @@ public class TrainingDataStorage extends DataStorage<Training> {
 
     private Map<Long, Training> trainingMap;
 
+    //Actual filepath is retrieved from application.properties.
     public TrainingDataStorage(@Value("${trainingDataStorage.filepath}") String filepath){
         super(filepath, "training");
     }

@@ -31,6 +31,7 @@ import static org.mockito.Mockito.*;
 
     @Test
      void getTrainerById() {
+        // Arrange
         long id = 1L;
         Trainer trainer = new Trainer();
         trainer.setUserId(id);
@@ -40,13 +41,16 @@ import static org.mockito.Mockito.*;
 
         when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
 
+        // Act
         Optional<Trainer> result = trainerDAO.findById(id);
 
+        // Assert
         assertEquals(trainer, result.orElse(null));
     }
 
     @Test
      void getAllTrainers() {
+        // Arrange
         Trainer trainer1 = new Trainer();
         trainer1.setUserId(1L);
 
@@ -59,11 +63,13 @@ import static org.mockito.Mockito.*;
 
         when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
 
+        // Act and Assert
         assertEquals(2, trainerDAO.findAll().size());
     }
 
     @Test
      void saveTrainer() {
+        // Arrange
         Trainer trainer = new Trainer();
         trainer.setUserId(1L);
 
@@ -71,14 +77,17 @@ import static org.mockito.Mockito.*;
 
         when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
 
+        // Act
         trainerDAO.save(trainer);
 
+        // Assert
         verify(dataStorageManager, times(1)).write("trainer", trainerMap);
         assertEquals(1, trainerMap.size());
     }
 
     @Test
      void deleteTrainer() {
+        // Arrange
         long id = 1L;
         Trainer trainer = new Trainer();
         trainer.setUserId(id);
@@ -88,8 +97,10 @@ import static org.mockito.Mockito.*;
 
         when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
 
+        // Act
         trainerDAO.delete(id);
 
+        // Assert
         verify(dataStorageManager, times(1)).write("trainer", trainerMap);
         assertEquals(0, trainerMap.size());
     }

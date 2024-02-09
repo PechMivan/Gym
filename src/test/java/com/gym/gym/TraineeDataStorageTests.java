@@ -23,7 +23,7 @@ import java.util.Map;
     @Test
      void testWriteAndReadToFile() {
 
-        // Test data
+        // Arrange
         Map<Long, Trainee> testData = new HashMap<>();
         Trainee newTrainee = Trainee.builder()
                 .firstName("Mario")

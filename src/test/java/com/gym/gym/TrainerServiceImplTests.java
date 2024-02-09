@@ -33,49 +33,60 @@ import java.util.Optional;
 
     @Test
      void getTrainerById_Exists_ReturnsTrainee() {
+        // Arrange
         long id = 1L;
         Trainer trainer = new Trainer();
         trainer.setUserId(id);
 
         when(trainerDAO.findById(id)).thenReturn(Optional.of(trainer));
 
+        // Act
         Trainer result = trainerService.getTrainerById(id);
 
+        // Assert
         assertEquals(trainer, result);
     }
 
     @Test
      void getTrainerById_NotExists_ThrowsException() {
+        // Arrange
         long id = 1L;
 
         when(trainerDAO.findById(id)).thenReturn(Optional.empty());
 
+        // Act and Assert
         assertThrows(IllegalStateException.class, () -> trainerService.getTrainerById(id));
     }
 
     @Test
      void getAllTrainers() {
+        // Arrange
         List<Trainer> trainers = new ArrayList<>();
         trainers.add(new Trainer());
         trainers.add(new Trainer());
 
         when(trainerDAO.findAll()).thenReturn(trainers);
 
+        // Act
         List<Trainer> result = trainerService.getAllTrainers();
 
+        // Assert
         assertEquals(trainers, result);
     }
 
     @Test
      void createTrainer() {
+        // Arrange
         Trainer trainer = new Trainer();
         trainer.setFirstName("John");
         trainer.setLastName("Doe");
 
         when(trainerService.getAllTrainers()).thenReturn(new ArrayList<>());
 
+        // Act
         Trainer result = trainerService.createTrainer(trainer);
 
+        // Assert
         assertNotNull(result.getUsername());
         assertNotNull(result.getPassword());
         verify(trainerDAO, times(1)).save(trainer);
@@ -83,7 +94,7 @@ import java.util.Optional;
 
     @Test
      void createUsername() {
-        // Mocking existing trainers with similar username
+        // Arrange
         Trainer trainer1 = new Trainer();
         trainer1.setFirstName("John");
         trainer1.setLastName("Doe");
@@ -100,47 +111,49 @@ import java.util.Optional;
 
         when(trainerService.getAllTrainers()).thenReturn(existingTrainers);
 
-        // Test
+        // Act
         String username = trainerService.createUsername("John", "Doe");
+
+        // Assert
         assertEquals("John.Doe2", username); // Expecting "John.Doe2" as the username
     }
 
     @Test
      void createPassword() {
-        // Test
+        // Act and Assert
         String password = trainerService.createPassword();
         assertEquals(10, password.length()); // Expecting a password of length 10
     }
 
     @Test
      void updateTrainer() {
-        // Mock existing trainer
+        // Arrange
         long id = 1L;
         Trainer existingTrainer = new Trainer();
         existingTrainer.setUserId(id);
 
-        // Mock updated trainer
         Trainer updatedTrainer = new Trainer();
         updatedTrainer.setFirstName("Updated");
 
-        // Mock behavior of DAO
         when(trainerDAO.findById(id)).thenReturn(Optional.of(existingTrainer));
 
-        // Test
+        // Act
         trainerService.updateTrainer(id, updatedTrainer);
 
+        // Assert
         assertEquals("Updated", existingTrainer.getFirstName()); // Expecting the first name to be updated
         verify(trainerDAO, times(1)).save(existingTrainer); // Expecting save method to be called
     }
 
     @Test
      void deleteTrainer() {
-        // Mock
+        // Arrange
         long id = 1L;
 
-        // Test
+        // Act
         trainerService.deleteTrainer(id);
 
+        // Assert
         verify(trainerDAO, times(1)).delete(id); // Expecting delete method to be called with given id
     }
 }

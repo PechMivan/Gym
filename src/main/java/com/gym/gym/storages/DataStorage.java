@@ -1,6 +1,8 @@
 package com.gym.gym.storages;
 
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -12,9 +14,13 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public abstract class DataStorage<T> {
 
+    Logger logger = LoggerFactory.getLogger(DataStorage.class);
     private final String storageType;
     private final String filepath;
 
+    /* filepath is provided by the bean instance once it's created.
+    The actual path is injected to the bean through the value annotation;
+    final path can be found at application.properties file. */
     protected DataStorage(String filepath, String storageType){
         this.storageType = storageType;
         this.filepath = filepath;
@@ -23,7 +29,7 @@ public abstract class DataStorage<T> {
     public void writeToFile(Map<Long, T> data) {
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filepath))) {
             outputStream.writeObject(data);
-            // Add logging here if necessary
+            logger.info("Data successfully written to file.");
         } catch (IOException e) {
             throw new RuntimeException("Error writing data to file: " + e.getMessage(), e); //NOSONAR
         }
@@ -39,15 +45,15 @@ public abstract class DataStorage<T> {
                 @SuppressWarnings("unchecked")
                 Map<Long, T> map = (Map<Long, T>) object;
                 data.putAll(map);
-                // Log the successful read
+                logger.info("Data successfully read from file.");
             } else {
-                System.out.println("Data file is corrupted.");
+                logger.error("Data file is corrupted!");
             }
 
         } catch (IOException e) {
-            System.err.println("Error reading from file: " + e.getMessage());
+            logger.error("Error reading from file: " + e.getMessage());
         } catch (ClassNotFoundException e) {
-            System.err.println("Error deserializing object: " + e.getMessage());
+            logger.error("Error deserializing object: " + e.getMessage());
         }
         return data;
     }

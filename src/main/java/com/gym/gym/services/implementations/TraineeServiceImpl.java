@@ -3,6 +3,8 @@ package com.gym.gym.services.implementations;
 import com.gym.gym.daos.implementations.TraineeDAOImpl;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.services.TraineeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -15,6 +17,7 @@ import java.util.*;
 @Component
 public class TraineeServiceImpl implements TraineeService {
 
+    Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
     Random random = new Random();
 
     private TraineeDAOImpl traineeDAO;
@@ -40,6 +43,7 @@ public class TraineeServiceImpl implements TraineeService {
         trainee.setUsername(createUsername(trainee.getFirstName(), trainee.getLastName()));
         trainee.setPassword(createPassword());
         saveTrainee(trainee);
+        logger.info("User of type Trainee successfully created.");
         return trainee;
     }
 
@@ -55,11 +59,13 @@ public class TraineeServiceImpl implements TraineeService {
         BeanUtils.copyProperties(updatedTrainee, existingTrainee, getNullPropertyNames(updatedTrainee));
 
         saveTrainee(existingTrainee);
+        logger.info("User of type Trainee successfully updated.");
     }
 
     @Override
     public void deleteTrainee(long id) {
         traineeDAO.delete(id);
+        logger.info("User of type Trainee successfully deleted.");
     }
 
     public String createUsername(String firstname, String lastname){
@@ -68,6 +74,7 @@ public class TraineeServiceImpl implements TraineeService {
         username.append(".");
         username.append(lastname);
 
+        //Finds all usernames with the same username (ignoring suffix) and counts them.
         long repeatedUsernameSize = getAllTrainees().stream()
                 .filter(trainee -> trainee.getUsername().toLowerCase().contains(username.toString().toLowerCase()))
                 .count();
@@ -75,6 +82,7 @@ public class TraineeServiceImpl implements TraineeService {
         if(repeatedUsernameSize > 0){
             username.append(repeatedUsernameSize);
         }
+        logger.info("Username successfully created.");
         return username.toString();
     }
 
@@ -82,15 +90,20 @@ public class TraineeServiceImpl implements TraineeService {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         int length = 10;
 
+        //Gets a character from characters Strings based on the random number generated.
         StringBuilder password = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             int index = random.nextInt(characters.length());
             password.append(characters.charAt(index));
         }
 
+        logger.info("Password successfully created.");
         return password.toString();
+
     }
 
+
+    /* Finds and returns all fields names with null values from an object */
     private String[] getNullPropertyNames(Object source) {
         BeanWrapper src = new BeanWrapperImpl(source);
         PropertyDescriptor[] pds = src.getPropertyDescriptors();

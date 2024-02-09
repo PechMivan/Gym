@@ -29,24 +29,28 @@ import java.util.Optional;
 
     @Test
      void getTrainingById() {
-        // Mock
+        // Arrange
         long id = 1L;
         Training training = new Training();
         training.setTrainingId(id);
         when(trainingDAO.findById(id)).thenReturn(Optional.of(training));
 
-        // Test
+        // Act
         Training result = trainingService.getTrainingById(id);
+
+        // Assert
         assertEquals(id, result.getTrainingId()); // Expecting the same training ID
     }
 
     @Test
      void createTraining() {
-        // Mock
+        // Arrange
         Training training = new Training();
 
-        // Test
+        // Act
         trainingService.createTraining(training);
+
+        // Assert
         verify(trainingDAO, times(1)).save(training); // Expecting save method to be called
     }
 }

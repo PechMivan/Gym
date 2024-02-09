@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
     @Test
      void testWriteAndReadToFile() {
 
-        // Test data
+        // Arrange
         Map<Long, Training> testData = new HashMap<>();
         Training training = Training.builder()
                         .trainingId(1L)

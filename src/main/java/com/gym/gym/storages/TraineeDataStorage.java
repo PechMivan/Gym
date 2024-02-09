@@ -17,6 +17,7 @@ public class TraineeDataStorage extends DataStorage<Trainee> {
 
     private Map<Long, Trainee> traineeMap;
 
+    //Actual filepath is retrieved from application.properties.
     public TraineeDataStorage(@Value("${traineeDataStorage.filepath}") String filepath){
         super(filepath, "trainee");
     }
