@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,14 +25,7 @@ import java.util.Map;
         // Arrange
         Map<Long, Trainee> testData = new HashMap<>();
         Trainee newTrainee = Trainee.builder()
-                .firstName("Mario")
-                .lastName("Pech")
-                .address("Street 20")
-                .username("Mapech")
-                .password("pass")
-                .dateOfBirth(new Date())
-                .isActive(true)
-                .userId(1L)
+                .id(1L)
                 .build();
 
         System.out.println(newTrainee.toString());

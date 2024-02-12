@@ -1,6 +1,6 @@
 package com.gym.gym.daos.implementations;
 
-import com.gym.gym.daos.DAO;
+import com.gym.gym.daos.TrainingDAO;
 import com.gym.gym.entities.Training;
 import com.gym.gym.storages.DataStorageManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class TrainingDAOImpl implements DAO<Training> {
+public class TrainingDAOImpl implements TrainingDAO {
 
     DataStorageManager dataStorageManager;
 
@@ -41,11 +41,5 @@ public class TrainingDAOImpl implements DAO<Training> {
         dataStorageManager.write("training", trainingMap);
     }
 
-    @Override
-    public void delete(long id) {
-        Map<Long, Training> trainingMap = dataStorageManager.read("training");
-        trainingMap.remove(id);
-        dataStorageManager.write("training", trainingMap);
-    }
 }
 

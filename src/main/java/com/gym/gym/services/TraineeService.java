@@ -15,7 +15,7 @@ public interface TraineeService {
 
     void saveTrainee(Trainee trainee);
 
-    void updateTrainee(long id, TraineeDTO updatedTrainee);
+    Trainee updateTrainee(long id, TraineeDTO updatedTrainee);
 
     void deleteTrainee(long id);
 }

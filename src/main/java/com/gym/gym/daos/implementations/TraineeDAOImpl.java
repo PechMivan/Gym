@@ -1,6 +1,6 @@
 package com.gym.gym.daos.implementations;
 
-import com.gym.gym.daos.DAO;
+import com.gym.gym.daos.TraineeDAO;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.storages.DataStorageManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class TraineeDAOImpl implements DAO<Trainee> {
+public class TraineeDAOImpl implements TraineeDAO {
 
     DataStorageManager dataStorageManager;
 

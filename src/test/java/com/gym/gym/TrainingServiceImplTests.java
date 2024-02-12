@@ -12,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
  class TrainingServiceImplTests {
@@ -32,14 +34,31 @@ import java.util.Optional;
         // Arrange
         long id = 1L;
         Training training = new Training();
-        training.setTrainingId(id);
+        training.setId(id);
         when(trainingDAO.findById(id)).thenReturn(Optional.of(training));
 
         // Act
         Training result = trainingService.getTrainingById(id);
 
         // Assert
-        assertEquals(id, result.getTrainingId()); // Expecting the same training ID
+        assertEquals(id, result.getId()); // Expecting the same training ID
+    }
+
+    @Test
+    public void testGetAllTrainings() {
+       // Arrange
+       Training training1 = new Training();
+       Training training2 = new Training();
+
+       when(trainingDAO.findAll()).thenReturn(Arrays.asList(training1, training2));
+
+       // Act
+       List<Training> result = trainingService.getAllTrainings();
+
+       // Assert
+       assertEquals(2, result.size());
+       assertEquals(training1, result.get(0));
+       assertEquals(training2, result.get(1));
     }
 
     @Test

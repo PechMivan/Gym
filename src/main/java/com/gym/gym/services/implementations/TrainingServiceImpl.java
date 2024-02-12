@@ -1,12 +1,15 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.daos.implementations.TrainingDAOImpl;
+import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
 import com.gym.gym.services.TrainingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class TrainingServiceImpl implements TrainingService {
@@ -23,6 +26,11 @@ public class TrainingServiceImpl implements TrainingService {
     public Training getTrainingById(long id) {
         return trainingDAO.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Trainer doesn't exist with id: " + id));
+    }
+
+    @Override
+    public List<Training> getAllTrainings() {
+        return trainingDAO.findAll();
     }
 
     @Override

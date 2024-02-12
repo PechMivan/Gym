@@ -16,7 +16,6 @@ import java.util.*;
 
 @Component
 public class TraineeServiceImpl implements TraineeService {
-
     long idCounter = 0;
     Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
     Random random = new Random();
@@ -28,6 +27,7 @@ public class TraineeServiceImpl implements TraineeService {
         this.traineeDAO = traineeDAO;
     }
 
+    //TODO: Implement Mapper and return a DTO for this method and getAll.
     @Override
     public Trainee getTraineeById(long id) {
         return traineeDAO.findById(id)
@@ -53,7 +53,7 @@ public class TraineeServiceImpl implements TraineeService {
                 .isActive(traineeData.isActive())
                 .build();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 
         Date newDate;
         try {
@@ -80,7 +80,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public void updateTrainee(long id, TraineeDTO traineeData) {
+    public Trainee updateTrainee(long id, TraineeDTO traineeData) {
         Trainee existingTrainee = getTraineeById(id);
 
         User updatedUser = User.builder()
@@ -91,7 +91,7 @@ public class TraineeServiceImpl implements TraineeService {
                 .isActive(traineeData.isActive())
                 .build();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 
         Date updatedDate;
         try {
@@ -109,6 +109,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         saveTrainee(updatedTrainee);
         logger.info("User of type Trainee successfully updated.");
+        return updatedTrainee;
     }
 
     @Override

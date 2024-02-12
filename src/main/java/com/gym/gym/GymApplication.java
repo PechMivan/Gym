@@ -127,8 +127,6 @@ public class GymApplication {
 		System.out.println("Finding trainer with id (2):");
 		Trainer trainer = trainerService.getTrainerById(2L);
 		System.out.println(trainer.toString());
-		System.out.println("Deleting trainer with id (2)...");
-		trainerService.deleteTrainer(2L);
 
 		System.out.println("Setting up a new Trainer instance...");
 		TrainerDTO updateTrainer = TrainerDTO.builder()

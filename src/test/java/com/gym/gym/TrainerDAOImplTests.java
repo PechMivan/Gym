@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
         // Arrange
         long id = 1L;
         Trainer trainer = new Trainer();
-        trainer.setUserId(id);
+        trainer.setId(id);
 
         Map<Long, Object> trainerMap = new HashMap<>();
         trainerMap.put(id, trainer);
@@ -52,10 +52,10 @@ import static org.mockito.Mockito.*;
      void getAllTrainers() {
         // Arrange
         Trainer trainer1 = new Trainer();
-        trainer1.setUserId(1L);
+        trainer1.setId(1L);
 
         Trainer trainer2 = new Trainer();
-        trainer2.setUserId(2L);
+        trainer2.setId(2L);
 
         Map<Long, Object> trainerMap = new HashMap<>();
         trainerMap.put(1L, trainer1);
@@ -71,7 +71,7 @@ import static org.mockito.Mockito.*;
      void saveTrainer() {
         // Arrange
         Trainer trainer = new Trainer();
-        trainer.setUserId(1L);
+        trainer.setId(1L);
 
         Map<Long, Object> trainerMap = new HashMap<>();
 
@@ -83,25 +83,5 @@ import static org.mockito.Mockito.*;
         // Assert
         verify(dataStorageManager, times(1)).write("trainer", trainerMap);
         assertEquals(1, trainerMap.size());
-    }
-
-    @Test
-     void deleteTrainer() {
-        // Arrange
-        long id = 1L;
-        Trainer trainer = new Trainer();
-        trainer.setUserId(id);
-
-        Map<Long, Object> trainerMap = new HashMap<>();
-        trainerMap.put(id, trainer);
-
-        when(dataStorageManager.read("trainer")).thenReturn(trainerMap);
-
-        // Act
-        trainerDAO.delete(id);
-
-        // Assert
-        verify(dataStorageManager, times(1)).write("trainer", trainerMap);
-        assertEquals(0, trainerMap.size());
     }
 }

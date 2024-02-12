@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.gym.gym.daos.implementations.TraineeDAOImpl;
+import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
+import com.gym.gym.entities.User;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +36,7 @@ import java.util.Optional;
         // Arrange
         long id = 1L;
         Trainee trainee = new Trainee();
-        trainee.setUserId(id);
+        trainee.setId(id);
 
         when(traineeDAO.findById(id)).thenReturn(Optional.of(trainee));
 
@@ -73,35 +75,47 @@ import java.util.Optional;
     }
 
     @Test
-     void createTrainee() {
-        // Arrange
-        Trainee trainee = new Trainee();
-        trainee.setFirstName("John");
-        trainee.setLastName("Doe");
+    public void createTrainee() {
+       // Arrange
+       TraineeDTO traineeDTO = new TraineeDTO();
+       traineeDTO.setFirstName("John");
+       traineeDTO.setLastName("Doe");
+       traineeDTO.setDateOfBirth("01-01-1990");
+       traineeDTO.setAddress("123 Street");
+       traineeDTO.setActive(true);
 
-        when(traineeService.getAllTrainees()).thenReturn(new ArrayList<>());
+       // Act
+       Trainee createdTrainee = traineeService.createTrainee(traineeDTO);
 
-        // Act
-        Trainee result = traineeService.createTrainee(trainee);
-
-        // Assert
-        assertNotNull(result.getUsername());
-        assertNotNull(result.getPassword());
-        verify(traineeDAO, times(1)).save(trainee);
+       // Assert
+       assertEquals("John", createdTrainee.getUser().getFirstName());
+       assertEquals("Doe", createdTrainee.getUser().getLastName());
+       assertEquals("John.Doe", createdTrainee.getUser().getUsername());
+       assertEquals("123 Street", createdTrainee.getAddress());
+       assertTrue(createdTrainee.getUser().isActive());
+       verify(traineeDAO, times(1)).save(any(Trainee.class));
     }
 
     @Test
      void createUsername() {
         // Arrange
+        User user1 = User.builder()
+                         .firstName("John")
+                         .lastName("Doe")
+                         .username("John.Doe")
+                         .build();
+
+       User user2 = User.builder()
+                        .firstName("John")
+                        .lastName("Doe")
+                        .username("John.Doe1")
+                        .build();
+
         Trainee trainee1 = new Trainee();
-        trainee1.setFirstName("John");
-        trainee1.setLastName("Doe");
-        trainee1.setUsername("John.Doe");
+        trainee1.setUser(user1);
 
         Trainee trainee2 = new Trainee();
-        trainee2.setFirstName("John");
-        trainee2.setLastName("Doe");
-        trainee2.setUsername("John.Doe1");
+        trainee2.setUser(user2);
 
         List<Trainee> existingTrainees = new ArrayList<>();
         existingTrainees.add(trainee1);
@@ -125,23 +139,32 @@ import java.util.Optional;
     }
 
     @Test
-     void updateTrainee() {
-        // Arrange
-        long id = 1L;
-        Trainee existingTrainee = new Trainee();
-        existingTrainee.setUserId(id);
+    public void UpdateTrainee(){
+       // Arrange
+       long id = 1L;
+       TraineeDTO traineeDTO = new TraineeDTO();
+       traineeDTO.setFirstName("John");
+       traineeDTO.setLastName("Doe");
+       traineeDTO.setDateOfBirth("01-01-1990");
+       traineeDTO.setAddress("123 Street");
+       traineeDTO.setActive(true);
 
-        Trainee updatedTrainee = new Trainee();
-        updatedTrainee.setFirstName("Updated");
+       Trainee existingTrainee = new Trainee();
+       existingTrainee.setId(id);
+       existingTrainee.setUser(new User());
 
-        when(traineeDAO.findById(id)).thenReturn(Optional.of(existingTrainee));
+       when(traineeDAO.findById(id)).thenReturn(Optional.of(existingTrainee));
 
-        // Act
-        traineeService.updateTrainee(id, updatedTrainee);
+       // Act
+       Trainee result = traineeService.updateTrainee(id, traineeDTO);
 
-        // Assert
-        assertEquals("Updated", existingTrainee.getFirstName()); // Expecting the first name to be updated
-        verify(traineeDAO, times(1)).save(existingTrainee); // Expecting save method to be called
+       // Assert
+       verify(traineeDAO, times(1)).findById(id);
+       verify(traineeDAO, times(1)).save(any(Trainee.class));
+       assertEquals(traineeDTO.getFirstName(), result.getUser().getFirstName());
+       assertEquals(traineeDTO.getLastName(), result.getUser().getLastName());
+       assertEquals(traineeDTO.getAddress(), result.getAddress());
+       assertTrue(result.getUser().isActive());
     }
 
     @Test

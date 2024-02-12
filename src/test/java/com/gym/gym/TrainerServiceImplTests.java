@@ -1,18 +1,18 @@
 package com.gym.gym;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.gym.gym.daos.implementations.TrainerDAOImpl;
+import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.entities.Trainer;
+import com.gym.gym.entities.TrainingType;
+import com.gym.gym.entities.User;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ import java.util.Optional;
         // Arrange
         long id = 1L;
         Trainer trainer = new Trainer();
-        trainer.setUserId(id);
+        trainer.setId(id);
 
         when(trainerDAO.findById(id)).thenReturn(Optional.of(trainer));
 
@@ -75,35 +75,47 @@ import java.util.Optional;
     }
 
     @Test
-     void createTrainer() {
-        // Arrange
-        Trainer trainer = new Trainer();
-        trainer.setFirstName("John");
-        trainer.setLastName("Doe");
+    public void createTrainer() {
+       // Arrange
+       TrainerDTO trainerDTO = new TrainerDTO();
+       trainerDTO.setFirstName("John");
+       trainerDTO.setLastName("Doe");
+       trainerDTO.setSpecialization("Yoga");
+       trainerDTO.setActive(true);
 
-        when(trainerService.getAllTrainers()).thenReturn(new ArrayList<>());
+       // Act
+       Trainer result = trainerService.createTrainer(trainerDTO);
 
-        // Act
-        Trainer result = trainerService.createTrainer(trainer);
-
-        // Assert
-        assertNotNull(result.getUsername());
-        assertNotNull(result.getPassword());
-        verify(trainerDAO, times(1)).save(trainer);
+       // Assert
+       assertNotNull(result);
+       assertNotNull(result.getUser());
+       assertEquals("John", result.getUser().getFirstName());
+       assertEquals("Doe", result.getUser().getLastName());
+       assertTrue(result.getUser().isActive());
+       assertNotNull(result.getSpecialization());
+       assertEquals("Yoga", result.getSpecialization().getTrainingTypeName());
     }
 
     @Test
      void createUsername() {
         // Arrange
+        User user1 = User.builder()
+                         .firstName("John")
+                         .lastName("Doe")
+                         .username("John.Doe")
+                         .build();
+
+        User user2 = User.builder()
+                         .firstName("John")
+                         .lastName("Doe")
+                         .username("John.Doe1")
+                         .build();
+
         Trainer trainer1 = new Trainer();
-        trainer1.setFirstName("John");
-        trainer1.setLastName("Doe");
-        trainer1.setUsername("John.Doe");
+        trainer1.setUser(user1);
 
         Trainer trainer2 = new Trainer();
-        trainer2.setFirstName("John");
-        trainer2.setLastName("Doe");
-        trainer2.setUsername("John.Doe1");
+        trainer2.setUser(user2);
 
         List<Trainer> existingTrainers = new ArrayList<>();
         existingTrainers.add(trainer1);
@@ -126,34 +138,38 @@ import java.util.Optional;
     }
 
     @Test
-     void updateTrainer() {
-        // Arrange
-        long id = 1L;
-        Trainer existingTrainer = new Trainer();
-        existingTrainer.setUserId(id);
+    public void updateTrainer() {
+       // Arrange
 
-        Trainer updatedTrainer = new Trainer();
-        updatedTrainer.setFirstName("Updated");
+       long id = 1L;
+       TrainingType trainingType = TrainingType.builder()
+                                               .trainingTypeName("Yoga")
+                                               .build();
 
-        when(trainerDAO.findById(id)).thenReturn(Optional.of(existingTrainer));
+       Trainer existingTrainer = new Trainer();
+       existingTrainer.setId(id);
+       existingTrainer.setUser(new User());
+       existingTrainer.getUser().setUsername("oldusername");
+       existingTrainer.getUser().setPassword("oldpassword");
+       existingTrainer.setSpecialization(trainingType);
 
-        // Act
-        trainerService.updateTrainer(id, updatedTrainer);
+       TrainerDTO trainerDTO = new TrainerDTO();
+       trainerDTO.setFirstName("John");
+       trainerDTO.setLastName("Doe");
+       trainerDTO.setSpecialization("Yoga");
+       trainerDTO.setActive(true);
 
-        // Assert
-        assertEquals("Updated", existingTrainer.getFirstName()); // Expecting the first name to be updated
-        verify(trainerDAO, times(1)).save(existingTrainer); // Expecting save method to be called
-    }
+       when(trainerDAO.findById(id)).thenReturn(Optional.of(existingTrainer));
 
-    @Test
-     void deleteTrainer() {
-        // Arrange
-        long id = 1L;
+       // Act
+       Trainer result = trainerService.updateTrainer(1L, trainerDTO);
 
-        // Act
-        trainerService.deleteTrainer(id);
-
-        // Assert
-        verify(trainerDAO, times(1)).delete(id); // Expecting delete method to be called with given id
+       // Assert
+       assertEquals("John", result.getUser().getFirstName());
+       assertEquals("Doe", result.getUser().getLastName());
+       assertEquals("oldusername", result.getUser().getUsername());
+       assertEquals("oldpassword", result.getUser().getPassword());
+       assertTrue(result.getUser().isActive());
+       assertEquals("Yoga", result.getSpecialization().getTrainingTypeName());
     }
 }

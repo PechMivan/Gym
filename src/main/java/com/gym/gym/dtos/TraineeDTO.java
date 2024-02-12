@@ -1,10 +1,14 @@
 package com.gym.gym.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TraineeDTO {
     private String firstName;
     private String lastName;

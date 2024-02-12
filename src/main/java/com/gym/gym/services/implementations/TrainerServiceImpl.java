@@ -27,6 +27,7 @@ public class TrainerServiceImpl implements TrainerService {
         this.trainerDAO = trainerDAO;
     }
 
+    //TODO: Implement Mapper and return a DTO for this method and getAll.
     @Override
     public Trainer getTrainerById(long id) {
         return trainerDAO.findById(id)
@@ -72,7 +73,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public void updateTrainer(long id, TrainerDTO trainerData) {
+    public Trainer updateTrainer(long id, TrainerDTO trainerData) {
         Trainer existingTrainer = getTrainerById(id);
 
         User updatedUser = User.builder()
@@ -95,12 +96,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         saveTrainer(updatedTrainer);
         logger.info("User of type Trainer successfully updated.");
-    }
-
-    @Override
-    public void deleteTrainer(long id) {
-        trainerDAO.delete(id);
-        logger.info("User of type Trainee successfully deleted.");
+        return updatedTrainer;
     }
 
     public String createUsername(String firstname, String lastname){
