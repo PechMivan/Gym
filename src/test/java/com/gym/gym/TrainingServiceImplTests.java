@@ -45,7 +45,7 @@ import java.util.Optional;
     }
 
     @Test
-    public void testGetAllTrainings() {
+    void testGetAllTrainings() {
        // Arrange
        Training training1 = new Training();
        Training training2 = new Training();

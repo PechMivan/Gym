@@ -34,5 +34,4 @@ public class Trainee implements Serializable {
 
     @ManyToMany(mappedBy = "trainees")
     List<Trainer> trainers = new ArrayList<>();
-
 }

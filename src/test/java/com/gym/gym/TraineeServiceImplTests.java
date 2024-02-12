@@ -75,7 +75,7 @@ import java.util.Optional;
     }
 
     @Test
-    public void createTrainee() {
+    void createTrainee() {
        // Arrange
        TraineeDTO traineeDTO = new TraineeDTO();
        traineeDTO.setFirstName("John");
@@ -139,7 +139,7 @@ import java.util.Optional;
     }
 
     @Test
-    public void UpdateTrainee(){
+    void UpdateTrainee(){
        // Arrange
        long id = 1L;
        TraineeDTO traineeDTO = new TraineeDTO();

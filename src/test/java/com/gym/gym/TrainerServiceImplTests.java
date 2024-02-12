@@ -75,7 +75,7 @@ import java.util.Optional;
     }
 
     @Test
-    public void createTrainer() {
+    void createTrainer() {
        // Arrange
        TrainerDTO trainerDTO = new TrainerDTO();
        trainerDTO.setFirstName("John");
@@ -131,14 +131,14 @@ import java.util.Optional;
     }
 
     @Test
-     void createPassword() {
+    void createPassword() {
         // Act and Assert
         String password = trainerService.createPassword();
         assertEquals(10, password.length()); // Expecting a password of length 10
     }
 
     @Test
-    public void updateTrainer() {
+    void updateTrainer() {
        // Arrange
 
        long id = 1L;
