@@ -28,11 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         // Arrange
         Map<Long, Training> testData = new HashMap<>();
         Training training = Training.builder()
-                        .trainingId(1L)
-                        .traineeId(1L)
-                        .trainerId(1L)
+                        .id(1L)
                         .trainingName("Super-Cardio")
-                        .trainingType(TrainingType.CARDIO)
                         .trainingDate(new Date())
                         .trainingDuration(10)
                         .build();

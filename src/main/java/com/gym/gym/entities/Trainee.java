@@ -1,30 +1,38 @@
 package com.gym.gym.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-@SuperBuilder
+@AllArgsConstructor
 @SuppressWarnings("unused")
-public class Trainee extends User {
-    private long userId;
+@Entity
+public class Trainee implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
     private Date dateOfBirth;
+
+    @Column(length = 100)
     private String address;
 
-    @Override
-    public String toString() {
-        return super.toString() + "Trainee{" +
-                "userId=" + userId +
-                ", dateOfBirth=" + dateOfBirth +
-                ", address='" + address + '\'' +
-                '}';
-    }
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    @ManyToMany(mappedBy = "trainees")
+    List<Trainer> trainers = new ArrayList<>();
+
 }

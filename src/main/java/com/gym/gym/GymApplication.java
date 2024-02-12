@@ -1,9 +1,10 @@
 package com.gym.gym;
 
+import com.gym.gym.dtos.TraineeDTO;
+import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
-import com.gym.gym.entities.TrainingType;
 import com.gym.gym.services.TraineeService;
 import com.gym.gym.services.TrainerService;
 import com.gym.gym.services.TrainingService;
@@ -13,7 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootApplication
 public class GymApplication {
@@ -43,35 +43,26 @@ public class GymApplication {
 	}
 
 	public static void callTraineeService(){
-		Trainee traineeTest1 = Trainee.builder()
+		TraineeDTO traineeTest1 = TraineeDTO.builder()
 				.firstName("Mario")
-				.lastName("Pech")
-				.address("Street 20")
-				.username("Mapech")
-				.password("pass")
-				.dateOfBirth(new Date())
-				.isActive(true)
-				.userId(1L)
+				.lastName("Perez")
+				.isActive(false)
+				.dateOfBirth("20-10-1998")
+				.address("Street 20, Merida")
 				.build();
-		Trainee traineeTest2 = Trainee.builder()
+		TraineeDTO traineeTest2 = TraineeDTO.builder()
 				.firstName("Mario")
-				.lastName("Pech")
-				.address("Street 20")
-				.username("user")
-				.password("pass")
-				.dateOfBirth(new Date())
+				.lastName("Lopez")
 				.isActive(true)
-				.userId(2L)
+				.dateOfBirth("20-12-2000")
+				.address("Street 20, Merida")
 				.build();
-		Trainee traineeTest3 = Trainee.builder()
+		TraineeDTO traineeTest3 = TraineeDTO.builder()
 				.firstName("Mario")
-				.lastName("Pech")
+				.lastName("Perez")
+				.isActive(false)
+				.dateOfBirth("17-09-2005")
 				.address("Street 20")
-				.username("user")
-				.password("pass")
-				.dateOfBirth(new Date())
-				.isActive(true)
-				.userId(3L)
 				.build();
 
 		System.out.println("Creating 3 trainees...");
@@ -89,49 +80,39 @@ public class GymApplication {
 		traineeService.deleteTrainee(2L);
 
 		System.out.println("Setting up a new Trainee instance...");
-		Trainee UpdatedTrainee = Trainee.builder()
-				.lastName("testLastname")
-				.username("user")
-				.password("pass")
-				.dateOfBirth(new Date())
+		TraineeDTO updatedTrainee = TraineeDTO.builder()
+				.firstName("Mario")
+				.lastName("Test")
 				.isActive(true)
-				.userId(1L)
+				.dateOfBirth("10-10-1910")
+				.address("Street 20, Mexico")
 				.build();
 
 		System.out.println("Updating Trainee with id (1)...");
-		traineeService.updateTrainee(1L, UpdatedTrainee);
+		traineeService.updateTrainee(1L, updatedTrainee);
 		trainee = traineeService.getTraineeById(1L);
 		System.out.println("Updated trainee with id (1): ");
 		System.out.println(trainee.toString());
 	}
 
 	public static void callTrainerService(){
-		Trainer trainerTest1 = Trainer.builder()
-				.firstName("mario")
-				.lastName("pech")
-				.username("Mapech")
-				.password("pass")
-				.specialization(TrainingType.YOGA)
+		TrainerDTO trainerTest1 = TrainerDTO.builder()
+				.firstName("Mario")
+				.lastName("Pech")
+				.specialization("Cardio")
 				.isActive(true)
-				.userId(1L)
 				.build();
-		Trainer trainerTest2 = Trainer.builder()
-				.firstName("mario")
-				.lastName("perez")
-				.username("anotherpECH")
-				.password("pass")
-				.specialization(TrainingType.HIIT)
-				.isActive(false)
-				.userId(2L)
+		TrainerDTO trainerTest2 = TrainerDTO.builder()
+				.firstName("Mario")
+				.lastName("Pech")
+				.specialization("HIIT")
+				.isActive(true)
 				.build();
-		Trainer trainerTest3 = Trainer.builder()
-				.firstName("mario")
-				.lastName("pech")
-				.username("pECH")
-				.password("asdas")
-				.specialization(TrainingType.CARDIO)
-				.isActive(false)
-				.userId(3L)
+		TrainerDTO trainerTest3 = TrainerDTO.builder()
+				.firstName("Mario")
+				.lastName("Pech")
+				.specialization("STRENGTH")
+				.isActive(true)
 				.build();
 
 		System.out.println("Creating 3 trainers...");
@@ -150,14 +131,11 @@ public class GymApplication {
 		trainerService.deleteTrainer(2L);
 
 		System.out.println("Setting up a new Trainer instance...");
-		Trainer updateTrainer = Trainer.builder()
-				.firstName("Mario")
-				.lastName("Pech")
-				.username("usernameTest")
-				.password("usernamePass")
-				.specialization(TrainingType.SPINNING)
+		TrainerDTO updateTrainer = TrainerDTO.builder()
+				.firstName("Marius")
+				.lastName("Pechen")
+				.specialization("Cardio")
 				.isActive(false)
-				.userId(1L)
 				.build();
 
 		System.out.println("Updating trainer with id (1)...");
@@ -169,20 +147,14 @@ public class GymApplication {
 
 	public static void callTrainingService(){
 		Training trainingTest1 = Training.builder()
-				.trainingId(1L)
-				.traineeId(1L)
-				.trainerId(1L)
+				.id(1L)
 				.trainingName("Super-Cardio")
-				.trainingType(TrainingType.CARDIO)
 				.trainingDate(new Date())
 				.trainingDuration(10)
 				.build();
 		Training trainingTest2 = Training.builder()
-				.trainingId(2L)
-				.traineeId(1L)
-				.trainerId(1L)
+				.id(2L)
 				.trainingName("Full-Strenght")
-				.trainingType(TrainingType.STRENGTH)
 				.trainingDate(new Date())
 				.trainingDuration(15)
 				.build();
@@ -199,6 +171,4 @@ public class GymApplication {
 		training = trainingService.getTrainingById(2L);
 		System.out.println(training.toString());
 	}
-
-
 }

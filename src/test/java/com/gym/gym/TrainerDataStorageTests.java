@@ -27,13 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         // Arrange
         Map<Long, Trainer> testData = new HashMap<>();
         Trainer newTrainer = Trainer.builder()
-                .firstName("Mario")
-                .lastName("Pech")
-                .username("Mapech")
-                .password("pass")
-                .specialization(TrainingType.YOGA)
-                .isActive(true)
-                .userId(1L)
+                .id(1L)
                 .build();
 
         testData.put(1L, newTrainer);

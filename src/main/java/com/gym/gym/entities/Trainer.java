@@ -1,26 +1,36 @@
 package com.gym.gym.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-@SuperBuilder
-public class Trainer extends User {
-    private long userId;
+@AllArgsConstructor
+@Entity
+public class Trainer implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @ManyToOne
+    @JoinColumn(name="specialization", nullable=false)
     private TrainingType specialization;
 
-    @Override
-    public String toString() {
-        return super.toString() + "Trainer{" +
-                "userId=" + userId +
-                ", specialization=" + specialization +
-                '}';
-    }
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    @ManyToMany
+    @JoinTable(name="trainer_trainee",
+            joinColumns=@JoinColumn(name="trainer_id"),
+            inverseJoinColumns=@JoinColumn(name="trainee_id"))
+    List<com.gym.gym.entities.Trainee> trainees = new ArrayList<>();
 }
+

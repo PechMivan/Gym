@@ -129,7 +129,6 @@ import static org.mockito.Mockito.*;
                 .password("pass")
                 .dateOfBirth(new Date())
                 .isActive(true)
-                .userId(1L)
                 .build();
         trainee.setUserId(id);
 

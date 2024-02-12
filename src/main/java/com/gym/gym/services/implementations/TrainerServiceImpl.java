@@ -1,22 +1,23 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.daos.implementations.TrainerDAOImpl;
+import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.entities.Trainer;
+import com.gym.gym.entities.TrainingType;
+import com.gym.gym.entities.User;
 import com.gym.gym.services.TrainerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.beans.PropertyDescriptor;
 import java.util.*;
 
-@Component
+@Service
+@SuppressWarnings("unused")
 public class TrainerServiceImpl implements TrainerService {
 
+    long idCounter = 0;
     Logger logger = LoggerFactory.getLogger(TrainerServiceImpl.class);
     Random random = new Random();
     private TrainerDAOImpl trainerDAO;
@@ -38,12 +39,31 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public Trainer createTrainer(Trainer trainer){
-        trainer.setUsername(createUsername(trainer.getFirstName(), trainer.getLastName()));
-        trainer.setPassword(createPassword());
-        saveTrainer(trainer);
+    public Trainer createTrainer(TrainerDTO trainerData){
+        String newUsername = createUsername(trainerData.getFirstName(), trainerData.getLastName());
+        String newPassword = createPassword();
+
+        User newUser = User.builder()
+                           .firstName(trainerData.getFirstName())
+                           .lastName(trainerData.getLastName())
+                           .username(newUsername)
+                           .password(newPassword)
+                           .isActive(trainerData.isActive())
+                           .build();
+
+        TrainingType newTrainingType = TrainingType.builder()
+                                                   .trainingTypeName(trainerData.getSpecialization())
+                                                   .build();
+
+        Trainer newTrainer = Trainer.builder()
+                                    .id(++idCounter)
+                                    .user(newUser)
+                                    .specialization(newTrainingType)
+                                    .build();
+
+        saveTrainer(newTrainer);
         logger.info("User of type Trainer successfully created.");
-        return trainer;
+        return newTrainer;
     }
 
     @Override
@@ -52,13 +72,28 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public void updateTrainer(long id, Trainer updatedTrainer) {
+    public void updateTrainer(long id, TrainerDTO trainerData) {
         Trainer existingTrainer = getTrainerById(id);
 
-        //Copies properties that are NOT NULL.
-        BeanUtils.copyProperties(updatedTrainer, existingTrainer, getNullPropertyNames(updatedTrainer));
+        User updatedUser = User.builder()
+                .firstName(trainerData.getFirstName())
+                .lastName(trainerData.getLastName())
+                .username(existingTrainer.getUser().getUsername())
+                .password(existingTrainer.getUser().getPassword())
+                .isActive(trainerData.isActive())
+                .build();
 
-        saveTrainer(existingTrainer);
+        TrainingType updatedTrainingType = TrainingType.builder()
+                .trainingTypeName(trainerData.getSpecialization())
+                .build();
+
+        Trainer updatedTrainer = Trainer.builder()
+                .id(existingTrainer.getId())
+                .user(updatedUser)
+                .specialization(updatedTrainingType)
+                .build();
+
+        saveTrainer(updatedTrainer);
         logger.info("User of type Trainer successfully updated.");
     }
 
@@ -76,7 +111,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         //Finds all usernames with the same username (ignoring suffix) and counts them.
         long repeatedUsernameSize = getAllTrainers().stream()
-                .filter(trainee -> trainee.getUsername().toLowerCase().contains(username.toString().toLowerCase()))
+                .filter(trainee -> trainee.getUser().getUsername().toLowerCase().contains(username.toString().toLowerCase()))
                 .count();
 
         if(repeatedUsernameSize > 0){
@@ -103,17 +138,4 @@ public class TrainerServiceImpl implements TrainerService {
         return password.toString();
     }
 
-    /* Finds and returns all fields names with null values from an object */
-    private String[] getNullPropertyNames(Object source) {
-        BeanWrapper src = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = src.getPropertyDescriptors();
-
-        Set<String> emptyNames = new HashSet<>();
-        for (PropertyDescriptor pd : pds) {
-            Object srcValue = src.getPropertyValue(pd.getName());
-            if (srcValue == null) emptyNames.add(pd.getName());
-        }
-        String[] result = new String[emptyNames.size()];
-        return emptyNames.toArray(result);
-    }
 }

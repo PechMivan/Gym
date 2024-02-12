@@ -1,5 +1,6 @@
 package com.gym.gym.services;
 
+import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
 
 import java.util.List;
@@ -10,11 +11,11 @@ public interface TraineeService {
 
     List<Trainee> getAllTrainees();
 
-    Trainee createTrainee(Trainee trainee);
+    Trainee createTrainee(TraineeDTO traineeData);
 
     void saveTrainee(Trainee trainee);
 
-    void updateTrainee(long id, Trainee updatedTrainee);
+    void updateTrainee(long id, TraineeDTO updatedTrainee);
 
     void deleteTrainee(long id);
 }

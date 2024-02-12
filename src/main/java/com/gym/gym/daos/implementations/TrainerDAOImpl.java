@@ -37,7 +37,7 @@ public class TrainerDAOImpl implements DAO<Trainer> {
     @Override
     public void save(Trainer trainer) {
         Map<Long, Trainer> trainerMap = dataStorageManager.read("trainer");
-        trainerMap.put(trainer.getUserId(), trainer);
+        trainerMap.put(trainer.getId(), trainer);
         dataStorageManager.write("trainer", trainerMap);
     }
 

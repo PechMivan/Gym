@@ -1,22 +1,23 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.daos.implementations.TraineeDAOImpl;
+import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
+import com.gym.gym.entities.User;
 import com.gym.gym.services.TraineeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.beans.PropertyDescriptor;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Component
 public class TraineeServiceImpl implements TraineeService {
 
+    long idCounter = 0;
     Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
     Random random = new Random();
 
@@ -39,12 +40,38 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public Trainee createTrainee(Trainee trainee){
-        trainee.setUsername(createUsername(trainee.getFirstName(), trainee.getLastName()));
-        trainee.setPassword(createPassword());
-        saveTrainee(trainee);
+    public Trainee createTrainee(TraineeDTO traineeData){
+
+        String newUsername = createUsername(traineeData.getFirstName(), traineeData.getLastName());
+        String newPassword = createPassword();
+
+        User newUser = User.builder()
+                .firstName(traineeData.getFirstName())
+                .lastName(traineeData.getLastName())
+                .username(newUsername)
+                .password(newPassword)
+                .isActive(traineeData.isActive())
+                .build();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+
+        Date newDate;
+        try {
+            newDate = formatter.parse(traineeData.getDateOfBirth());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        Trainee newTrainee = Trainee.builder()
+                .id(++idCounter)
+                .user(newUser)
+                .dateOfBirth(newDate)
+                .address(traineeData.getAddress())
+                .build();
+
+        saveTrainee(newTrainee);
         logger.info("User of type Trainee successfully created.");
-        return trainee;
+        return newTrainee;
     }
 
     @Override
@@ -53,12 +80,34 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public void updateTrainee(long id, Trainee updatedTrainee) {
+    public void updateTrainee(long id, TraineeDTO traineeData) {
         Trainee existingTrainee = getTraineeById(id);
 
-        BeanUtils.copyProperties(updatedTrainee, existingTrainee, getNullPropertyNames(updatedTrainee));
+        User updatedUser = User.builder()
+                .firstName(traineeData.getFirstName())
+                .lastName(traineeData.getLastName())
+                .username(existingTrainee.getUser().getUsername())
+                .password(existingTrainee.getUser().getPassword())
+                .isActive(traineeData.isActive())
+                .build();
 
-        saveTrainee(existingTrainee);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy", Locale.ENGLISH);
+
+        Date updatedDate;
+        try {
+            updatedDate = formatter.parse(traineeData.getDateOfBirth());
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        Trainee updatedTrainee = Trainee.builder()
+                .id(existingTrainee.getId())
+                .user(updatedUser)
+                .dateOfBirth(updatedDate)
+                .address(traineeData.getAddress())
+                .build();
+
+        saveTrainee(updatedTrainee);
         logger.info("User of type Trainee successfully updated.");
     }
 
@@ -76,7 +125,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         //Finds all usernames with the same username (ignoring suffix) and counts them.
         long repeatedUsernameSize = getAllTrainees().stream()
-                .filter(trainee -> trainee.getUsername().toLowerCase().contains(username.toString().toLowerCase()))
+                .filter(trainee -> trainee.getUser().getUsername().toLowerCase().contains(username.toString().toLowerCase()))
                 .count();
 
         if(repeatedUsernameSize > 0){
@@ -100,20 +149,5 @@ public class TraineeServiceImpl implements TraineeService {
         logger.info("Password successfully created.");
         return password.toString();
 
-    }
-
-
-    /* Finds and returns all fields names with null values from an object */
-    private String[] getNullPropertyNames(Object source) {
-        BeanWrapper src = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = src.getPropertyDescriptors();
-
-        Set<String> emptyNames = new HashSet<>();
-        for (PropertyDescriptor pd : pds) {
-            Object srcValue = src.getPropertyValue(pd.getName());
-            if (srcValue == null) emptyNames.add(pd.getName());
-        }
-        String[] result = new String[emptyNames.size()];
-        return emptyNames.toArray(result);
     }
 }
