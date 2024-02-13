@@ -19,6 +19,11 @@ public class TrainingTypeHibernateServiceImpl implements TrainingTypeHibernateSe
     }
 
     @Override
+    public TrainingType getTrainingTypeByName(String name){
+        return trainingTypeRepository.findByTrainingTypeName(name).orElse(null);
+    }
+
+    @Override
     public List<TrainingType> getAllTrainingTypes() {
         return (List<TrainingType>) trainingTypeRepository.findAll();
     }

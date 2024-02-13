@@ -44,7 +44,6 @@ public class TraineeHibernateServiceImpl implements TraineeService {
 
     @Override
     public Trainee createTrainee(TraineeDTO traineeData){
-
         User newUser = userHibernateService.createUser(traineeData.userDTO);
         Date newDate = createDate(traineeData.dateOfBirth);
 
