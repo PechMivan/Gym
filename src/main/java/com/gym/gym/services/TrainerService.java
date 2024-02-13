@@ -9,6 +9,8 @@ public interface TrainerService {
 
     Trainer getTrainerById(long id);
 
+    Trainer getTrainerByUsername(String username);
+
     List<Trainer> getAllTrainers();
 
     Trainer createTrainer(TrainerDTO trainerData);

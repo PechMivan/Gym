@@ -56,6 +56,10 @@ public class UserHibernateServiceImpl implements UserHibernateService {
     public User updateUser(UserDTO userData){
         User existingUser = getUserByUsername(userData.username);
 
+        if(existingUser == null){
+            return null;
+        }
+
         User updatedUser = User.builder()
                 .id(existingUser.getId())
                 .firstName(userData.firstname)

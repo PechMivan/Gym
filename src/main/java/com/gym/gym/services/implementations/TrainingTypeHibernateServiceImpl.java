@@ -4,9 +4,11 @@ import com.gym.gym.entities.TrainingType;
 import com.gym.gym.repositories.TrainingTypeRepository;
 import com.gym.gym.services.TrainingTypeHibernateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class TrainingTypeHibernateServiceImpl implements TrainingTypeHibernateService {
 
     @Autowired
