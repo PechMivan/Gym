@@ -27,6 +27,7 @@ public class TraineeHibernateServiceImpl implements TraineeService {
     private UserHibernateServiceImpl userHibernateService;
 
     //TODO: Implement Mapper and return a DTO for this method and getAll.
+    //TODO: Implement Authorization for the important methods.
     @Override
     public Trainee getTraineeById(long id) {
         return traineeRepository.findById(id).orElse(new Trainee());
