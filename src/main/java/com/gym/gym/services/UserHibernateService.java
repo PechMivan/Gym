@@ -6,15 +6,17 @@ import com.gym.gym.entities.User;
 import java.util.List;
 
 public interface UserHibernateService {
-    public List<User> getAllUsers();
-    public User getUserByUsername(String username);
-    public User createUser(UserDTO userData);
+    List<User> getAllUsers();
 
+    User getUserById(long id);
+
+    User getUserByUsername(String username);
+    User createUser(UserDTO userData);
     User updateUser(UserDTO userData);
-
-    public void saveUser(User user);
-    public String createPassword();
-    public String createUsername(String firstname, String lastname);
-    public boolean authenticateUser(String username, String password);
-    public void changePassword(String username, String oldPassword, String newPassword);
+    void saveUser(User user);
+    String createPassword();
+    String createUsername(String firstname, String lastname);
+    boolean authenticateUser(String username, String password);
+    boolean changePassword(String username, String oldPassword, String newPassword);
+    Boolean toggleActive(long id);
 }

@@ -25,8 +25,13 @@ public class UserHibernateServiceImpl implements UserHibernateService {
     }
 
     @Override
+    public User getUserById(long id){
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public User getUserByUsername(String username){
-        return userRepository.findByUsername(username).orElse(new User());
+        return userRepository.findByUsername(username).orElse(null);
     }
 
     @Override
@@ -116,13 +121,26 @@ public class UserHibernateServiceImpl implements UserHibernateService {
     }
 
     @Override
-    public void changePassword(String username, String oldPassword, String newPassword) {
+    public boolean changePassword(String username, String oldPassword, String newPassword) {
         if(!authenticateUser(username, oldPassword)){
-            return;
+            return false;
         }
-
         User existingUser = getUserByUsername(username);
         existingUser.setPassword(newPassword);
         saveUser(existingUser);
+        return true;
+    }
+
+    @Override
+    public Boolean toggleActive(long id){
+        User existingUser = getUserById(id);
+        if(existingUser == null){
+            return null;
+        }
+        // Toggles the state of active from true to false and viceversa.
+        boolean activeState = !existingUser.isActive();
+        existingUser.setActive(activeState);
+        saveUser(existingUser);
+        return activeState;
     }
 }

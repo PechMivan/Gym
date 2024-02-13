@@ -45,15 +45,7 @@ public class TraineeHibernateServiceImpl implements TraineeService {
     public Trainee createTrainee(TraineeDTO traineeData){
 
         User newUser = userHibernateService.createUser(traineeData.userDTO);
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-
-        Date newDate;
-        try {
-            newDate = formatter.parse(traineeData.dateOfBirth);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        Date newDate = createDate(traineeData.dateOfBirth);
 
         Trainee newTrainee = Trainee.builder()
                 .user(newUser)
@@ -76,16 +68,12 @@ public class TraineeHibernateServiceImpl implements TraineeService {
     public Trainee updateTrainee(long id, TraineeDTO traineeData) {
         Trainee existingTrainee = getTraineeById(id);
 
-        User updatedUser = userHibernateService.updateUser(traineeData.userDTO);
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-
-        Date updatedDate;
-        try {
-            updatedDate = formatter.parse(traineeData.dateOfBirth);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+        if(existingTrainee == null){
+            return null;
         }
+
+        User updatedUser = userHibernateService.updateUser(traineeData.userDTO);
+        Date updatedDate = createDate(traineeData.dateOfBirth);
 
         Trainee updatedTrainee = Trainee.builder()
                 .id(existingTrainee.getId())
@@ -105,5 +93,27 @@ public class TraineeHibernateServiceImpl implements TraineeService {
         logger.info("User of type Trainee successfully deleted.");
     }
 
+    @Transactional
+    public long deleteTraineeByUsername(String username){
+        return traineeRepository.deleteByUserUsername(username);
+    }
 
+    public Boolean toggleTraineeActive(long id){
+        return userHibernateService.toggleActive(id);
+    }
+
+    private Date createDate(String dateOfBirth){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
+        Date date;
+        try {
+            date = formatter.parse(dateOfBirth);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return date;
+    }
+
+    public boolean changePassword(String username, String oldPassword, String newPassword){
+        return userHibernateService.changePassword(username, oldPassword, newPassword);
+    }
 }
