@@ -41,19 +41,19 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer createTrainer(TrainerDTO trainerData){
-        String newUsername = createUsername(trainerData.getFirstName(), trainerData.getLastName());
+        String newUsername = createUsername(trainerData.userDTO.firstname, trainerData.userDTO.lastname);
         String newPassword = createPassword();
 
         User newUser = User.builder()
-                           .firstName(trainerData.getFirstName())
-                           .lastName(trainerData.getLastName())
+                           .firstName(trainerData.userDTO.firstname)
+                           .lastName(trainerData.userDTO.lastname)
                            .username(newUsername)
                            .password(newPassword)
-                           .isActive(trainerData.isActive())
+                           .isActive(trainerData.userDTO.isActive)
                            .build();
 
         TrainingType newTrainingType = TrainingType.builder()
-                                                   .trainingTypeName(trainerData.getSpecialization())
+                                                   .trainingTypeName(trainerData.specialization)
                                                    .build();
 
         Trainer newTrainer = Trainer.builder()
@@ -77,15 +77,15 @@ public class TrainerServiceImpl implements TrainerService {
         Trainer existingTrainer = getTrainerById(id);
 
         User updatedUser = User.builder()
-                .firstName(trainerData.getFirstName())
-                .lastName(trainerData.getLastName())
+                .firstName(trainerData.userDTO.firstname)
+                .lastName(trainerData.userDTO.lastname)
                 .username(existingTrainer.getUser().getUsername())
                 .password(existingTrainer.getUser().getPassword())
-                .isActive(trainerData.isActive())
+                .isActive(trainerData.userDTO.isActive)
                 .build();
 
         TrainingType updatedTrainingType = TrainingType.builder()
-                .trainingTypeName(trainerData.getSpecialization())
+                .trainingTypeName(trainerData.specialization)
                 .build();
 
         Trainer updatedTrainer = Trainer.builder()

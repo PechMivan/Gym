@@ -42,22 +42,22 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public Trainee createTrainee(TraineeDTO traineeData){
 
-        String newUsername = createUsername(traineeData.getFirstName(), traineeData.getLastName());
+        String newUsername = createUsername(traineeData.userDTO.firstname, traineeData.userDTO.lastname);
         String newPassword = createPassword();
 
         User newUser = User.builder()
-                .firstName(traineeData.getFirstName())
-                .lastName(traineeData.getLastName())
+                .firstName(traineeData.userDTO.firstname)
+                .lastName(traineeData.userDTO.lastname)
                 .username(newUsername)
                 .password(newPassword)
-                .isActive(traineeData.isActive())
+                .isActive(traineeData.userDTO.isActive)
                 .build();
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 
         Date newDate;
         try {
-            newDate = formatter.parse(traineeData.getDateOfBirth());
+            newDate = formatter.parse(traineeData.dateOfBirth);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -66,7 +66,7 @@ public class TraineeServiceImpl implements TraineeService {
                 .id(++idCounter)
                 .user(newUser)
                 .dateOfBirth(newDate)
-                .address(traineeData.getAddress())
+                .address(traineeData.address)
                 .build();
 
         saveTrainee(newTrainee);
@@ -84,18 +84,18 @@ public class TraineeServiceImpl implements TraineeService {
         Trainee existingTrainee = getTraineeById(id);
 
         User updatedUser = User.builder()
-                .firstName(traineeData.getFirstName())
-                .lastName(traineeData.getLastName())
+                .firstName(traineeData.userDTO.firstname)
+                .lastName(traineeData.userDTO.lastname)
                 .username(existingTrainee.getUser().getUsername())
                 .password(existingTrainee.getUser().getPassword())
-                .isActive(traineeData.isActive())
+                .isActive(traineeData.userDTO.isActive)
                 .build();
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
 
         Date updatedDate;
         try {
-            updatedDate = formatter.parse(traineeData.getDateOfBirth());
+            updatedDate = formatter.parse(traineeData.dateOfBirth);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -104,7 +104,7 @@ public class TraineeServiceImpl implements TraineeService {
                 .id(existingTrainee.getId())
                 .user(updatedUser)
                 .dateOfBirth(updatedDate)
-                .address(traineeData.getAddress())
+                .address(traineeData.address)
                 .build();
 
         saveTrainee(updatedTrainee);

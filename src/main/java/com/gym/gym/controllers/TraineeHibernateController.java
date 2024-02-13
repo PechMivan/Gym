@@ -4,6 +4,7 @@ import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.services.implementations.TraineeHibernateServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,12 @@ public class TraineeHibernateController {
     @GetMapping("{id}")
     public ResponseEntity< Trainee > getTraineeById(@PathVariable Long id){
         Trainee trainee = traineeHibernateService.getTraineeById(id);
+        return new ResponseEntity<>(trainee, HttpStatus.OK); // Status 200
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity< Trainee > getTraineeByUsername(@PathVariable String username){
+        Trainee trainee = traineeHibernateService.getTraineeByUsername(username);
         return new ResponseEntity<>(trainee, HttpStatus.OK); // Status 200
     }
 
