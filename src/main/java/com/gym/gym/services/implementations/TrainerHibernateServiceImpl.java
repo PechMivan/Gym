@@ -31,7 +31,6 @@ public class TrainerHibernateServiceImpl implements TrainerService {
         return trainerRepository.findById(id).orElse(null);
     }
 
-    @Override
     public Trainer getTrainerByUsername(String username){
         return trainerRepository.findByUserUsername(username).orElse(null);
     }
@@ -97,5 +96,12 @@ public class TrainerHibernateServiceImpl implements TrainerService {
         return updatedTrainer;
     }
 
+    public Boolean toggleTraineeActive(long id){
+        return userHibernateService.toggleActive(id);
+    }
+
+    public boolean changePassword(String username, String oldPassword, String newPassword){
+        return userHibernateService.changePassword(username, oldPassword, newPassword);
+    }
 
 }

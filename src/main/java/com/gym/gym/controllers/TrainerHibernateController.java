@@ -1,5 +1,6 @@
 package com.gym.gym.controllers;
 
+import com.gym.gym.dtos.PasswordChangeRequest;
 import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.services.implementations.TrainerHibernateServiceImpl;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/gym/trainers")
+@SuppressWarnings("unused")
 public class TrainerHibernateController {
 
     @Autowired
@@ -25,6 +27,16 @@ public class TrainerHibernateController {
             return new ResponseEntity<>(trainer, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<Trainer> getTraineeByUsername(@PathVariable String username){
+        Trainer trainer = trainerHibernateService.getTrainerByUsername(username);
+        if(trainer != null){
+            return new ResponseEntity<>(trainer, HttpStatus.OK); // Status 200
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Status 404
         }
     }
 
@@ -51,6 +63,26 @@ public class TrainerHibernateController {
             return new ResponseEntity<>(trainer, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("{id}/toggle")
+    public ResponseEntity<String> toggleTraineeActive(@PathVariable long id){
+        Boolean activeState = trainerHibernateService.toggleTraineeActive(id);
+        if(activeState == null){
+            return new ResponseEntity<>("User doesn't exist", HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>("Active status changed to: " + activeState, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/updatePassword")
+    public ResponseEntity<String> changePassword(@RequestBody PasswordChangeRequest data){
+        boolean passwordChanged = trainerHibernateService.changePassword(data.username, data.oldPassword, data.newPassword);
+        if(passwordChanged){
+            return new ResponseEntity<>("Password changed", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Password not changed", HttpStatus.UNAUTHORIZED);
         }
     }
 }
