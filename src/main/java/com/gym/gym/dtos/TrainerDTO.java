@@ -7,10 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrainerDTO {
-    private String firstName;
-    private String lastName;
-    private String username;
-    private String password;
-    private boolean isActive;
-    private String specialization;
+    public UserDTO userDTO;
+    public String specialization;
 }

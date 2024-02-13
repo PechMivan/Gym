@@ -1,5 +1,6 @@
 package com.gym.gym.dtos;
 
+import com.gym.gym.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -8,11 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TraineeDTO {
-    private String firstName;
-    private String lastName;
-    private String username;
-    private String password;
-    private boolean isActive;
-    private String dateOfBirth;
-    private String address;
+    public UserDTO userDTO;
+    public String dateOfBirth;
+    public String address;
 }
