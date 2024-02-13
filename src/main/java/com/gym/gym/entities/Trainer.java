@@ -23,7 +23,8 @@ public class Trainer implements Serializable {
     @JoinColumn(name="specialization", nullable=false)
     private TrainingType specialization;
 
-    @OneToOne
+    @NonNull
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

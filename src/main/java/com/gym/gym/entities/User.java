@@ -33,10 +33,4 @@ public class User implements Serializable {
     @Column(name="active", nullable = false)
     private boolean isActive;
 
-    @OneToOne(mappedBy = "user")
-    private com.gym.gym.entities.Trainer trainer;
-
-    @OneToOne(mappedBy = "user")
-    private com.gym.gym.entities.Trainer trainee;
-
 }

@@ -28,7 +28,7 @@ public class Trainee implements Serializable {
     @Column(length = 100)
     private String address;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
