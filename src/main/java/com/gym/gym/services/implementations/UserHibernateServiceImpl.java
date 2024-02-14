@@ -5,17 +5,23 @@ import com.gym.gym.entities.User;
 import com.gym.gym.repositories.UserRepository;
 import com.gym.gym.services.UserHibernateService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @Service
 public class UserHibernateServiceImpl implements UserHibernateService {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    Validator validator;
 
     Random random = new Random();
 
@@ -36,6 +42,7 @@ public class UserHibernateServiceImpl implements UserHibernateService {
 
     @Override
     public User createUser(UserDTO userData) {
+        validateData(userData);
         String newUsername = createUsername(userData.firstname, userData.lastname);
         String newPassword = createPassword();
 
@@ -54,11 +61,8 @@ public class UserHibernateServiceImpl implements UserHibernateService {
 
     @Override
     public User updateUser(UserDTO userData){
+        validateData(userData);
         User existingUser = getUserByUsername(userData.username);
-
-        if(existingUser == null){
-            return null;
-        }
 
         User updatedUser = User.builder()
                 .id(existingUser.getId())
@@ -126,6 +130,7 @@ public class UserHibernateServiceImpl implements UserHibernateService {
 
     @Override
     public boolean changePassword(String username, String oldPassword, String newPassword) {
+        validatePassword(newPassword);
         if(!authenticateUser(username, oldPassword)){
             return false;
         }
@@ -133,6 +138,13 @@ public class UserHibernateServiceImpl implements UserHibernateService {
         existingUser.setPassword(newPassword);
         saveUser(existingUser);
         return true;
+    }
+
+    @
+    public void validatePassword(String newPassword){
+        if(newPassword == null || newPassword.isEmpty()){
+            throw new
+        }
     }
 
     @Override
@@ -146,5 +158,18 @@ public class UserHibernateServiceImpl implements UserHibernateService {
         existingUser.setActive(activeState);
         saveUser(existingUser);
         return activeState;
+    }
+
+    public void validateData(UserDTO userData){
+        Set<ConstraintViolation<UserDTO>> violations = validator.validate(userData);
+
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<UserDTO> constraintViolation : violations) {
+                sb.append(constraintViolation.getMessage());
+            }
+
+            throw new ConstraintViolationException("Error occurred: " + sb.toString(), violations);
+        }
     }
 }

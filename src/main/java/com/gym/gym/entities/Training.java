@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -36,6 +38,7 @@ public class Training implements Serializable {
 
     @ManyToOne
     @JoinColumn(name="traineeId", nullable=false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private com.gym.gym.entities.Trainee trainee;
 
     @ManyToOne

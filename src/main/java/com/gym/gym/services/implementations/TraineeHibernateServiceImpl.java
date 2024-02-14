@@ -6,6 +6,9 @@ import com.gym.gym.entities.User;
 import com.gym.gym.repositories.TraineeRepository;
 import com.gym.gym.services.TraineeHibernateService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @Service
 public class TraineeHibernateServiceImpl implements TraineeHibernateService {
@@ -23,6 +27,8 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
 
     @Autowired
     private TraineeRepository traineeRepository;
+    @Autowired
+    Validator validator;
     @Autowired
     private UserHibernateServiceImpl userHibernateService;
 
@@ -44,6 +50,7 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
 
     @Override
     public Trainee createTrainee(TraineeDTO traineeData){
+        validateData(traineeData);
         User newUser = userHibernateService.createUser(traineeData.userDTO);
         Date newDate = createDate(traineeData.dateOfBirth);
 
@@ -67,10 +74,6 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
     @Override
     public Trainee updateTrainee(long id, TraineeDTO traineeData) {
         Trainee existingTrainee = getTraineeById(id);
-
-        if(existingTrainee == null){
-            return null;
-        }
 
         User updatedUser = userHibernateService.updateUser(traineeData.userDTO);
         Date updatedDate = createDate(traineeData.dateOfBirth);
@@ -119,5 +122,18 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
     @Override
     public boolean changePassword(String username, String oldPassword, String newPassword){
         return userHibernateService.changePassword(username, oldPassword, newPassword);
+    }
+
+    public void validateData(TraineeDTO traineeData){
+        Set<ConstraintViolation<TraineeDTO>> violations = validator.validate(traineeData);
+
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<TraineeDTO> constraintViolation : violations) {
+                sb.append(constraintViolation.getMessage());
+            }
+
+            throw new ConstraintViolationException("Error occurred: " + sb.toString(), violations);
+        }
     }
 }

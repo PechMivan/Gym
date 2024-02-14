@@ -8,12 +8,16 @@ import com.gym.gym.repositories.TrainerRepository;
 import com.gym.gym.services.TrainerHibernateService;
 import com.gym.gym.services.TrainingTypeHibernateService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TrainerHibernateServiceImpl implements TrainerHibernateService {
@@ -25,6 +29,8 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
     UserHibernateServiceImpl userHibernateService;
     @Autowired
     TrainingTypeHibernateService trainingTypeHibernateService;
+    @Autowired
+    Validator validator;
 
     @Override
     public Trainer getTrainerById(long id) {
@@ -43,6 +49,7 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
 
     @Override
     public Trainer createTrainer(TrainerDTO trainerData) {
+        validateData(trainerData);
         User newUser = userHibernateService.createUser(trainerData.userDTO);
         TrainingType selectedTrainingType = trainingTypeHibernateService.getTrainingTypeByName(trainerData.specialization);
 
@@ -68,23 +75,12 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
 
     @Override
     public Trainer updateTrainer(long id, TrainerDTO trainerData) {
+        validateData(trainerData);
         Trainer existingTrainer = getTrainerById(id);
-
-        if(existingTrainer == null){
-            return null;
-        }
 
         TrainingType updatedTrainingType = trainingTypeHibernateService.getTrainingTypeByName(trainerData.specialization);
 
-        if(updatedTrainingType == null){
-            return null;
-        }
-
         User updatedUser = userHibernateService.updateUser(trainerData.userDTO);
-
-        if(updatedUser == null){
-            return null;
-        }
 
         Trainer updatedTrainer = Trainer.builder()
                 .id(existingTrainer.getId())
@@ -105,6 +101,19 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
     @Override
     public boolean changePassword(String username, String oldPassword, String newPassword){
         return userHibernateService.changePassword(username, oldPassword, newPassword);
+    }
+
+    public void validateData(TrainerDTO trainerData){
+        Set<ConstraintViolation<TrainerDTO>> violations = validator.validate(trainerData);
+
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<TrainerDTO> constraintViolation : violations) {
+                sb.append(constraintViolation.getMessage());
+            }
+
+            throw new ConstraintViolationException("Error occurred: " + sb.toString(), violations);
+        }
     }
 
 }

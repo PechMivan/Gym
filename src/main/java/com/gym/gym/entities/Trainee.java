@@ -22,7 +22,7 @@ public class Trainee implements Serializable {
     private long id;
 
     @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
+    @Column
     private Date dateOfBirth;
 
     @Column(length = 100)

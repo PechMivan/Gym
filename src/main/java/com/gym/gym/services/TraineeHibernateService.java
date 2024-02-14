@@ -3,6 +3,8 @@ package com.gym.gym.services;
 import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Date;
 import java.util.List;

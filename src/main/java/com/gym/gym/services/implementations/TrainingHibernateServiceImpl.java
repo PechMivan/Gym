@@ -8,6 +8,9 @@ import com.gym.gym.entities.TrainingType;
 import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.TrainingHibernateService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @SuppressWarnings("unused")
@@ -29,6 +33,8 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
     TrainerHibernateServiceImpl trainerHibernateService;
     @Autowired
     TraineeHibernateServiceImpl traineeHibernateService;
+    @Autowired
+    Validator validator;
 
     @Override
     public Training getTrainingById(long id) {
@@ -37,7 +43,7 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
 
     @Override
     public List<Training> getAllTrainings() {
-        return (List<Training>) trainingRepository.findAll();
+        return trainingRepository.findAll();
     }
 
     @Override
@@ -48,6 +54,7 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
 
     @Override
     public Training createTraining(TrainingDTO trainingData) {
+        validateData(trainingData);
         Trainee existingTrainee = traineeHibernateService.getTraineeById(trainingData.traineeId);
         Trainer existingTrainer = trainerHibernateService.getTrainerById(trainingData.trainerId);
         TrainingType existingTrainingType = trainingTypeHibernateService.getTrainingTypeById(trainingData.trainingTypeId);
@@ -100,12 +107,25 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
 
     private Date createDate(String dateString){
         DateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = null;
+        Date date;
         try {
             date = parser.parse(dateString);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
         return date;
+    }
+
+    public void validateData(TrainingDTO trainingData){
+        Set<ConstraintViolation<TrainingDTO>> violations = validator.validate(trainingData);
+
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<TrainingDTO> constraintViolation : violations) {
+                sb.append(constraintViolation.getMessage());
+            }
+
+            throw new ConstraintViolationException("Error occurred: " + sb.toString(), violations);
+        }
     }
 }
