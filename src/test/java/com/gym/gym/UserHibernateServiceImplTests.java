@@ -7,35 +7,45 @@ import java.util.*;
 
 import com.gym.gym.dtos.UserDTO;
 import com.gym.gym.entities.User;
+import com.gym.gym.exceptions.InvalidPasswordException;
 import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.repositories.UserRepository;
 import com.gym.gym.services.implementations.UserHibernateServiceImpl;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import javax.xml.validation.Validator;
-
 public class UserHibernateServiceImplTests {
     @Mock
     private UserRepository userRepository;
+
     @Mock
-    private Validator validator;
+    Validator validator;
+
     @InjectMocks
     private UserHibernateServiceImpl userService;
     User user;
+    UserDTO userdto;
 
-    @BeforeEach
+    @BeforeEach //Factory method
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         this.user = User.builder()
                 .id(1L)
                 .firstName("John")
                 .lastName("Doe")
-                .username("testUser")
+                .username("John.Doe")
+                .password("passtest")
                 .isActive(true)
+                .build();
+
+        this.userdto = UserDTO.builder()
+                .firstname("John")
+                .lastname("Doe")
                 .build();
     }
 
@@ -55,55 +65,181 @@ public class UserHibernateServiceImplTests {
 
     @Test
     public void testGetUserById() {
-        // Mock behavior to return a user for a given id
+        // Arrange
         long userId = 1L;
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        // Call getUserById method with valid user id
+        // Act
         User result = userService.getUserById(userId);
 
-        // Assert that the result is not null and has the expected id
+        // Assert
         assertNotNull(result);
         assertEquals(userId, result.getId());
-
-        // Call getUserById method with invalid user id and assert NotFoundException is thrown
         assertThrows(NotFoundException.class, () -> userService.getUserById(100L));
     }
 
     @Test
     public void testGetUserByUsername() {
-        // Mock behavior to return a user for a given username
-        String username = "testUser";
+        // Arrange
+        String username = "John.Doe";
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
-        // Call getUserByUsername method with valid username
+        // Act
         User result = userService.getUserByUsername(username);
 
-        // Assert that the result is not null and has the expected username
+        // Assert
         assertNotNull(result);
         assertEquals(username, result.getUsername());
-
-        // Call getUserByUsername method with invalid username and assert NotFoundException is thrown
         assertThrows(NotFoundException.class, () -> userService.getUserByUsername("invalidUsername"));
     }
 
     @Test
-    public void testCreateUser() {
-        // Prepare test data
-        UserDTO userdto = UserDTO.builder()
-                            .firstname("John")
-                            .lastname("Doe")
-                            .build();
-        
+    public void testCreateUser(){
+        // Arrange
+        when(validator.validate(userdto)).thenReturn(Collections.emptySet());
         when(userRepository.save(any(User.class))).thenReturn(user);
 
+        // Act
         User result = userService.createUser(userdto);
 
+        // Assert
         assertNotNull(result);
         assertEquals("John", result.getFirstName());
         assertEquals("Doe", result.getLastName());
-        assertEquals("testUser", result.getUsername());
+        assertEquals("John.Doe", result.getUsername());
         assertEquals(10, result.getPassword().length());
         verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void testUpdateUser(){
+        // Arrange
+        UserDTO userdto = UserDTO.builder()
+                .firstname("newName")
+                .lastname("newLastname")
+                .username("John.Doe")
+                .password("passtest")
+                .build();
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        // Act
+        User result = userService.updateUser(userdto);
+        // Assert
+        assertEquals(1L, result.getId());
+        assertEquals("newName", result.getFirstName());
+        assertEquals("newLastname", result.getLastName());
+        // Username and password are used as credentials and shouldn't be updated here.
+        assertEquals("John.Doe", result.getUsername());
+        assertEquals("passtest", result.getPassword());
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void testSaveUser(){
+        // Act
+        userService.saveUser(user);
+        // Assert
+        verify(userRepository, times(1)).save(user);
+    }
+
+    @Test
+    public void testCreatePassword(){
+        // Act
+        String result = userService.createPassword();
+        // Assert
+        assertEquals(10, result.length());
+    }
+
+
+    @Test
+    public void testCreateUsername(){
+        // Arrange
+        User userTest1 = User.builder().id(1L).username("test.user").build();
+        User userTest2 = User.builder().id(2L).username("test.user1").build();
+        List<User> users = new ArrayList<>();
+        users.add(userTest1);
+        users.add(userTest2);
+
+        when(userRepository.findAll()).thenReturn(users);
+
+        // Act
+
+        String username = userService.createUsername("test", "user");
+
+        // Assert
+        assertNotNull(username);
+        assertEquals("test.user2", username);
+    }
+
+    @Test
+    public void testAuthenticateUser_With_Valid_Data(){
+        // Arrange
+        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
+
+        // Act and Assert
+        assertDoesNotThrow(()-> userService.authenticateUser("John", "passtest"));
+    }
+
+    @Test
+    public void testAuthenticateUser_With_Invalid_Data(){
+        // Arrange
+        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
+
+        // Act and Assert
+        assertThrows(NotFoundException.class, () -> userService.authenticateUser("wrongUser", "passtest"));
+        assertThrows(UnauthorizedAccessException.class, () -> userService.authenticateUser("John", "Wrongpass"));
+    }
+
+    @Test
+    public void testChangePassword(){
+        // Arrange
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        String newpass = "newpass10"; // Greather than 8 and lower than 10 to pass validation.
+        // Act
+        boolean passwordChangedSuccessfully = userService.changePassword("John", "passtest", newpass);
+        // Assert
+        assertTrue(passwordChangedSuccessfully);
+    }
+
+    @Test
+    public void testValidatePassword_With_Valid_Data(){
+        // Arrange
+        String betweenEightAndThen = "newpass10";
+        // Act and Assert
+        assertDoesNotThrow(() -> userService.validatePassword(betweenEightAndThen));
+    }
+
+    @Test
+    public void testValidatePassword_With_Invalid_Data(){
+        // Arrange
+        String lessThanEight = "1234567"; // < 8 characters
+        String moreThanTen = "12345678910"; // > 10 characters
+        // Act and Assert
+        assertThrows(InvalidPasswordException.class, () -> userService.validatePassword(null));
+        assertThrows(InvalidPasswordException.class, () -> userService.validatePassword(""));
+        assertThrows(InvalidPasswordException.class, () -> userService.validatePassword(lessThanEight));
+        assertThrows(InvalidPasswordException.class, () -> userService.validatePassword(moreThanTen));
+    }
+
+    @Test
+    public void testToggleActive_With_True_Status(){
+        // Arrange
+        user.setActive(true); // Making sure isActive is true.
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        // Act
+        boolean activeStatus = userService.toggleActive(1L);
+        // Assert
+        assertFalse(activeStatus);
+    }
+
+    @Test
+    public void testToggleActive_With_False_Status(){
+        // Arrange
+        user.setActive(false); // Making sure isActive is false.
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
+        // Act
+        boolean activeStatus = userService.toggleActive(1L);
+        // Assert
+        assertTrue(activeStatus);
     }
 }
