@@ -19,7 +19,11 @@ public interface TrainingHibernateService {
 
     List<Training> getTrainingsByTraineeUsernameAndBetweenDates(String username, String startDate, String endDate);
 
-    List<Training> getTrainingsTrainingsByTraineeUsernameAndTrainerName(String username, String trainerName);
+    List<Training> getTrainingsByTrainerUsernameAndBetweenDates(String username, String startDate, String endDate);
+
+    List<Training> getByTraineeUsernameAndTrainerName(String username, String trainerName);
+
+    List<Training> getTrainingsByTrainerUsernameAndTraineeName(String username, String trainerName);
 
     List<Training> getTrainingsByTraineeUsernameAndTrainingType(String username, String trainingType);
 }

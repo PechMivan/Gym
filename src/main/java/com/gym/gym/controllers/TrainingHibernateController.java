@@ -40,10 +40,10 @@ public class TrainingHibernateController {
     }
 
     @GetMapping("/trainee/username2/{username}")
-    public ResponseEntity<List<Training>> getTrainingsByTraineeUsernameAndBetweenDates(@PathVariable String username,
+    public ResponseEntity<List<Training>> getTrainingsByTraineeUsernameAndTrainerName(@PathVariable String username,
                                                                                        @RequestParam String trainerName){
 
-        List<Training> trainings = trainingHibernateService.getTrainingsTrainingsByTraineeUsernameAndTrainerName(username, trainerName);
+        List<Training> trainings = trainingHibernateService.getByTraineeUsernameAndTrainerName(username, trainerName);
         return new ResponseEntity<>(trainings, HttpStatus.OK);
     }
 
@@ -52,6 +52,23 @@ public class TrainingHibernateController {
                                                                                            @RequestParam String trainingType){
 
         List<Training> trainings = trainingHibernateService.getTrainingsByTraineeUsernameAndTrainingType(username, trainingType);
+        return new ResponseEntity<>(trainings, HttpStatus.OK);
+    }
+
+    @GetMapping("/trainee/username4/{username}")
+    public ResponseEntity<List<Training>> getTrainingsByTrainerUsernameAndBetweenDates(@PathVariable String username,
+                                                                                       @RequestParam String startDate,
+                                                                                       @RequestParam String endDate){
+
+        List<Training> trainings = trainingHibernateService.getTrainingsByTrainerUsernameAndBetweenDates(username, startDate, endDate);
+        return new ResponseEntity<>(trainings, HttpStatus.OK);
+    }
+
+    @GetMapping("/trainee/username5/{username}")
+    public ResponseEntity<List<Training>> getTrainingsByTrainerUsernameAndTraineeName(@PathVariable String username,
+                                                                                      @RequestParam String traineeName){
+
+        List<Training> trainings = trainingHibernateService.getTrainingsByTrainerUsernameAndTraineeName(username, traineeName);
         return new ResponseEntity<>(trainings, HttpStatus.OK);
     }
 

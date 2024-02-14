@@ -21,6 +21,16 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
                                                                     @Param("startDate") Date startDate,
                                                                     @Param("endDate") Date endDate);
 
+    @Query("SELECT t " +
+            "FROM Training t " +
+            "JOIN t.trainer tr " +
+            "JOIN tr.user u " +
+            "WHERE u.username = :username " +
+            "AND t.trainingDate BETWEEN :startDate AND :endDate")
+    List<Training> findAllTrainingsByTrainerUsernameAndBetweenDates(@Param("username") String username,
+                                                                    @Param("startDate") Date startDate,
+                                                                    @Param("endDate") Date endDate);
+
     @Query("SELECT t FROM Training t " +
             "JOIN t.trainee tr " +
             "JOIN tr.user tu " +
@@ -30,6 +40,16 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
             "AND tnu.firstName = :trainerName")
     List<Training> findAllTrainingsByTraineeUsernameAndTrainerName(@Param("traineeUsername") String traineeUsername,
                                                                    @Param("trainerName") String trainerName);
+
+    @Query("SELECT t FROM Training t " +
+            "JOIN t.trainer tr " +
+            "JOIN tr.user tu " +
+            "JOIN t.trainee tn " +
+            "JOIN tn.user tnu " +
+            "WHERE tu.username = :trainerUsername " +
+            "AND tnu.firstName = :traineeName")
+    List<Training> findAllTrainingsByTrainerUsernameAndTraineeName(@Param("trainerUsername") String trainerUsername,
+                                                                   @Param("traineeName") String traineeName);
 
     @Query("SELECT t FROM Training t " +
             "JOIN t.trainee tr " +

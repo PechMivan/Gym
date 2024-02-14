@@ -76,8 +76,21 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
     }
 
     @Override
-    public List<Training> getTrainingsTrainingsByTraineeUsernameAndTrainerName(String username, String trainerName){
+    public List<Training> getTrainingsByTrainerUsernameAndBetweenDates(String username, String startDate, String endDate){
+        Date start = createDate(startDate);
+        Date end = createDate(endDate);
+
+        return trainingRepository.findAllTrainingsByTrainerUsernameAndBetweenDates(username, start, end);
+    }
+
+    @Override
+    public List<Training> getByTraineeUsernameAndTrainerName(String username, String trainerName){
         return trainingRepository.findAllTrainingsByTraineeUsernameAndTrainerName(username, trainerName);
+    }
+
+    @Override
+    public List<Training> getTrainingsByTrainerUsernameAndTraineeName(String username, String traineeName){
+        return trainingRepository.findAllTrainingsByTrainerUsernameAndTraineeName(username, traineeName);
     }
 
     @Override
