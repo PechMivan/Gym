@@ -16,7 +16,10 @@ public interface UserHibernateService {
     void saveUser(User user);
     String createPassword();
     String createUsername(String firstname, String lastname);
-    boolean authenticateUser(String username, String password);
+    void authenticateUser(String username, String password);
     boolean changePassword(String username, String oldPassword, String newPassword);
+
+    void validatePassword(String newPassword);
+
     Boolean toggleActive(long id);
 }

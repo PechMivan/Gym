@@ -2,6 +2,9 @@ package com.gym.gym.services.implementations;
 
 import com.gym.gym.dtos.UserDTO;
 import com.gym.gym.entities.User;
+import com.gym.gym.exceptions.InvalidPasswordException;
+import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.repositories.UserRepository;
 import com.gym.gym.services.UserHibernateService;
 import jakarta.transaction.Transactional;
@@ -32,12 +35,14 @@ public class UserHibernateServiceImpl implements UserHibernateService {
 
     @Override
     public User getUserById(long id){
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("User with id %d not found", id)));
     }
 
     @Override
     public User getUserByUsername(String username){
-        return userRepository.findByUsername(username).orElse(null);
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException(String.format("User with username %s not found", username)));
     }
 
     @Override
@@ -61,6 +66,7 @@ public class UserHibernateServiceImpl implements UserHibernateService {
 
     @Override
     public User updateUser(UserDTO userData){
+        authenticateUser(userData.username, userData.password);
         validateData(userData);
         User existingUser = getUserByUsername(userData.username);
 
@@ -120,30 +126,30 @@ public class UserHibernateServiceImpl implements UserHibernateService {
     }
 
     @Override
-    public boolean authenticateUser(String username, String password) {
+    public void authenticateUser(String username, String password) {
         User existingUser = getUserByUsername(username);
-        if(existingUser.getUsername() != null){
-            return password.equals(existingUser.getPassword());
+        if(!password.equals(existingUser.getPassword())){
+            throw new UnauthorizedAccessException("Invalid login attempt: Password or username don't match.");
         }
-        return false;
     }
 
     @Override
     public boolean changePassword(String username, String oldPassword, String newPassword) {
         validatePassword(newPassword);
-        if(!authenticateUser(username, oldPassword)){
-            return false;
-        }
+        authenticateUser(username, oldPassword);
         User existingUser = getUserByUsername(username);
         existingUser.setPassword(newPassword);
         saveUser(existingUser);
         return true;
     }
 
-    @
+    @Override
     public void validatePassword(String newPassword){
         if(newPassword == null || newPassword.isEmpty()){
-            throw new
+            throw new InvalidPasswordException("New Password cannot be null or blank. ");
+        }
+        if(newPassword.length() < 8 || newPassword.length() > 10){
+            throw new InvalidPasswordException("New Password should contain at least 8 and no more than 10 characters");
         }
     }
 

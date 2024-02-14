@@ -2,7 +2,9 @@ package com.gym.gym.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
+@Builder
 public class UserDTO {
     @NotBlank(message = "firstname cannot be null or blank. ")
     public String firstname;

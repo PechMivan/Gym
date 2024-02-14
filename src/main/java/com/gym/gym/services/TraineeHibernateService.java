@@ -1,5 +1,6 @@
 package com.gym.gym.services;
 
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
 import jakarta.transaction.Transactional;
@@ -23,12 +24,12 @@ public interface TraineeHibernateService {
 
     Trainee updateTrainee(long id, TraineeDTO traineeData);
 
-    void deleteTrainee(long id);
+    void deleteTrainee(long id, Credentials credentials);
 
     @Transactional
-    long deleteTraineeByUsername(String username);
+    long deleteTraineeByUsername(String username, Credentials credentials);
 
-    Boolean toggleTraineeActive(long id);
+    Boolean toggleTraineeActive(long id, Credentials credentials);
 
     Date createDate(String dateOfBirth);
 

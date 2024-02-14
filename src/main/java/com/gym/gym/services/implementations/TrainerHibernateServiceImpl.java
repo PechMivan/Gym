@@ -1,9 +1,11 @@
 package com.gym.gym.services.implementations;
 
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.entities.User;
+import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TrainerRepository;
 import com.gym.gym.services.TrainerHibernateService;
 import com.gym.gym.services.TrainingTypeHibernateService;
@@ -34,12 +36,14 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
 
     @Override
     public Trainer getTrainerById(long id) {
-        return trainerRepository.findById(id).orElse(null);
+        return trainerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Trainer with id %d not found", id)));
     }
 
     @Override
     public Trainer getTrainerByUsername(String username){
-        return trainerRepository.findByUserUsername(username).orElse(null);
+        return trainerRepository.findByUserUsername(username)
+                .orElseThrow(() -> new NotFoundException(String.format("Trainer with username %s not found", username)));
     }
 
     @Override
@@ -75,11 +79,11 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
 
     @Override
     public Trainer updateTrainer(long id, TrainerDTO trainerData) {
+        userHibernateService.authenticateUser(trainerData.userDTO.username, trainerData.userDTO.password);
         validateData(trainerData);
+
         Trainer existingTrainer = getTrainerById(id);
-
         TrainingType updatedTrainingType = trainingTypeHibernateService.getTrainingTypeByName(trainerData.specialization);
-
         User updatedUser = userHibernateService.updateUser(trainerData.userDTO);
 
         Trainer updatedTrainer = Trainer.builder()
@@ -94,7 +98,8 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
     }
 
     @Override
-    public Boolean toggleTraineeActive(long id){
+    public Boolean toggleTraineeActive(long id, Credentials credentials){
+        userHibernateService.authenticateUser(credentials.username, credentials.password);
         return userHibernateService.toggleActive(id);
     }
 

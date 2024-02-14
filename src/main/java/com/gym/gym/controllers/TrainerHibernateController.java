@@ -1,5 +1,6 @@
 package com.gym.gym.controllers;
 
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.PasswordChangeRequest;
 import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.entities.Trainer;
@@ -67,8 +68,8 @@ public class TrainerHibernateController {
     }
 
     @PostMapping("{id}/toggle")
-    public ResponseEntity<String> toggleTraineeActive(@PathVariable long id){
-        Boolean activeState = trainerHibernateService.toggleTraineeActive(id);
+    public ResponseEntity<String> toggleTraineeActive(@PathVariable long id, @RequestBody Credentials credentials){
+        Boolean activeState = trainerHibernateService.toggleTraineeActive(id, credentials);
         if(activeState == null){
             return new ResponseEntity<>("User doesn't exist", HttpStatus.NOT_FOUND);
         } else {

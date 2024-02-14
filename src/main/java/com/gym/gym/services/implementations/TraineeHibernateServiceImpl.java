@@ -1,8 +1,10 @@
 package com.gym.gym.services.implementations;
 
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.User;
+import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TraineeRepository;
 import com.gym.gym.services.TraineeHibernateService;
 import jakarta.transaction.Transactional;
@@ -33,14 +35,15 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
     private UserHibernateServiceImpl userHibernateService;
 
     //TODO: Implement Mapper and return a DTO for this method and getAll.
-    //TODO: Implement Authorization for the important methods.
     @Override
     public Trainee getTraineeById(long id) {
-        return traineeRepository.findById(id).orElse(new Trainee());
+        return traineeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Trainee with id %d not found", id)));
     }
 
     public Trainee getTraineeByUsername(String username){
-        return traineeRepository.findByUserUsername(username).orElse(new Trainee());
+        return traineeRepository.findByUserUsername(username)
+                .orElseThrow(() -> new NotFoundException(String.format("Trainee with username %s not found", username)));
     }
 
     @Override
@@ -73,6 +76,7 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
 
     @Override
     public Trainee updateTrainee(long id, TraineeDTO traineeData) {
+        userHibernateService.authenticateUser(traineeData.userDTO.username, traineeData.userDTO.password);
         Trainee existingTrainee = getTraineeById(id);
 
         User updatedUser = userHibernateService.updateUser(traineeData.userDTO);
@@ -91,19 +95,22 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
     }
 
     @Override
-    public void deleteTrainee(long id) {
+    public void deleteTrainee(long id, Credentials credentials) {
+        userHibernateService.authenticateUser(credentials.username, credentials.password);
         traineeRepository.deleteById(id);
         logger.info("User of type Trainee successfully deleted.");
     }
 
     @Transactional
     @Override
-    public long deleteTraineeByUsername(String username){
+    public long deleteTraineeByUsername(String username, Credentials credentials){
+        userHibernateService.authenticateUser(credentials.username, credentials.password);
         return traineeRepository.deleteByUserUsername(username);
     }
 
     @Override
-    public Boolean toggleTraineeActive(long id){
+    public Boolean toggleTraineeActive(long id, Credentials credentials){
+        userHibernateService.authenticateUser(credentials.username, credentials.password);
         return userHibernateService.toggleActive(id);
     }
 

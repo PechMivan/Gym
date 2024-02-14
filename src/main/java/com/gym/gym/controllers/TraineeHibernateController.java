@@ -1,5 +1,6 @@
 package com.gym.gym.controllers;
 
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.PasswordChangeRequest;
 import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
@@ -58,8 +59,8 @@ public class TraineeHibernateController {
     }
 
     @PostMapping("/username/{username}/delete")
-    public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username){
-        long count = traineeHibernateService.deleteTraineeByUsername(username);
+    public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username, @RequestBody Credentials credentials){
+        long count = traineeHibernateService.deleteTraineeByUsername(username, credentials);
         if(count > 0){
             return new ResponseEntity<>("User succesfully deleted", HttpStatus.OK);
         } else {
@@ -68,8 +69,8 @@ public class TraineeHibernateController {
     }
 
     @PostMapping("{id}/toggle")
-    public ResponseEntity<String> toggleTraineeActive(@PathVariable long id){
-        Boolean activeState = traineeHibernateService.toggleTraineeActive(id);
+    public ResponseEntity<String> toggleTraineeActive(@PathVariable long id, @RequestBody Credentials credentials){
+        Boolean activeState = traineeHibernateService.toggleTraineeActive(id, credentials);
         if(activeState == null){
             return new ResponseEntity<>("User doesn't exist", HttpStatus.NOT_FOUND);
         } else {

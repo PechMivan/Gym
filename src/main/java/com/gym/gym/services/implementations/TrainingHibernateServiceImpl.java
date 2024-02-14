@@ -5,6 +5,7 @@ import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
 import com.gym.gym.entities.TrainingType;
+import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.TrainingHibernateService;
 import jakarta.transaction.Transactional;
@@ -38,7 +39,8 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
 
     @Override
     public Training getTrainingById(long id) {
-        return trainingRepository.findById(id).orElse(null);
+        return trainingRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Training with id %d not found", id)));
     }
 
     @Override
