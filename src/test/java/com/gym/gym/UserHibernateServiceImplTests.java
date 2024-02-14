@@ -51,14 +51,14 @@ public class UserHibernateServiceImplTests {
 
     @Test
     public void testGetAllUsers() {
-        // Mock behavior to return a list of users
+        // Arrange
         List<User> users = Arrays.asList(new User(), new User(), new User());
         when(userRepository.findAll()).thenReturn(users);
 
-        // Call getAllUsers method
+        // Act
         List<User> result = userService.getAllUsers();
 
-        // Assert that the result is not null and contains the expected number of users
+        // Assert
         assertNotNull(result);
         assertEquals(users.size(), result.size());
     }
@@ -163,7 +163,6 @@ public class UserHibernateServiceImplTests {
         when(userRepository.findAll()).thenReturn(users);
 
         // Act
-
         String username = userService.createUsername("test", "user");
 
         // Assert
