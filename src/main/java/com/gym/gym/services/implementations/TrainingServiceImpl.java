@@ -33,9 +33,10 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public void createTraining(Training training) {
+    public Training createTraining(Training training) {
         trainingDAO.save(training);
         logger.info("Training successfully created.");
+        return training;
     }
 
 }

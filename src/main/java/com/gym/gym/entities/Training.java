@@ -23,7 +23,6 @@ public class Training implements Serializable {
     @Column(length = 50, nullable = false)
     private String trainingName;
 
-
     @ManyToOne
     @JoinColumn(name="trainingTypeId", nullable=false)
     private com.gym.gym.entities.TrainingType trainingType;
@@ -33,7 +32,7 @@ public class Training implements Serializable {
     private Date trainingDate;
 
     @Column(nullable = false)
-    private Number trainingDuration;
+    private float trainingDuration;
 
     @ManyToOne
     @JoinColumn(name="traineeId", nullable=false)
@@ -42,5 +41,4 @@ public class Training implements Serializable {
     @ManyToOne
     @JoinColumn(name="trainerId", nullable=false)
     private com.gym.gym.entities.Trainer trainer;
-
 }
