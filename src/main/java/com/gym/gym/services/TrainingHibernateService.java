@@ -17,5 +17,9 @@ public interface TrainingHibernateService {
 
     Training createTraining(TrainingDTO training);
 
-    List<Training> getTrainingsByUsernameAndBetweenDates(String username, String startDate, String endDate);
+    List<Training> getTrainingsByTraineeUsernameAndBetweenDates(String username, String startDate, String endDate);
+
+    List<Training> getTrainingsTrainingsByTraineeUsernameAndTrainerName(String username, String trainerName);
+
+    List<Training> getTrainingsByTraineeUsernameAndTrainingType(String username, String trainingType);
 }

@@ -11,11 +11,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 @SuppressWarnings("unused")
@@ -68,15 +68,28 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
     }
 
     @Override
-    public List<Training> getTrainingsByUsernameAndBetweenDates(String username, String startDate, String endDate){
-        return trainingRepository.findTrainingsByUsernameAndBetweenDates(username, startDate, endDate);
+    public List<Training> getTrainingsByTraineeUsernameAndBetweenDates(String username, String startDate, String endDate){
+        Date start = createDate(startDate);
+        Date end = createDate(endDate);
+
+        return trainingRepository.findAllTrainingsByTraineeUsernameAndBetweenDates(username, start, end);
+    }
+
+    @Override
+    public List<Training> getTrainingsTrainingsByTraineeUsernameAndTrainerName(String username, String trainerName){
+        return trainingRepository.findAllTrainingsByTraineeUsernameAndTrainerName(username, trainerName);
+    }
+
+    @Override
+    public List<Training> getTrainingsByTraineeUsernameAndTrainingType(String username, String trainingType){
+        return trainingRepository.findAllTrainingsByTraineeUsernameAndTrainingType(username, trainingType);
     }
 
     private Date createDate(String dateString){
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-        Date date;
+        DateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
         try {
-            date = formatter.parse(dateString);
+            date = parser.parse(dateString);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
