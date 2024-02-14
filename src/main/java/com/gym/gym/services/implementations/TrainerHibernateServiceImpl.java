@@ -5,7 +5,7 @@ import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.entities.User;
 import com.gym.gym.repositories.TrainerRepository;
-import com.gym.gym.services.TrainerService;
+import com.gym.gym.services.TrainerHibernateService;
 import com.gym.gym.services.TrainingTypeHibernateService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class TrainerHibernateServiceImpl implements TrainerService {
+public class TrainerHibernateServiceImpl implements TrainerHibernateService {
 
-    Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(TraineeHibernateServiceImpl.class);
     @Autowired
     TrainerRepository trainerRepository;
     @Autowired
@@ -31,6 +31,7 @@ public class TrainerHibernateServiceImpl implements TrainerService {
         return trainerRepository.findById(id).orElse(null);
     }
 
+    @Override
     public Trainer getTrainerByUsername(String username){
         return trainerRepository.findByUserUsername(username).orElse(null);
     }
@@ -96,10 +97,12 @@ public class TrainerHibernateServiceImpl implements TrainerService {
         return updatedTrainer;
     }
 
+    @Override
     public Boolean toggleTraineeActive(long id){
         return userHibernateService.toggleActive(id);
     }
 
+    @Override
     public boolean changePassword(String username, String oldPassword, String newPassword){
         return userHibernateService.changePassword(username, oldPassword, newPassword);
     }

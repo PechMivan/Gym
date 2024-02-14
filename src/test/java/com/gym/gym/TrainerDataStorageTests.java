@@ -2,6 +2,7 @@ package com.gym.gym;
 
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.TrainingType;
+import com.gym.gym.entities.User;
 import com.gym.gym.storages.TrainerDataStorage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         Map<Long, Trainer> testData = new HashMap<>();
         Trainer newTrainer = Trainer.builder()
                 .id(1L)
+                .user(new User())
                 .build();
 
         testData.put(1L, newTrainer);

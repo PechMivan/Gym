@@ -4,7 +4,7 @@ import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.User;
 import com.gym.gym.repositories.TraineeRepository;
-import com.gym.gym.services.TraineeService;
+import com.gym.gym.services.TraineeHibernateService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-public class TraineeHibernateServiceImpl implements TraineeService {
-    Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
+public class TraineeHibernateServiceImpl implements TraineeHibernateService {
+    Logger logger = LoggerFactory.getLogger(TraineeHibernateServiceImpl.class);
 
     @Autowired
     private TraineeRepository traineeRepository;
@@ -94,15 +94,18 @@ public class TraineeHibernateServiceImpl implements TraineeService {
     }
 
     @Transactional
+    @Override
     public long deleteTraineeByUsername(String username){
         return traineeRepository.deleteByUserUsername(username);
     }
 
+    @Override
     public Boolean toggleTraineeActive(long id){
         return userHibernateService.toggleActive(id);
     }
 
-    private Date createDate(String dateOfBirth){
+    @Override
+    public Date createDate(String dateOfBirth){
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
         Date date;
         try {
@@ -113,6 +116,7 @@ public class TraineeHibernateServiceImpl implements TraineeService {
         return date;
     }
 
+    @Override
     public boolean changePassword(String username, String oldPassword, String newPassword){
         return userHibernateService.changePassword(username, oldPassword, newPassword);
     }
