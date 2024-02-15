@@ -60,7 +60,4 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
             "AND tt.trainingTypeName = :trainingType")
     List<Training> findAllTrainingsByTraineeUsernameAndTrainingType(@Param("traineeUsername") String traineeUsername,
                                                                    @Param("trainingType") String trainingType);
-
-    @Query("SELECT DISTINCT t.trainer FROM Training t WHERE t.trainee.user.username = :username")
-    List<Trainer> findAllTrainersByTraineeUsername(@Param("username") String username);
 }

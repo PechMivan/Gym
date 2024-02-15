@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings("unused")
@@ -77,8 +78,14 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
         return newTraining;
     }
 
-    public List<Trainer> getAllTrainersNotInTraineeTrainersListByUsername(){
+    public List<Trainer> getAllTrainersNotInTraineeTrainersListByUsername(String username){
+        Trainee trainee = traineeHibernateService.getTraineeByUsername(username);
+        List<Trainer> trainers = trainerHibernateService.getAllTrainers();
+        List<Trainer> trainersOfTrainee = trainee.getTrainers();
 
+        trainers.removeAll(trainersOfTrainee);
+
+        return trainers;
     }
 
     @Override

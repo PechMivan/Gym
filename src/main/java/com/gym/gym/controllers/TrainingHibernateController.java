@@ -1,6 +1,7 @@
 package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.TrainingDTO;
+import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
 import com.gym.gym.services.implementations.TrainingHibernateServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +71,13 @@ public class TrainingHibernateController {
 
         List<Training> trainings = trainingHibernateService.getTrainingsByTrainerUsernameAndTraineeName(username, traineeName);
         return new ResponseEntity<>(trainings, HttpStatus.OK);
+    }
+
+    @GetMapping("/trainee_trainers/{username}")
+    public ResponseEntity<List<Trainer>> getTrainingsByTrainerUsernameAndTraineeName(@PathVariable String username){
+
+        List<Trainer> trainers = trainingHibernateService.getAllTrainersNotInTraineeTrainersListByUsername(username);
+        return new ResponseEntity<>(trainers, HttpStatus.OK);
     }
 
 }
