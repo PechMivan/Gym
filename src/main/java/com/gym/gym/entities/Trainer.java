@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
@@ -28,10 +28,7 @@ public class Trainer implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany
-    @JoinTable(name="trainer_trainee",
-            joinColumns=@JoinColumn(name="trainer_id"),
-            inverseJoinColumns=@JoinColumn(name="trainee_id"))
-    List<com.gym.gym.entities.Trainee> trainees = new ArrayList<>();
+    @ManyToMany(mappedBy = "trainers")
+    Set<Trainee> trainees = new HashSet<>();
 }
 

@@ -94,6 +94,10 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
         return updatedTrainee;
     }
 
+    public void updateTrainersList(){
+
+    }
+
     @Override
     public void deleteTrainee(long id, Credentials credentials) {
         userHibernateService.authenticateUser(credentials.username, credentials.password);

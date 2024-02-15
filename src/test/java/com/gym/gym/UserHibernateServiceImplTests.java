@@ -31,7 +31,7 @@ public class UserHibernateServiceImplTests {
     User user;
     UserDTO userdto;
 
-    @BeforeEach //Factory method
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         this.user = User.builder()

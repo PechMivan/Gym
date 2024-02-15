@@ -57,10 +57,6 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
         User newUser = userHibernateService.createUser(trainerData.userDTO);
         TrainingType selectedTrainingType = trainingTypeHibernateService.getTrainingTypeByName(trainerData.specialization);
 
-        if(selectedTrainingType == null){
-            return null;
-        }
-
         Trainer newTrainer = Trainer.builder()
                 .user(newUser)
                 .specialization(selectedTrainingType)
