@@ -72,8 +72,13 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
                                 .build();
 
         saveTraining(newTraining);
+        traineeHibernateService.updateTrainersList(existingTrainee.getId(), existingTrainer);
         //log success
         return newTraining;
+    }
+
+    public List<Trainer> getAllTrainersNotInTraineeTrainersListByUsername(){
+
     }
 
     @Override

@@ -4,13 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-@Data
 @Builder
 @EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @SuppressWarnings("unused")
@@ -32,9 +33,9 @@ public class Trainee implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany
-    @JoinTable(name="trainer_trainee",
-            joinColumns=@JoinColumn(name="trainer_id"),
-            inverseJoinColumns=@JoinColumn(name="trainee_id"))
-    Set<Trainer> trainers = new HashSet<>();
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name="trainee_trainer",
+            joinColumns=@JoinColumn(name="trainee_id"),
+            inverseJoinColumns=@JoinColumn(name="trainer_id"))
+    List<Trainer> trainers;
 }

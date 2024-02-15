@@ -3,6 +3,7 @@ package com.gym.gym.services.implementations;
 import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
+import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TraineeRepository;
@@ -94,8 +95,10 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
         return updatedTrainee;
     }
 
-    public void updateTrainersList(){
-
+    public void updateTrainersList(long id, Trainer trainer){
+        Trainee trainee = getTraineeById(id);
+        trainee.getTrainers().add(trainer);
+        saveTrainee(trainee);
     }
 
     @Override

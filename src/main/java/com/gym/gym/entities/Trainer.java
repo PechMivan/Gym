@@ -1,15 +1,16 @@
 package com.gym.gym.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-@Data
 @Builder
 @EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -29,6 +30,7 @@ public class Trainer implements Serializable {
     private User user;
 
     @ManyToMany(mappedBy = "trainers")
-    Set<Trainee> trainees = new HashSet<>();
+    @JsonIgnore
+    List<Trainee> trainees;
 }
 

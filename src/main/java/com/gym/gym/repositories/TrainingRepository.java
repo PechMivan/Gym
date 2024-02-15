@@ -1,5 +1,6 @@
 package com.gym.gym.repositories;
 
+import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -59,4 +60,7 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
             "AND tt.trainingTypeName = :trainingType")
     List<Training> findAllTrainingsByTraineeUsernameAndTrainingType(@Param("traineeUsername") String traineeUsername,
                                                                    @Param("trainingType") String trainingType);
+
+    @Query("SELECT DISTINCT t.trainer FROM Training t WHERE t.trainee.user.username = :username")
+    List<Trainer> findAllTrainersByTraineeUsername(@Param("username") String username);
 }
