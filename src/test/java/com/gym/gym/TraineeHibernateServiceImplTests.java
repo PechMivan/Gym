@@ -7,6 +7,7 @@ import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.dtos.UserDTO;
 import com.gym.gym.entities.Trainee;
+import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TraineeRepository;
@@ -207,5 +208,17 @@ public class TraineeHibernateServiceImplTests {
         // Assert
         verify(userHibernateService, times(1))
                 .changePassword("username", "oldPassword", "newPassword");
+    }
+
+    @Test
+    public void testUpdateTrainersList(){
+        // Arrange
+        Trainee trainee = Trainee.builder().trainers(new ArrayList<>()).build();
+        when(traineeRepository.findById(anyLong())).thenReturn(Optional.of(trainee));
+        // Act
+        traineeHibernateService.updateTrainersList(1L, new Trainer());
+        // Assert
+        assertEquals(1, trainee.getTrainers().size());
+        verify(traineeRepository, times(1)).save(trainee);
     }
 }
