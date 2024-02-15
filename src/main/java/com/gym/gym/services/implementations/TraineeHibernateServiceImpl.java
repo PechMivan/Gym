@@ -65,7 +65,7 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
                 .build();
 
         saveTrainee(newTrainee);
-        logger.info("User of type Trainee successfully created.");
+        logger.info(String.format("Trainee successfully created with id %d", newTrainee.getId()));
         return newTrainee;
     }
 
@@ -91,7 +91,7 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
                 .build();
 
         saveTrainee(updatedTrainee);
-        logger.info("User of type Trainee successfully updated.");
+        logger.info(String.format("Trainee with id %d successfully updated.", updatedTrainee.getId()));
         return updatedTrainee;
     }
 
@@ -99,19 +99,21 @@ public class TraineeHibernateServiceImpl implements TraineeHibernateService {
         Trainee trainee = getTraineeById(id);
         trainee.getTrainers().add(trainer);
         saveTrainee(trainee);
+        logger.info(String.format("Trainer with id %d has been added to list of Trainers of Trainee with id %d", trainer.getId(), trainee.getId()));
     }
 
     @Override
     public void deleteTrainee(long id, Credentials credentials) {
         userHibernateService.authenticateUser(credentials.username, credentials.password);
         traineeRepository.deleteById(id);
-        logger.info("User of type Trainee successfully deleted.");
+        logger.info(String.format("Trainee with id %d successfully deleted.", id));
     }
 
     @Transactional
     @Override
     public long deleteTraineeByUsername(String username, Credentials credentials){
         userHibernateService.authenticateUser(credentials.username, credentials.password);
+        logger.info(String.format("Trainee with username %s successfully deleted.", username));
         return traineeRepository.deleteByUserUsername(username);
     }
 

@@ -63,7 +63,7 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
                 .build();
 
         saveTrainer(newTrainer);
-        logger.info("User of type Trainer successfully created.");
+        logger.info(String.format("Trainer successfully created with id %d", newTrainer.getId()));
         return newTrainer;
     }
 
@@ -89,7 +89,7 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
                 .build();
 
         saveTrainer(updatedTrainer);
-        logger.info("User of type Trainee successfully updated.");
+        logger.info(String.format("Trainee with id %d successfully updated.", updatedTrainer.getId()));
         return updatedTrainer;
     }
 

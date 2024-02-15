@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,8 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
     TraineeHibernateServiceImpl traineeHibernateService;
     @Autowired
     Validator validator;
+
+    Logger logger = LoggerFactory.getLogger(TraineeHibernateServiceImpl.class);
 
     @Override
     public Training getTrainingById(long id) {
@@ -74,7 +78,7 @@ public class TrainingHibernateServiceImpl implements TrainingHibernateService {
 
         saveTraining(newTraining);
         traineeHibernateService.updateTrainersList(existingTrainee.getId(), existingTrainer);
-        //log success
+        logger.info(String.format("Training successfully created with id %d ", newTraining.getId()));
         return newTraining;
     }
 

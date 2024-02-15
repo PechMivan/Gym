@@ -11,6 +11,8 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,8 @@ public class UserHibernateServiceImpl implements UserHibernateService {
     UserRepository userRepository;
     @Autowired
     Validator validator;
+
+    Logger logger = LoggerFactory.getLogger(UserHibernateServiceImpl.class);
 
     Random random = new Random();
 
@@ -60,7 +64,7 @@ public class UserHibernateServiceImpl implements UserHibernateService {
                 .build();
 
         saveUser(newUser);
-        //log success
+        logger.info(String.format("User successfully created with id: %d", newUser.getId()));
         return  newUser;
     }
 
@@ -80,7 +84,7 @@ public class UserHibernateServiceImpl implements UserHibernateService {
                 .build();
 
         saveUser(updatedUser);
-        //log success
+        logger.info(String.format("User with id %d successfully updated", updatedUser.getId()));
         return updatedUser;
     }
 
@@ -102,7 +106,6 @@ public class UserHibernateServiceImpl implements UserHibernateService {
             password.append(characters.charAt(index));
         }
 
-        //log success
         return password.toString();
     }
 
@@ -121,7 +124,6 @@ public class UserHibernateServiceImpl implements UserHibernateService {
         if(repeatedUsernameSize > 0){
             username.append(repeatedUsernameSize);
         }
-        //log success
         return username.toString();
     }
 
@@ -129,6 +131,7 @@ public class UserHibernateServiceImpl implements UserHibernateService {
     public void authenticateUser(String username, String password) {
         User existingUser = getUserByUsername(username);
         if(!password.equals(existingUser.getPassword())){
+            logger.error("Unauthorized login attempt");
             throw new UnauthorizedAccessException("Invalid login attempt: Password or username don't match.");
         }
     }
@@ -140,15 +143,18 @@ public class UserHibernateServiceImpl implements UserHibernateService {
         User existingUser = getUserByUsername(username);
         existingUser.setPassword(newPassword);
         saveUser(existingUser);
+        logger.info(String.format("Password successfully changed for user with id %d", existingUser.getId()));
         return true;
     }
 
     @Override
     public void validatePassword(String newPassword){
         if(newPassword == null || newPassword.isEmpty()){
-            throw new InvalidPasswordException("New Password cannot be null or blank. ");
+            logger.error("New Password cannot be null or blank.");
+            throw new InvalidPasswordException("New Password cannot be null or blank.");
         }
         if(newPassword.length() < 8 || newPassword.length() > 10){
+            logger.error("New Password should contain at least 8 and no more than 10 characters");
             throw new InvalidPasswordException("New Password should contain at least 8 and no more than 10 characters");
         }
     }
@@ -156,13 +162,11 @@ public class UserHibernateServiceImpl implements UserHibernateService {
     @Override
     public Boolean toggleActive(long id){
         User existingUser = getUserById(id);
-        if(existingUser == null){
-            return null;
-        }
         // Toggles the state of active from true to false and viceversa.
         boolean activeState = !existingUser.isActive();
         existingUser.setActive(activeState);
         saveUser(existingUser);
+        logger.info(String.format("Active status successfully change for user with id %d", existingUser.getId()));
         return activeState;
     }
 
