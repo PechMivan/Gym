@@ -1,4 +1,4 @@
-package com.gym.gym.dtos;
+package com.gym.gym.dtos.request;
 
 import lombok.NoArgsConstructor;
 

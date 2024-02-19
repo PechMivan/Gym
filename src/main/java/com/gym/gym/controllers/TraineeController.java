@@ -1,7 +1,7 @@
 package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.Credentials;
-import com.gym.gym.dtos.PasswordChangeRequest;
+import com.gym.gym.dtos.request.PasswordChangeRequest;
 import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
