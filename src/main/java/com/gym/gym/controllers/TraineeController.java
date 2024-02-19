@@ -4,7 +4,7 @@ import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.PasswordChangeRequest;
 import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
-import com.gym.gym.services.implementations.TraineeHibernateServiceImpl;
+import com.gym.gym.services.implementations.TraineeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping("api/gym/trainees")
 @SuppressWarnings("unused")
-public class TraineeHibernateController {
+public class TraineeController {
 
     @Autowired
-    TraineeHibernateServiceImpl traineeHibernateService;
+    TraineeServiceImpl traineeHibernateService;
 
     @GetMapping("{id}")
     public ResponseEntity< Trainee > getTraineeById(@PathVariable Long id){

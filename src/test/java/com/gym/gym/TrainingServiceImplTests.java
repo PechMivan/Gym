@@ -4,10 +4,10 @@ import com.gym.gym.dtos.TrainingDTO;
 import com.gym.gym.entities.*;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingRepository;
-import com.gym.gym.services.implementations.TraineeHibernateServiceImpl;
-import com.gym.gym.services.implementations.TrainerHibernateServiceImpl;
-import com.gym.gym.services.implementations.TrainingHibernateServiceImpl;
-import com.gym.gym.services.implementations.TrainingTypeHibernateServiceImpl;
+import com.gym.gym.services.implementations.TraineeServiceImpl;
+import com.gym.gym.services.implementations.TrainerServiceImpl;
+import com.gym.gym.services.implementations.TrainingServiceImpl;
+import com.gym.gym.services.implementations.TrainingTypeServiceImpl;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,26 +18,25 @@ import org.mockito.MockitoAnnotations;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-public class TrainingHibernateServiceImplTests {
+public class TrainingServiceImplTests {
 
     @Mock
     TrainingRepository trainingRepository;
     @Mock
-    TrainingTypeHibernateServiceImpl trainingTypeHibernateService;
+    TrainingTypeServiceImpl trainingTypeService;
     @Mock
-    TrainerHibernateServiceImpl trainerHibernateService;
+    TrainerServiceImpl trainerService;
     @Mock
-    TraineeHibernateServiceImpl traineeHibernateService;
+    TraineeServiceImpl traineeService;
     @Mock
     Validator validator;
 
     List<Training>trainings;
 
     @InjectMocks
-    TrainingHibernateServiceImpl trainingHibernateService;
+    TrainingServiceImpl trainingService;
 
     @BeforeEach
     public void setUp(){
@@ -50,7 +49,7 @@ public class TrainingHibernateServiceImplTests {
         // Arrange
         when(trainingRepository.findAll()).thenReturn(trainings);
         // Act
-        List<Training> trainingList = trainingHibernateService.getAllTrainings();
+        List<Training> trainingList = trainingService.getAllTrainings();
         // Assert
         assertEquals(trainings.size(), trainingList.size());
     }
@@ -60,22 +59,22 @@ public class TrainingHibernateServiceImplTests {
         // Arrange
         long trainingId = 1L;
         Training training = new Training();
-        training.setId(1L);
+        training.setId(trainingId);
         training.setTrainingName("test");
-        when(trainingRepository.findById(1L)).thenReturn(Optional.of(training));
+        when(trainingRepository.findById(trainingId)).thenReturn(Optional.of(training));
         // Act
-        Training result = trainingHibernateService.getTrainingById(1L);
+        Training result = trainingService.getTrainingById(trainingId);
         // Assert
         assertNotNull(result);
         assertEquals(training.getId(), result.getId());
         assertEquals(training.getTrainingName(), result.getTrainingName());
-        assertThrows(NotFoundException.class, ()-> trainingHibernateService.getTrainingById(100L));
+        assertThrows(NotFoundException.class, ()-> trainingService.getTrainingById(100L));
     }
 
     @Test
     public void saveTraining(){
         // Act
-        trainingHibernateService.saveTraining(new Training());
+        trainingService.saveTraining(new Training());
         // Assert
         verify(trainingRepository, times(1)).save(new Training());
     }
@@ -91,11 +90,11 @@ public class TrainingHibernateServiceImplTests {
 
         Trainee trainee = Trainee.builder().trainers(trainersInTraineeList).build();
 
-        List<Trainer> allTrainers = Arrays.asList(trainer1, trainer2, trainer3);
-        when(traineeHibernateService.getTraineeByUsername(anyString())).thenReturn(trainee);
-        when(trainerHibernateService.getAllTrainers()).thenReturn(new ArrayList<>(Arrays.asList(trainer1, trainer2, trainer3)));
+        List<Trainer> allTrainers = new ArrayList<>(Arrays.asList(trainer1, trainer2, trainer3));
+        when(traineeService.getTraineeByUsername(anyString())).thenReturn(trainee);
+        when(trainerService.getAllTrainers()).thenReturn(allTrainers);
         // Act
-        List<Trainer> trainersNotInTraineeList = trainingHibernateService.getAllTrainersNotInTraineeTrainersListByUsername("username");
+        List<Trainer> trainersNotInTraineeList = trainingService.getAllTrainersNotInTraineeTrainersListByUsername("username");
         // Assert
         assertNotNull(trainersNotInTraineeList);
         assertEquals(1, trainersNotInTraineeList.size());
@@ -114,13 +113,13 @@ public class TrainingHibernateServiceImplTests {
                                   .trainingDuration(10.5f)
                                   .build();
 
-        when(traineeHibernateService.getTraineeById(trainingDTO.traineeId)).thenReturn(new Trainee());
-        when(trainerHibernateService.getTrainerById(trainingDTO.trainerId)).thenReturn(new Trainer());
-        when(trainingTypeHibernateService.getTrainingTypeById(trainingDTO.trainingTypeId)).thenReturn(new TrainingType());
+        when(traineeService.getTraineeById(trainingDTO.traineeId)).thenReturn(new Trainee());
+        when(trainerService.getTrainerById(trainingDTO.trainerId)).thenReturn(new Trainer());
+        when(trainingTypeService.getTrainingTypeById(trainingDTO.trainingTypeId)).thenReturn(new TrainingType());
 
         // Act
 
-        Training training = trainingHibernateService.createTraining(trainingDTO);
+        Training training = trainingService.createTraining(trainingDTO);
 
         // Assert
         assertNotNull(training);
@@ -136,7 +135,7 @@ public class TrainingHibernateServiceImplTests {
         String endDate = "15-05-2025";
         when(trainingRepository.findAllTrainingsByTraineeUsernameAndBetweenDates(anyString(), any(Date.class), any(Date.class))).thenReturn(trainings);
         // Act
-        List<Training> trainingList = trainingHibernateService.getTrainingsByTraineeUsernameAndBetweenDates(username, startDate, endDate);
+        List<Training> trainingList = trainingService.getTrainingsByTraineeUsernameAndBetweenDates(username, startDate, endDate);
         // Assert
         assertNotNull(trainingList);
         assertEquals(3, trainingList.size());
@@ -150,7 +149,7 @@ public class TrainingHibernateServiceImplTests {
         String endDate = "15-05-2025";
         when(trainingRepository.findAllTrainingsByTrainerUsernameAndBetweenDates(anyString(), any(Date.class), any(Date.class))).thenReturn(trainings);
         // Act
-        List<Training> trainingList = trainingHibernateService.getTrainingsByTrainerUsernameAndBetweenDates(username, startDate, endDate);
+        List<Training> trainingList = trainingService.getTrainingsByTrainerUsernameAndBetweenDates(username, startDate, endDate);
         // Assert
         assertNotNull(trainingList);
         assertEquals(3, trainingList.size());
@@ -159,7 +158,7 @@ public class TrainingHibernateServiceImplTests {
     @Test
     public void testGetByTraineeUsernameAndTrainerName(){
         // Act
-        List<Training> trainingList = trainingHibernateService.getByTraineeUsernameAndTrainerName("traineeUsername", "trainerName");
+        trainingService.getByTraineeUsernameAndTrainerName("traineeUsername", "trainerName");
         // Assert
         verify(trainingRepository, times(1)).findAllTrainingsByTraineeUsernameAndTrainerName("traineeUsername", "trainerName");
     }
@@ -167,7 +166,7 @@ public class TrainingHibernateServiceImplTests {
     @Test
     public void testGetTrainingsByTraineeUsernameAndTrainingType(){
         // Act
-        List<Training> trainingList = trainingHibernateService.getTrainingsByTraineeUsernameAndTrainingType("traineeUsername", "trainingTypeName");
+        trainingService.getTrainingsByTraineeUsernameAndTrainingType("traineeUsername", "trainingTypeName");
         // Assert
         verify(trainingRepository, times(1)).findAllTrainingsByTraineeUsernameAndTrainingType("traineeUsername", "trainingTypeName");
     }
@@ -175,7 +174,7 @@ public class TrainingHibernateServiceImplTests {
     @Test
     public void testGetTrainingsByTrainerUsernameAndTraineeName(){
         // Act
-        List<Training> trainingList = trainingHibernateService.getTrainingsByTrainerUsernameAndTraineeName("trainerUsername", "traineeName");
+        trainingService.getTrainingsByTrainerUsernameAndTraineeName("trainerUsername", "traineeName");
         // Assert
         verify(trainingRepository, times(1)).findAllTrainingsByTrainerUsernameAndTraineeName("trainerUsername", "traineeName");
     }

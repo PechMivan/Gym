@@ -7,8 +7,8 @@ import com.gym.gym.entities.TrainingType;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TrainerRepository;
-import com.gym.gym.services.TrainerHibernateService;
-import com.gym.gym.services.TrainingTypeHibernateService;
+import com.gym.gym.services.TrainerService;
+import com.gym.gym.services.TrainingTypeService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -22,15 +22,15 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class TrainerHibernateServiceImpl implements TrainerHibernateService {
+public class TrainerServiceImpl implements TrainerService {
 
-    Logger logger = LoggerFactory.getLogger(TraineeHibernateServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
     @Autowired
     TrainerRepository trainerRepository;
     @Autowired
-    UserHibernateServiceImpl userHibernateService;
+    UserServiceImpl userHibernateService;
     @Autowired
-    TrainingTypeHibernateService trainingTypeHibernateService;
+    TrainingTypeService trainingTypeService;
     @Autowired
     Validator validator;
 
@@ -55,7 +55,7 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
     public Trainer createTrainer(TrainerDTO trainerData) {
         validateData(trainerData);
         User newUser = userHibernateService.createUser(trainerData.userDTO);
-        TrainingType selectedTrainingType = trainingTypeHibernateService.getTrainingTypeByName(trainerData.specialization);
+        TrainingType selectedTrainingType = trainingTypeService.getTrainingTypeByName(trainerData.specialization);
 
         Trainer newTrainer = Trainer.builder()
                 .user(newUser)
@@ -79,7 +79,7 @@ public class TrainerHibernateServiceImpl implements TrainerHibernateService {
         validateData(trainerData);
 
         Trainer existingTrainer = getTrainerById(id);
-        TrainingType updatedTrainingType = trainingTypeHibernateService.getTrainingTypeByName(trainerData.specialization);
+        TrainingType updatedTrainingType = trainingTypeService.getTrainingTypeByName(trainerData.specialization);
         User updatedUser = userHibernateService.updateUser(trainerData.userDTO);
 
         Trainer updatedTrainer = Trainer.builder()

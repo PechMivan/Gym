@@ -3,23 +3,21 @@ package com.gym.gym.controllers;
 import com.gym.gym.dtos.TrainingDTO;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
-import com.gym.gym.services.implementations.TrainingHibernateServiceImpl;
+import com.gym.gym.services.implementations.TrainingServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/gym/trainings")
 @SuppressWarnings("unused")
-public class TrainingHibernateController {
+public class TrainingController {
 
     @Autowired
-    TrainingHibernateServiceImpl trainingHibernateService;
+    TrainingServiceImpl trainingHibernateService;
 
     @PostMapping
     public ResponseEntity<Training> createTraining(@RequestBody TrainingDTO data){

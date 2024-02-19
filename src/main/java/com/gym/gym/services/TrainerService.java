@@ -7,7 +7,7 @@ import jakarta.transaction.Transactional;
 
 import java.util.List;
 
-public interface TrainerHibernateService {
+public interface TrainerService {
     Trainer getTrainerById(long id);
 
     Trainer getTrainerByUsername(String username);

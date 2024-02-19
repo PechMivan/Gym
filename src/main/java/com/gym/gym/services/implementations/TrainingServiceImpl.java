@@ -7,7 +7,7 @@ import com.gym.gym.entities.Training;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingRepository;
-import com.gym.gym.services.TrainingHibernateService;
+import com.gym.gym.services.TrainingService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -23,24 +23,23 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings("unused")
-public class TrainingHibernateServiceImpl implements TrainingHibernateService {
+public class TrainingServiceImpl implements TrainingService {
 
     @Autowired
     TrainingRepository trainingRepository;
     @Autowired
-    TrainingTypeHibernateServiceImpl trainingTypeHibernateService;
+    TrainingTypeServiceImpl trainingTypeHibernateService;
     @Autowired
-    TrainerHibernateServiceImpl trainerHibernateService;
+    TrainerServiceImpl trainerHibernateService;
     @Autowired
-    TraineeHibernateServiceImpl traineeHibernateService;
+    TraineeServiceImpl traineeHibernateService;
     @Autowired
     Validator validator;
 
-    Logger logger = LoggerFactory.getLogger(TraineeHibernateServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
 
     @Override
     public Training getTrainingById(long id) {

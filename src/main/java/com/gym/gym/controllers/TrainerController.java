@@ -4,7 +4,7 @@ import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.PasswordChangeRequest;
 import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.entities.Trainer;
-import com.gym.gym.services.implementations.TrainerHibernateServiceImpl;
+import com.gym.gym.services.implementations.TrainerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/gym/trainers")
 @SuppressWarnings("unused")
-public class TrainerHibernateController {
+public class TrainerController {
 
     @Autowired
-    TrainerHibernateServiceImpl trainerHibernateService;
+    TrainerServiceImpl trainerHibernateService;
 
 
     @GetMapping("{id}")

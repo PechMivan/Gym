@@ -7,7 +7,7 @@ import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TraineeRepository;
-import com.gym.gym.services.TraineeHibernateService;
+import com.gym.gym.services.TraineeService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -25,15 +25,15 @@ import java.util.Locale;
 import java.util.Set;
 
 @Service
-public class TraineeHibernateServiceImpl implements TraineeHibernateService {
-    Logger logger = LoggerFactory.getLogger(TraineeHibernateServiceImpl.class);
+public class TraineeServiceImpl implements TraineeService {
+    Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
 
     @Autowired
     private TraineeRepository traineeRepository;
     @Autowired
     Validator validator;
     @Autowired
-    private UserHibernateServiceImpl userHibernateService;
+    private UserServiceImpl userHibernateService;
 
     //TODO: Implement Mapper and return a DTO for this method and getAll.
     @Override

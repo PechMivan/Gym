@@ -4,7 +4,7 @@ import com.gym.gym.entities.TrainingType;
 
 import java.util.List;
 
-public interface TrainingTypeHibernateService {
+public interface TrainingTypeService {
 
     TrainingType getTrainingTypeById(long id);
 

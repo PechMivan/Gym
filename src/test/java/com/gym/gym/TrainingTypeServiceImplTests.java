@@ -1,9 +1,8 @@
 package com.gym.gym;
 
-import com.gym.gym.entities.Training;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.repositories.TrainingTypeRepository;
-import com.gym.gym.services.implementations.TrainingTypeHibernateServiceImpl;
+import com.gym.gym.services.implementations.TrainingTypeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,13 +16,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-public class TrainingTypeHibernateServiceImplTests {
+public class TrainingTypeServiceImplTests {
 
     @Mock
     TrainingTypeRepository trainingTypeRepository;
 
     @InjectMocks
-    TrainingTypeHibernateServiceImpl trainingTypeHibernateService;
+    TrainingTypeServiceImpl trainingTypeService;
 
     TrainingType trainingType;
 
@@ -43,7 +42,7 @@ public class TrainingTypeHibernateServiceImplTests {
         List<TrainingType> trainingTypes = Arrays.asList(new TrainingType(), new TrainingType(), new TrainingType());
         when(trainingTypeRepository.findAll()).thenReturn(trainingTypes);
         // Act
-        List<TrainingType> trainingTypeList = trainingTypeHibernateService.getAllTrainingTypes();
+        List<TrainingType> trainingTypeList = trainingTypeService.getAllTrainingTypes();
         // Assert
         assertEquals(trainingTypes.size(), trainingTypeList.size());
     }
@@ -54,7 +53,7 @@ public class TrainingTypeHibernateServiceImplTests {
         long trainingTypeId = 1L;
         when(trainingTypeRepository.findById(trainingTypeId)).thenReturn(Optional.of(trainingType));
         // Act
-        TrainingType result = trainingTypeHibernateService.getTrainingTypeById(trainingTypeId);
+        TrainingType result = trainingTypeService.getTrainingTypeById(trainingTypeId);
         // Assert
         assertNotNull(result);
         assertEquals("HIIT", result.getTrainingTypeName());
@@ -66,7 +65,7 @@ public class TrainingTypeHibernateServiceImplTests {
         String name = "name";
         when(trainingTypeRepository.findByTrainingTypeName(name)).thenReturn(Optional.of(trainingType));
         // Act
-        TrainingType result = trainingTypeHibernateService.getTrainingTypeByName(name);
+        TrainingType result = trainingTypeService.getTrainingTypeByName(name);
         // Assert
         assertNotNull(result);
         assertEquals("HIIT", result.getTrainingTypeName());

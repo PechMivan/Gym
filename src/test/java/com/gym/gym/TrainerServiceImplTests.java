@@ -8,9 +8,9 @@ import com.gym.gym.entities.TrainingType;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TrainerRepository;
-import com.gym.gym.services.implementations.TrainerHibernateServiceImpl;
-import com.gym.gym.services.implementations.TrainingTypeHibernateServiceImpl;
-import com.gym.gym.services.implementations.UserHibernateServiceImpl;
+import com.gym.gym.services.implementations.TrainerServiceImpl;
+import com.gym.gym.services.implementations.TrainingTypeServiceImpl;
+import com.gym.gym.services.implementations.UserServiceImpl;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,13 +25,13 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-public class TrainerHibernateServiceImplTests {
+public class TrainerServiceImplTests {
 
     @Mock
-    UserHibernateServiceImpl userHibernateService;
+    UserServiceImpl userService;
 
     @Mock
-    TrainingTypeHibernateServiceImpl trainingTypeHibernateService;
+    TrainingTypeServiceImpl trainingTypeService;
 
     @Mock
     Validator validator;
@@ -40,7 +40,7 @@ public class TrainerHibernateServiceImplTests {
     TrainerRepository trainerRepository;
 
     @InjectMocks
-    TrainerHibernateServiceImpl trainerHibernateService;
+    TrainerServiceImpl trainerService;
 
     User user;
     UserDTO userDTO;
@@ -91,7 +91,7 @@ public class TrainerHibernateServiceImplTests {
         List<Trainer> trainers = Arrays.asList(new Trainer(), new Trainer());
         when(trainerRepository.findAll()).thenReturn(trainers);
         // Act
-        List<Trainer> trainersList = trainerHibernateService.getAllTrainers();
+        List<Trainer> trainersList = trainerService.getAllTrainers();
         // Assert
         assertEquals(trainers.size(), trainersList.size());
     }
@@ -102,12 +102,12 @@ public class TrainerHibernateServiceImplTests {
         long trainerId = 1L;
         when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(trainer));
         // Act
-        Trainer result = trainerHibernateService.getTrainerById(1L);
+        Trainer result = trainerService.getTrainerById(1L);
         // Assert
         assertNotNull(result);
         assertEquals(trainerId, result.getId());
         assertEquals("John", result.getUser().getFirstName());
-        assertThrows(NotFoundException.class, () ->trainerHibernateService.getTrainerById(100L));
+        assertThrows(NotFoundException.class, () ->trainerService.getTrainerById(100L));
     }
 
     @Test
@@ -116,21 +116,21 @@ public class TrainerHibernateServiceImplTests {
         String username = "John.Doe";
         when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(trainer));
         // Act
-        Trainer result = trainerHibernateService.getTrainerByUsername(username);
+        Trainer result = trainerService.getTrainerByUsername(username);
         // Assert
         assertNotNull(trainer);
         assertEquals(username, result.getUser().getUsername());
         assertEquals("John", result.getUser().getFirstName());
-        assertThrows(NotFoundException.class, () ->trainerHibernateService.getTrainerByUsername("wrongUsername"));
+        assertThrows(NotFoundException.class, () ->trainerService.getTrainerByUsername("wrongUsername"));
     }
 
     @Test
     public void testCreateTrainer(){
         // Arrange
-        when(userHibernateService.createUser(trainerDTO.userDTO)).thenReturn(user);
-        when(trainingTypeHibernateService.getTrainingTypeByName(trainerDTO.specialization)).thenReturn(trainingType);
+        when(userService.createUser(trainerDTO.userDTO)).thenReturn(user);
+        when(trainingTypeService.getTrainingTypeByName(trainerDTO.specialization)).thenReturn(trainingType);
         // Act
-        Trainer createdTrainer = trainerHibernateService.createTrainer(trainerDTO);
+        Trainer createdTrainer = trainerService.createTrainer(trainerDTO);
         // Assert
         assertEquals("John", createdTrainer.getUser().getFirstName());
         assertEquals("Doe", createdTrainer.getUser().getLastName());
@@ -142,7 +142,7 @@ public class TrainerHibernateServiceImplTests {
     @Test
     public void testSaveTrainer(){
         // Act
-        trainerHibernateService.saveTrainer(trainer);
+        trainerService.saveTrainer(trainer);
         // Assert
         verify(trainerRepository, times(1)).save(trainer);
     }
@@ -168,11 +168,11 @@ public class TrainerHibernateServiceImplTests {
                 .userDTO(userDTO)
                 .specialization("CARDIO").build();
 
-        when(userHibernateService.updateUser(trainerDTOUpdated.userDTO)).thenReturn(userUpdated);
-        when(trainingTypeHibernateService.getTrainingTypeByName(trainerDTOUpdated.specialization)).thenReturn(trainingTypeUpdated);
+        when(userService.updateUser(trainerDTOUpdated.userDTO)).thenReturn(userUpdated);
+        when(trainingTypeService.getTrainingTypeByName(trainerDTOUpdated.specialization)).thenReturn(trainingTypeUpdated);
         when(trainerRepository.findById(1L)).thenReturn(Optional.of(trainer));
         // Act
-        Trainer updatedTrainer = trainerHibernateService.updateTrainer(1L, trainerDTOUpdated);
+        Trainer updatedTrainer = trainerService.updateTrainer(1L, trainerDTOUpdated);
         // Assert
         assertEquals("testName", updatedTrainer.getUser().getFirstName());
         assertEquals(trainerDTOUpdated.specialization, updatedTrainer.getSpecialization().getTrainingTypeName());
@@ -182,17 +182,17 @@ public class TrainerHibernateServiceImplTests {
     @Test
     public void testToggleTrainerActive(){
         // Act
-        trainerHibernateService.toggleTraineeActive(1L, new Credentials());
+        trainerService.toggleTraineeActive(1L, new Credentials());
         // Assert
-        verify(userHibernateService, times(1)).toggleActive(1L);
+        verify(userService, times(1)).toggleActive(1L);
     }
 
     @Test
     public void testChangePassword(){
         // Act
-        trainerHibernateService.changePassword("username", "oldPassword", "newPassword");
+        trainerService.changePassword("username", "oldPassword", "newPassword");
         // Assert
-        verify(userHibernateService, times(1))
+        verify(userService, times(1))
                 .changePassword("username", "oldPassword", "newPassword");
     }
 }

@@ -6,7 +6,7 @@ import com.gym.gym.exceptions.InvalidPasswordException;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.repositories.UserRepository;
-import com.gym.gym.services.UserHibernateService;
+import com.gym.gym.services.UserService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -21,14 +21,14 @@ import java.util.Random;
 import java.util.Set;
 
 @Service
-public class UserHibernateServiceImpl implements UserHibernateService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
     @Autowired
     Validator validator;
 
-    Logger logger = LoggerFactory.getLogger(UserHibernateServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     Random random = new Random();
 

@@ -11,7 +11,7 @@ import com.gym.gym.exceptions.InvalidPasswordException;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.repositories.UserRepository;
-import com.gym.gym.services.implementations.UserHibernateServiceImpl;
+import com.gym.gym.services.implementations.UserServiceImpl;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class UserHibernateServiceImplTests {
+public class UserServiceImplTests {
     @Mock
     private UserRepository userRepository;
 
@@ -27,7 +27,7 @@ public class UserHibernateServiceImplTests {
     Validator validator;
 
     @InjectMocks
-    private UserHibernateServiceImpl userService;
+    private UserServiceImpl userService;
     User user;
     UserDTO userdto;
 

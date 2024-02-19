@@ -11,8 +11,8 @@ import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TraineeRepository;
-import com.gym.gym.services.implementations.TraineeHibernateServiceImpl;
-import com.gym.gym.services.implementations.UserHibernateServiceImpl;
+import com.gym.gym.services.implementations.TraineeServiceImpl;
+import com.gym.gym.services.implementations.UserServiceImpl;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,23 +20,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class TraineeHibernateServiceImplTests {
+public class TraineeServiceImplTests {
 
     @Mock
     TraineeRepository traineeRepository;
 
     @Mock
-    UserHibernateServiceImpl userHibernateService;
+    UserServiceImpl userService;
 
     @Mock
     Validator validator;
 
     @InjectMocks
-    TraineeHibernateServiceImpl traineeHibernateService;
+    TraineeServiceImpl traineeService;
 
     User user;
     UserDTO userDTO;
@@ -80,7 +78,7 @@ public class TraineeHibernateServiceImplTests {
         List<Trainee> trainees = Arrays.asList(new Trainee(), new Trainee());
         when(traineeRepository.findAll()).thenReturn(trainees);
         // Act
-        List<Trainee> traineeList = traineeHibernateService.getAllTrainees();
+        List<Trainee> traineeList = traineeService.getAllTrainees();
         // Assert
         assertNotNull(traineeList);
         assertEquals(trainees.size(), traineeList.size());
@@ -92,12 +90,12 @@ public class TraineeHibernateServiceImplTests {
         long traineeId = 1L;
         when(traineeRepository.findById(traineeId)).thenReturn(Optional.of(trainee));
         // Act
-        Trainee result = traineeHibernateService.getTraineeById(traineeId);
+        Trainee result = traineeService.getTraineeById(traineeId);
         // Assert
         assertNotNull(result);
         assertEquals(traineeId, result.getId());
         assertEquals("John", result.getUser().getFirstName());
-        assertThrows(NotFoundException.class, () -> traineeHibernateService.getTraineeById(100L));
+        assertThrows(NotFoundException.class, () -> traineeService.getTraineeById(100L));
     }
 
     @Test
@@ -106,21 +104,21 @@ public class TraineeHibernateServiceImplTests {
         String username = "John.Doe";
         when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(trainee));
         // Act
-        Trainee result = traineeHibernateService.getTraineeByUsername(username);
+        Trainee result = traineeService.getTraineeByUsername(username);
         // Assert
         assertNotNull(result);
         assertEquals(username, result.getUser().getUsername());
         assertEquals("John", result.getUser().getFirstName());
-        assertThrows(NotFoundException.class, () -> traineeHibernateService.getTraineeByUsername("wrongUsername"));
+        assertThrows(NotFoundException.class, () -> traineeService.getTraineeByUsername("wrongUsername"));
     }
 
     @Test
     public void testCreateTrainee(){
         // Arrange
-        Date dateOfBirth = traineeHibernateService.createDate(traineeDTO.dateOfBirth);
-        when(userHibernateService.createUser(traineeDTO.userDTO)).thenReturn(user);
+        Date dateOfBirth = traineeService.createDate(traineeDTO.dateOfBirth);
+        when(userService.createUser(traineeDTO.userDTO)).thenReturn(user);
         // Act
-        Trainee createdTrainee = traineeHibernateService.createTrainee(traineeDTO);
+        Trainee createdTrainee = traineeService.createTrainee(traineeDTO);
         // Assert
         assertEquals("John", createdTrainee.getUser().getFirstName());
         assertEquals("Doe", createdTrainee.getUser().getLastName());
@@ -133,7 +131,7 @@ public class TraineeHibernateServiceImplTests {
     @Test
     public void testSaveTrainee(){
         // Act
-        traineeHibernateService.saveTrainee(trainee);
+        traineeService.saveTrainee(trainee);
         // Assert
         verify(traineeRepository, times(1)).save(trainee);
     }
@@ -161,12 +159,12 @@ public class TraineeHibernateServiceImplTests {
                                 .dateOfBirth("2010-10-10")
                                 .build();
 
-        Date dateOfBirth = traineeHibernateService.createDate(traineeDTOUpdated.dateOfBirth);
+        Date dateOfBirth = traineeService.createDate(traineeDTOUpdated.dateOfBirth);
 
         when(traineeRepository.findById(anyLong())).thenReturn(Optional.of(trainee));
-        when(userHibernateService.updateUser(traineeDTOUpdated.userDTO)).thenReturn(userUpdated);
+        when(userService.updateUser(traineeDTOUpdated.userDTO)).thenReturn(userUpdated);
         // Act
-        Trainee updatedTrainee = traineeHibernateService.updateTrainee(1L, traineeDTOUpdated);
+        Trainee updatedTrainee = traineeService.updateTrainee(1L, traineeDTOUpdated);
         // Assert
         assertEquals("testName", updatedTrainee.getUser().getFirstName());
         assertEquals("testLastName", updatedTrainee.getUser().getLastName());
@@ -180,7 +178,7 @@ public class TraineeHibernateServiceImplTests {
     @Test
     public void testDeleteTraineeById(){
         // Act
-        traineeHibernateService.deleteTrainee(1L, new Credentials());
+        traineeService.deleteTrainee(1L, new Credentials());
         // Assert
         verify(traineeRepository, times(1)).deleteById(1L);
     }
@@ -188,7 +186,7 @@ public class TraineeHibernateServiceImplTests {
     @Test
     public void testDeleteTraineeByUsername(){
         // Act
-        traineeHibernateService.deleteTraineeByUsername("test", new Credentials());
+        traineeService.deleteTraineeByUsername("test", new Credentials());
         // Assert
         verify(traineeRepository, times(1)).deleteByUserUsername("test");
     }
@@ -196,17 +194,17 @@ public class TraineeHibernateServiceImplTests {
     @Test
     public void testToggleTraineeActive(){
         // Act
-        traineeHibernateService.toggleTraineeActive(1L, new Credentials());
+        traineeService.toggleTraineeActive(1L, new Credentials());
         // Assert
-        verify(userHibernateService, times(1)).toggleActive(1L);
+        verify(userService, times(1)).toggleActive(1L);
     }
 
     @Test
     public void testChangePassword(){
         // Act
-        traineeHibernateService.changePassword("username", "oldPassword", "newPassword");
+        traineeService.changePassword("username", "oldPassword", "newPassword");
         // Assert
-        verify(userHibernateService, times(1))
+        verify(userService, times(1))
                 .changePassword("username", "oldPassword", "newPassword");
     }
 
@@ -216,7 +214,7 @@ public class TraineeHibernateServiceImplTests {
         Trainee trainee = Trainee.builder().trainers(new ArrayList<>()).build();
         when(traineeRepository.findById(anyLong())).thenReturn(Optional.of(trainee));
         // Act
-        traineeHibernateService.updateTrainersList(1L, new Trainer());
+        traineeService.updateTrainersList(1L, new Trainer());
         // Assert
         assertEquals(1, trainee.getTrainers().size());
         verify(traineeRepository, times(1)).save(trainee);

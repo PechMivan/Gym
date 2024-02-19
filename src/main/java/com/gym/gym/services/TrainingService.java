@@ -3,11 +3,10 @@ package com.gym.gym.services;
 import com.gym.gym.dtos.TrainingDTO;
 import com.gym.gym.entities.Training;
 
-import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public interface TrainingHibernateService {
+public interface TrainingService {
 
     Training getTrainingById(long id);
 
