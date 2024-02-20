@@ -1,9 +1,12 @@
 package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.TrainingDTO;
+import com.gym.gym.dtos.request.TrainingCreateRequest;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
+import com.gym.gym.mappers.TrainingMapper;
 import com.gym.gym.services.implementations.TrainingServiceImpl;
+import com.sun.net.httpserver.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,24 +20,24 @@ import java.util.List;
 public class TrainingController {
 
     @Autowired
-    TrainingServiceImpl trainingHibernateService;
+    TrainingServiceImpl trainingService;
 
-//    @PostMapping
-//    public ResponseEntity<Training> createTraining(@RequestBody TrainingDTO data){
-//        Training training = trainingHibernateService.createTraining(data);
-//        if (training != null){
-//            return new ResponseEntity<>(training, HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
+    @Autowired
+    TrainingMapper trainingMapper;
+
+    @PostMapping
+    public ResponseEntity<HttpStatus> createTraining(@RequestBody TrainingCreateRequest request){
+        Training training = trainingMapper.mapFromCreateRequest(request);
+        Training newTraining = trainingService.createTraining(training);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @GetMapping("/trainee/username/{username}")
     public ResponseEntity<List<Training>> getTrainingsByTraineeUsernameAndBetweenDates(@PathVariable String username,
                                                                                         @RequestParam String startDate,
                                                                                        @RequestParam String endDate){
 
-        List<Training> trainings = trainingHibernateService.getTrainingsByTraineeUsernameAndBetweenDates(username, startDate, endDate);
+        List<Training> trainings = trainingService.getTrainingsByTraineeUsernameAndBetweenDates(username, startDate, endDate);
         return new ResponseEntity<>(trainings, HttpStatus.OK);
     }
 
@@ -42,7 +45,7 @@ public class TrainingController {
     public ResponseEntity<List<Training>> getTrainingsByTraineeUsernameAndTrainerName(@PathVariable String username,
                                                                                        @RequestParam String trainerName){
 
-        List<Training> trainings = trainingHibernateService.getByTraineeUsernameAndTrainerName(username, trainerName);
+        List<Training> trainings = trainingService.getByTraineeUsernameAndTrainerName(username, trainerName);
         return new ResponseEntity<>(trainings, HttpStatus.OK);
     }
 
@@ -50,7 +53,7 @@ public class TrainingController {
     public ResponseEntity<List<Training>> getTrainingsByTraineeUsernameAndTrainingType(@PathVariable String username,
                                                                                            @RequestParam String trainingType){
 
-        List<Training> trainings = trainingHibernateService.getTrainingsByTraineeUsernameAndTrainingType(username, trainingType);
+        List<Training> trainings = trainingService.getTrainingsByTraineeUsernameAndTrainingType(username, trainingType);
         return new ResponseEntity<>(trainings, HttpStatus.OK);
     }
 
@@ -59,7 +62,7 @@ public class TrainingController {
                                                                                        @RequestParam String startDate,
                                                                                        @RequestParam String endDate){
 
-        List<Training> trainings = trainingHibernateService.getTrainingsByTrainerUsernameAndBetweenDates(username, startDate, endDate);
+        List<Training> trainings = trainingService.getTrainingsByTrainerUsernameAndBetweenDates(username, startDate, endDate);
         return new ResponseEntity<>(trainings, HttpStatus.OK);
     }
 
@@ -67,14 +70,14 @@ public class TrainingController {
     public ResponseEntity<List<Training>> getTrainingsByTrainerUsernameAndTraineeName(@PathVariable String username,
                                                                                       @RequestParam String traineeName){
 
-        List<Training> trainings = trainingHibernateService.getTrainingsByTrainerUsernameAndTraineeName(username, traineeName);
+        List<Training> trainings = trainingService.getTrainingsByTrainerUsernameAndTraineeName(username, traineeName);
         return new ResponseEntity<>(trainings, HttpStatus.OK);
     }
 
     @GetMapping("/trainee_trainers/{username}")
     public ResponseEntity<List<Trainer>> getTrainingsByTrainerUsernameAndTraineeName(@PathVariable String username){
 
-        List<Trainer> trainers = trainingHibernateService.getAllTrainersNotInTraineeTrainersListByUsername(username);
+        List<Trainer> trainers = trainingService.getAllTrainersNotInTraineeTrainersListByUsername(username);
         return new ResponseEntity<>(trainers, HttpStatus.OK);
     }
 
