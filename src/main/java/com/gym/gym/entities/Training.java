@@ -34,7 +34,7 @@ public class Training implements Serializable {
     private Date trainingDate;
 
     @Column(nullable = false)
-    private float trainingDuration;
+    private int trainingDuration;
 
     @ManyToOne
     @JoinColumn(name="traineeId", nullable=false)

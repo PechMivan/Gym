@@ -14,7 +14,7 @@ public interface TrainingService {
 
     void saveTraining(Training training);
 
-    Training createTraining(TrainingDTO training);
+    Training createTraining(Training training);
 
     List<Training> getTrainingsByTraineeUsernameAndBetweenDates(String username, String startDate, String endDate);
 

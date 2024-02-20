@@ -19,15 +19,15 @@ public class TrainingController {
     @Autowired
     TrainingServiceImpl trainingHibernateService;
 
-    @PostMapping
-    public ResponseEntity<Training> createTraining(@RequestBody TrainingDTO data){
-        Training training = trainingHibernateService.createTraining(data);
-        if (training != null){
-            return new ResponseEntity<>(training, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<Training> createTraining(@RequestBody TrainingDTO data){
+//        Training training = trainingHibernateService.createTraining(data);
+//        if (training != null){
+//            return new ResponseEntity<>(training, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @GetMapping("/trainee/username/{username}")
     public ResponseEntity<List<Training>> getTrainingsByTraineeUsernameAndBetweenDates(@PathVariable String username,

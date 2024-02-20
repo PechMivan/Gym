@@ -1,6 +1,5 @@
 package com.gym.gym.services.implementations;
 
-import com.gym.gym.dtos.TrainingDTO;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
@@ -59,20 +58,20 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public Training createTraining(TrainingDTO trainingData) {
-        validateData(trainingData);
-        Trainee existingTrainee = traineeHibernateService.getTraineeById(trainingData.traineeId);
-        Trainer existingTrainer = trainerHibernateService.getTrainerById(trainingData.trainerId);
-        TrainingType existingTrainingType = trainingTypeHibernateService.getTrainingTypeById(trainingData.trainingTypeId);
-        Date trainingDate = createDate(trainingData.trainingDate);
+    public Training createTraining(Training training) {
+        validateData(training);
+        Trainee existingTrainee = traineeHibernateService.getTraineeByUsername(training.getTrainee().getUser().getUsername());
+        Trainer existingTrainer = trainerHibernateService.getTrainerByUsername(training.getTrainer().getUser().getUsername());
+        TrainingType trainingType = existingTrainer.getSpecialization();
+        Date trainingDate = training.getTrainingDate();
 
         Training newTraining = Training.builder()
                                 .trainee(existingTrainee)
                                 .trainer(existingTrainer)
-                                .trainingType(existingTrainingType)
-                                .trainingName(trainingData.trainingName)
+                                .trainingType(trainingType)
+                                .trainingName(training.getTrainingName())
                                 .trainingDate(trainingDate)
-                                .trainingDuration(trainingData.trainingDuration)
+                                .trainingDuration(training.getTrainingDuration())
                                 .build();
 
         saveTraining(newTraining);
@@ -133,16 +132,16 @@ public class TrainingServiceImpl implements TrainingService {
         return date;
     }
 
-    public void validateData(TrainingDTO trainingData){
-        Set<ConstraintViolation<TrainingDTO>> violations = validator.validate(trainingData);
+    public void validateData(Training trainingData){
+        Set<ConstraintViolation<Training>> violations = validator.validate(trainingData);
 
         if (!violations.isEmpty()) {
             StringBuilder sb = new StringBuilder();
-            for (ConstraintViolation<TrainingDTO> constraintViolation : violations) {
+            for (ConstraintViolation<Training> constraintViolation : violations) {
                 sb.append(constraintViolation.getMessage());
             }
 
-            throw new ConstraintViolationException("Error occurred: " + sb.toString(), violations);
+            throw new ConstraintViolationException("Error occurred: " + sb, violations);
         }
     }
 }

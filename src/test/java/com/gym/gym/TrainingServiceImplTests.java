@@ -1,13 +1,11 @@
 package com.gym.gym;
 
-import com.gym.gym.dtos.TrainingDTO;
 import com.gym.gym.entities.*;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
 import com.gym.gym.services.implementations.TrainingServiceImpl;
-import com.gym.gym.services.implementations.TrainingTypeServiceImpl;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,11 +23,10 @@ public class TrainingServiceImplTests {
     @Mock
     TrainingRepository trainingRepository;
     @Mock
-    TrainingTypeServiceImpl trainingTypeService;
-    @Mock
     TrainerServiceImpl trainerService;
     @Mock
     TraineeServiceImpl traineeService;
+
     @Mock
     Validator validator;
 
@@ -104,27 +101,38 @@ public class TrainingServiceImplTests {
     @Test
     public void testCreateTraining(){
         // Arrange
-        TrainingDTO trainingDTO = TrainingDTO.builder()
-                                  .traineeId(1L)
-                                  .trainerId(1L)
-                                  .trainingTypeId(1L)
+
+        User user = User.builder().username("username").build();
+
+        Trainee trainee = Trainee.builder().user(user).build();
+        Trainer trainer = Trainer.builder().user(user).build();
+
+        TrainingType existingTrainingType = TrainingType.builder().id(1L).trainingTypeName("HIIT").build();
+        Trainee existingTrainee = Trainee.builder().id(1L).user(user).build();
+        Trainer existingTrainer = Trainer.builder().id(1L).user(user).specialization(existingTrainingType).build();
+
+        Training training = Training.builder()
+                                  .trainee(trainee)
+                                  .trainer(trainer)
                                   .trainingName("trainingName")
-                                  .trainingDate("2025-10-10")
-                                  .trainingDuration(10.5f)
+                                  .trainingDate(new Date())
+                                  .trainingDuration(10)
                                   .build();
 
-        when(traineeService.getTraineeById(trainingDTO.traineeId)).thenReturn(new Trainee());
-        when(trainerService.getTrainerById(trainingDTO.trainerId)).thenReturn(new Trainer());
-        when(trainingTypeService.getTrainingTypeById(trainingDTO.trainingTypeId)).thenReturn(new TrainingType());
+        when(traineeService.getTraineeByUsername(training.getTrainee().getUser().getUsername())).thenReturn(existingTrainee);
+        when(trainerService.getTrainerByUsername(training.getTrainer().getUser().getUsername())).thenReturn(existingTrainer);
 
         // Act
 
-        Training training = trainingService.createTraining(trainingDTO);
+        Training result = trainingService.createTraining(training);
 
         // Assert
         assertNotNull(training);
-        assertEquals(trainingDTO.trainingName, training.getTrainingName());
-        assertEquals(trainingDTO.trainingDuration, training.getTrainingDuration());
+        assertEquals(1L, result.getTrainee().getId());
+        assertEquals(1L, result.getTrainer().getId());
+        assertEquals(existingTrainingType.getTrainingTypeName(), result.getTrainingType().getTrainingTypeName());
+        assertEquals(training.getTrainingName(), result.getTrainingName());
+        assertEquals(training.getTrainingDuration(), result.getTrainingDuration());
     }
 
     @Test
