@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
                 .lastname(user.getLastname())
                 .username(newUsername)
                 .password(newPassword)
-                .isActive(user.isActive())
+                .isActive(true)
                 .build();
 
         saveUser(newUser);
