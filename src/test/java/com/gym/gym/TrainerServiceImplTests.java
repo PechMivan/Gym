@@ -132,6 +132,8 @@ public class TrainerServiceImplTests {
     @Test
     public void testUpdateTrainer() {
         // Arrange
+        String username = "John.Doe";
+
         User userUpdated = User.builder()
                 .id(1L)
                 .firstname("testName")
@@ -147,13 +149,13 @@ public class TrainerServiceImplTests {
                                        .specialization(trainingTypeUpdated)
                                        .build();
 
-        when(userService.updateUser(updateTrainer.getUser())).thenReturn(userUpdated);
+        when(userService.updateUser(username, updateTrainer.getUser())).thenReturn(userUpdated);
         when(trainingTypeService
                 .getTrainingTypeByName(updateTrainer.getSpecialization().getName()))
                 .thenReturn(trainingTypeUpdated);
-        when(trainerRepository.findById(1L)).thenReturn(Optional.of(trainer));
+        when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(trainer));
         // Act
-        Trainer updatedTrainer = trainerService.updateTrainer(1L, updateTrainer);
+        Trainer updatedTrainer = trainerService.updateTrainer(username, updateTrainer);
         // Assert
         assertEquals("testName", updatedTrainer.getUser().getFirstname());
         assertEquals(updateTrainer.getSpecialization().getName(), updatedTrainer.getSpecialization().getName());

@@ -61,15 +61,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(User user){
-        authenticateUser(user.getUsername(), user.getPassword());
-        User existingUser = getUserByUsername(user.getUsername());
+    public User updateUser(String username, User user){
+        //authenticateUser(user.getUsername(), user.getPassword());
+        User existingUser = getUserByUsername(username);
 
         User updatedUser = User.builder()
                 .id(existingUser.getId())
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
-                .username(user.getUsername())
+                .username(existingUser.getUsername())
                 .password(existingUser.getPassword())
                 .isActive(user.isActive())
                 .build();

@@ -11,7 +11,7 @@ public interface UserService {
 
     User getUserByUsername(String username);
     User createUser(User user);
-    User updateUser(User user);
+    User updateUser(String username, User user);
     void saveUser(User user);
     String createPassword();
     String createUsername(String firstname, String lastname);

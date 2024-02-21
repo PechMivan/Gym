@@ -18,7 +18,7 @@ public interface TrainerService {
     @Transactional
     void saveTrainer(Trainer trainer);
 
-    Trainer updateTrainer(long id, Trainer trainer);
+    Trainer updateTrainer(String username, Trainer trainer);
 
     Boolean toggleTraineeActive(long id, Credentials credentials);
 

@@ -67,13 +67,13 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public Trainer updateTrainer(long id, Trainer trainer) {
-        userHibernateService.authenticateUser(trainer.getUser().getUsername(), trainer.getUser().getUsername());
+    public Trainer updateTrainer(String username, Trainer trainer) {
+        //userHibernateService.authenticateUser(trainer.getUser().getUsername(), trainer.getUser().getUsername());
 
-        Trainer existingTrainer = getTrainerById(id);
+        Trainer existingTrainer = getTrainerByUsername(username);
         TrainingType updatedTrainingType = trainingTypeService
                 .getTrainingTypeByName(trainer.getSpecialization().getName());
-        User updatedUser = userHibernateService.updateUser(trainer.getUser());
+        User updatedUser = userHibernateService.updateUser(username, trainer.getUser());
 
         Trainer updatedTrainer = Trainer.builder()
                 .id(existingTrainer.getId())

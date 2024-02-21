@@ -113,18 +113,20 @@ public class UserServiceImplTests {
     @Test
     public void testUpdateUser(){
         // Arrange
+        String username = "John.Doe";
+
         User updateUser = User.builder()
                             .id(1L)
                             .firstname("newName")
                             .lastname("newLastname")
-                            .username("John.Doe")
+                            .username(username)
                             .password("passtest")
                             .isActive(false)
                             .build();
 
-        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
         // Act
-        User result = userService.updateUser(updateUser);
+        User result = userService.updateUser(username, updateUser);
         // Assert
         assertEquals(1L, result.getId());
         assertEquals("newName", result.getFirstname());

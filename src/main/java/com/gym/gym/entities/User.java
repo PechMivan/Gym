@@ -7,11 +7,11 @@ import java.io.Serializable;
 
 @Data
 @Builder
-@SuppressWarnings("unused")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
+@SuppressWarnings("unused")
 public class User implements Serializable {
 
     @Id

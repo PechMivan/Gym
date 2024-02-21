@@ -64,11 +64,10 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public Trainee updateTrainee(long id, Trainee trainee) {
-        userHibernateService.authenticateUser(trainee.getUser().getUsername(), trainee.getUser().getPassword());
-        Trainee existingTrainee = getTraineeById(id);
+    public Trainee updateTrainee(String username, Trainee trainee) {
+        Trainee existingTrainee = getTraineeByUsername(username);
 
-        User updatedUser = userHibernateService.updateUser(trainee.getUser());
+        User updatedUser = userHibernateService.updateUser(username, trainee.getUser());
         Date updatedDate = trainee.getDateOfBirth();
 
         Trainee updatedTrainee = Trainee.builder()

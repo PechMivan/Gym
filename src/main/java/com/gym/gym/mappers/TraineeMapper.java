@@ -5,6 +5,7 @@ import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.dtos.request.TraineeRegistrateRequest;
 import com.gym.gym.dtos.request.TraineeUpdateRequest;
 import com.gym.gym.dtos.response.TraineeFindResponse;
+import com.gym.gym.dtos.response.TraineeUpdateResponse;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import org.mapstruct.Mapper;
@@ -70,13 +71,21 @@ public interface TraineeMapper {
     }
 
     @Mappings({
-            @Mapping(source = "username", target = "user.username"),
             @Mapping(source = "firstname", target = "user.firstname"),
             @Mapping(source = "lastname", target = "user.lastname"),
-            @Mapping(source = "isActive", target = "user.isActive"),
+            @Mapping(source = "active", target = "user.isActive"),
             @Mapping(source = "dateOfBirth", target = "dateOfBirth", dateFormat = "yyyy-MM-dd")
     })
     Trainee mapFromUpdateRequest(TraineeUpdateRequest request);
+
+    @Mappings({
+            @Mapping(source = "user.username", target = "username"),
+            @Mapping(source = "user.firstname", target = "firstname"),
+            @Mapping(source = "user.lastname", target = "lastname"),
+            @Mapping(source = "user.active", target = "active"),
+            @Mapping(source = "dateOfBirth", target = "dateOfBirth", dateFormat = "yyyy-MM-dd")
+    })
+    TraineeUpdateResponse mapToUpdateResponse(Trainee trainee);
 
     //    @Mappings({
     //        @Mapping(source = "user.username", target = "username"),

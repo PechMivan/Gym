@@ -63,7 +63,7 @@ public class TrainingTypeServiceImplTests {
     public void testGetTrainingTypeByName(){
         // Arrange
         String name = "name";
-        when(trainingTypeRepository.findByTrainingTypeName(name)).thenReturn(Optional.of(trainingType));
+        when(trainingTypeRepository.findByName(name)).thenReturn(Optional.of(trainingType));
         // Act
         TrainingType result = trainingTypeService.getTrainingTypeByName(name);
         // Assert

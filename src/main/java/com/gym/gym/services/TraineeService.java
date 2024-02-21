@@ -16,7 +16,7 @@ public interface TraineeService {
     @Transactional
     void saveTrainee(Trainee trainee);
 
-    Trainee updateTrainee(long id, Trainee trainee);
+    Trainee updateTrainee(String username, Trainee trainee);
 
     void deleteTrainee(long id, Credentials credentials);
 

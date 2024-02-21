@@ -59,18 +59,17 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public Training createTraining(Training training) {
-        validateData(training);
+        //validateData(training);
         Trainee existingTrainee = traineeHibernateService.getTraineeByUsername(training.getTrainee().getUser().getUsername());
         Trainer existingTrainer = trainerHibernateService.getTrainerByUsername(training.getTrainer().getUser().getUsername());
         TrainingType trainingType = existingTrainer.getSpecialization();
-        Date trainingDate = training.getDate();
 
         Training newTraining = Training.builder()
                                 .trainee(existingTrainee)
                                 .trainer(existingTrainer)
                                 .trainingType(trainingType)
                                 .name(training.getName())
-                                .date(trainingDate)
+                                .date(training.getDate())
                                 .duration(training.getDuration())
                                 .build();
 

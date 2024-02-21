@@ -1,10 +1,17 @@
 package com.gym.gym.dtos.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TraineeUpdateRequest {
 
-    public String username;
     public String firstname;
     public String lastname;
     public String dateOfBirth;
-    public boolean isActive;
+    public String address;
+    public boolean active;
 }

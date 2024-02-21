@@ -120,6 +120,8 @@ public class TraineeServiceImplTests {
     @Test
     public void testUpdateTrainee(){
         // Arrange
+        String username = "John.Doe";
+
         User userUpdated = User.builder()               // User service should return update user
                             .firstname("testName")
                             .lastname("testLastName")
@@ -135,10 +137,10 @@ public class TraineeServiceImplTests {
 
         Date dateOfBirth = traineeUpdated.getDateOfBirth();
 
-        when(traineeRepository.findById(anyLong())).thenReturn(Optional.of(trainee));
-        when(userService.updateUser(traineeUpdated.getUser())).thenReturn(userUpdated);
+        when(traineeRepository.findByUserUsername(anyString())).thenReturn(Optional.of(trainee));
+        when(userService.updateUser(username, traineeUpdated.getUser())).thenReturn(userUpdated);
         // Act
-        Trainee updatedTrainee = traineeService.updateTrainee(1L, traineeUpdated);
+        Trainee updatedTrainee = traineeService.updateTrainee(username, traineeUpdated);
         // Assert
         assertEquals("testName", updatedTrainee.getUser().getFirstname());
         assertEquals("testLastName", updatedTrainee.getUser().getLastname());
