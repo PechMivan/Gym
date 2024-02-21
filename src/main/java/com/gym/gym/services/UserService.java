@@ -1,6 +1,5 @@
 package com.gym.gym.services;
 
-import com.gym.gym.dtos.UserDTO;
 import com.gym.gym.entities.User;
 
 import java.util.List;
@@ -11,8 +10,8 @@ public interface UserService {
     User getUserById(long id);
 
     User getUserByUsername(String username);
-    User createUser(UserDTO userData);
-    User updateUser(UserDTO userData);
+    User createUser(User user);
+    User updateUser(User user);
     void saveUser(User user);
     String createPassword();
     String createUsername(String firstname, String lastname);

@@ -2,7 +2,6 @@ package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.request.PasswordChangeRequest;
-import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,25 +46,25 @@ public class TrainerController {
         return new ResponseEntity<>(trainers, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<Trainer> createTrainer(@RequestBody TrainerDTO data){
-        Trainer trainer = trainerHibernateService.createTrainer(data);
-        if(trainer != null){
-            return new ResponseEntity<>(trainer, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PostMapping("{id}/update")
-    public ResponseEntity<Trainer> createTrainer(@PathVariable long id, @RequestBody TrainerDTO data){
-        Trainer trainer = trainerHibernateService.updateTrainer(id, data);
-        if(trainer != null){
-            return new ResponseEntity<>(trainer, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+//    @PostMapping
+//    public ResponseEntity<Trainer> createTrainer(@RequestBody TrainerDTO data){
+//        Trainer trainer = trainerHibernateService.createTrainer(data);
+//        if(trainer != null){
+//            return new ResponseEntity<>(trainer, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
+//
+//    @PostMapping("{id}/update")
+//    public ResponseEntity<Trainer> createTrainer(@PathVariable long id, @RequestBody TrainerDTO data){
+//        Trainer trainer = trainerHibernateService.updateTrainer(id, data);
+//        if(trainer != null){
+//            return new ResponseEntity<>(trainer, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @PostMapping("{id}/toggle")
     public ResponseEntity<String> toggleTraineeActive(@PathVariable long id, @RequestBody Credentials credentials){

@@ -1,6 +1,5 @@
 package com.gym.gym.services;
 
-import com.gym.gym.dtos.TrainingDTO;
 import com.gym.gym.entities.Training;
 
 import java.util.List;

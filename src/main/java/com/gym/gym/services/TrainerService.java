@@ -1,7 +1,6 @@
 package com.gym.gym.services;
 
 import com.gym.gym.dtos.Credentials;
-import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.entities.Trainer;
 import jakarta.transaction.Transactional;
 
@@ -14,12 +13,12 @@ public interface TrainerService {
 
     List<Trainer> getAllTrainers();
 
-    Trainer createTrainer(TrainerDTO trainerData);
+    Trainer createTrainer(Trainer trainer);
 
     @Transactional
     void saveTrainer(Trainer trainer);
 
-    Trainer updateTrainer(long id, TrainerDTO trainerData);
+    Trainer updateTrainer(long id, Trainer trainer);
 
     Boolean toggleTraineeActive(long id, Credentials credentials);
 

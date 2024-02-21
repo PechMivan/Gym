@@ -1,8 +1,6 @@
 package com.gym.gym;
 
 import com.gym.gym.dtos.Credentials;
-import com.gym.gym.dtos.TrainerDTO;
-import com.gym.gym.dtos.UserDTO;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.entities.User;
@@ -11,7 +9,6 @@ import com.gym.gym.repositories.TrainerRepository;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
 import com.gym.gym.services.implementations.TrainingTypeServiceImpl;
 import com.gym.gym.services.implementations.UserServiceImpl;
-import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,20 +31,14 @@ public class TrainerServiceImplTests {
     TrainingTypeServiceImpl trainingTypeService;
 
     @Mock
-    Validator validator;
-
-    @Mock
     TrainerRepository trainerRepository;
 
     @InjectMocks
     TrainerServiceImpl trainerService;
 
     User user;
-    UserDTO userDTO;
     TrainingType trainingType;
     Trainer trainer;
-    TrainerDTO trainerDTO;
-
 
     @BeforeEach
     public void setUp(){
@@ -72,17 +63,6 @@ public class TrainerServiceImplTests {
                               .user(user)
                               .specialization(trainingType)
                               .build();
-
-        this.userDTO = UserDTO.builder()
-                              .firstname("John")
-                              .lastname("Doe")
-                              .username("John.Doe")
-                              .password("passtest")
-                              .build();
-
-        this.trainerDTO = TrainerDTO.builder()
-                                    .userDTO(userDTO)
-                                    .specialization("HIIT").build();
     }
 
     @Test
@@ -127,10 +107,12 @@ public class TrainerServiceImplTests {
     @Test
     public void testCreateTrainer(){
         // Arrange
-        when(userService.createUser(trainerDTO.userDTO)).thenReturn(user);
-        when(trainingTypeService.getTrainingTypeByName(trainerDTO.specialization)).thenReturn(trainingType);
+        when(userService.createUser(trainer.getUser())).thenReturn(user);
+        when(trainingTypeService
+                .getTrainingTypeByName(trainer.getSpecialization().getTrainingTypeName()))
+                .thenReturn(trainingType);
         // Act
-        Trainer createdTrainer = trainerService.createTrainer(trainerDTO);
+        Trainer createdTrainer = trainerService.createTrainer(trainer);
         // Assert
         assertEquals("John", createdTrainer.getUser().getFirstName());
         assertEquals("Doe", createdTrainer.getUser().getLastName());
@@ -159,23 +141,22 @@ public class TrainerServiceImplTests {
                 .id(2L)
                 .trainingTypeName("CARDIO")
                 .build();
+        
+        Trainer updateTrainer = Trainer.builder()
+                                       .user(userUpdated)
+                                       .specialization(trainingTypeUpdated)
+                                       .build();
 
-        UserDTO userDTO = UserDTO.builder()
-                .firstname("testName")
-                .build();
-
-        TrainerDTO trainerDTOUpdated = TrainerDTO.builder()
-                .userDTO(userDTO)
-                .specialization("CARDIO").build();
-
-        when(userService.updateUser(trainerDTOUpdated.userDTO)).thenReturn(userUpdated);
-        when(trainingTypeService.getTrainingTypeByName(trainerDTOUpdated.specialization)).thenReturn(trainingTypeUpdated);
+        when(userService.updateUser(updateTrainer.getUser())).thenReturn(userUpdated);
+        when(trainingTypeService
+                .getTrainingTypeByName(updateTrainer.getSpecialization().getTrainingTypeName()))
+                .thenReturn(trainingTypeUpdated);
         when(trainerRepository.findById(1L)).thenReturn(Optional.of(trainer));
         // Act
-        Trainer updatedTrainer = trainerService.updateTrainer(1L, trainerDTOUpdated);
+        Trainer updatedTrainer = trainerService.updateTrainer(1L, updateTrainer);
         // Assert
         assertEquals("testName", updatedTrainer.getUser().getFirstName());
-        assertEquals(trainerDTOUpdated.specialization, updatedTrainer.getSpecialization().getTrainingTypeName());
+        assertEquals(updateTrainer.getSpecialization().getTrainingTypeName(), updatedTrainer.getSpecialization().getTrainingTypeName());
     }
 
 

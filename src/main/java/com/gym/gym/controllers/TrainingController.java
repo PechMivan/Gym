@@ -1,12 +1,10 @@
 package com.gym.gym.controllers;
 
-import com.gym.gym.dtos.TrainingDTO;
 import com.gym.gym.dtos.request.TrainingCreateRequest;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
 import com.gym.gym.mappers.TrainingMapper;
 import com.gym.gym.services.implementations.TrainingServiceImpl;
-import com.sun.net.httpserver.Authenticator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,5 @@
 package com.gym.gym.services.implementations;
 
-import com.gym.gym.dtos.UserDTO;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.InvalidPasswordException;
 import com.gym.gym.exceptions.NotFoundException;
@@ -8,9 +7,6 @@ import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.repositories.UserRepository;
 import com.gym.gym.services.UserService;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +14,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    Validator validator;
 
     Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -50,17 +43,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(UserDTO userData) {
-        validateData(userData);
-        String newUsername = createUsername(userData.firstname, userData.lastname);
+    public User createUser(User user) {
+        String newUsername = createUsername(user.getFirstName(), user.getLastName());
         String newPassword = createPassword();
 
         User newUser = User.builder()
-                .firstName(userData.firstname)
-                .lastName(userData.lastname)
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .username(newUsername)
                 .password(newPassword)
-                .isActive(userData.isActive)
+                .isActive(user.isActive())
                 .build();
 
         saveUser(newUser);
@@ -69,18 +61,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(UserDTO userData){
-        authenticateUser(userData.username, userData.password);
-        validateData(userData);
-        User existingUser = getUserByUsername(userData.username);
+    public User updateUser(User user){
+        authenticateUser(user.getUsername(), user.getPassword());
+        User existingUser = getUserByUsername(user.getUsername());
 
         User updatedUser = User.builder()
                 .id(existingUser.getId())
-                .firstName(userData.firstname)
-                .lastName(userData.lastname)
-                .username(existingUser.getUsername())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .username(user.getUsername())
                 .password(existingUser.getPassword())
-                .isActive(userData.isActive)
+                .isActive(user.isActive())
                 .build();
 
         saveUser(updatedUser);
@@ -168,18 +159,5 @@ public class UserServiceImpl implements UserService {
         saveUser(existingUser);
         logger.info(String.format("Active status successfully change for user with id %d", existingUser.getId()));
         return activeState;
-    }
-
-    public void validateData(UserDTO userData){
-        Set<ConstraintViolation<UserDTO>> violations = validator.validate(userData);
-
-        if (!violations.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            for (ConstraintViolation<UserDTO> constraintViolation : violations) {
-                sb.append(constraintViolation.getMessage());
-            }
-
-            throw new ConstraintViolationException("Error occurred: " + sb.toString(), violations);
-        }
     }
 }

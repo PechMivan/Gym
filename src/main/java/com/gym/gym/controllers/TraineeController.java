@@ -2,7 +2,6 @@ package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.request.PasswordChangeRequest;
-import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,17 +45,17 @@ public class TraineeController {
         return new ResponseEntity<>( trainees, HttpStatus.OK ); // Status 200
     }
 
-    @PostMapping
-    public  ResponseEntity<Trainee> createTrainee(@RequestBody TraineeDTO data) {
-        Trainee newTrainee = traineeHibernateService.createTrainee(data);
-        return new ResponseEntity<>(newTrainee, HttpStatus.CREATED); // Status 201
-    }
-
-    @PostMapping("{id}/update")
-    public ResponseEntity<Trainee> updateTrainee(@PathVariable Long id, @RequestBody TraineeDTO data){
-        Trainee updatedTrainee = traineeHibernateService.updateTrainee(id, data);
-        return new ResponseEntity<>(updatedTrainee, HttpStatus.OK); // Status 200
-    }
+//    @PostMapping
+//    public  ResponseEntity<Trainee> createTrainee(@RequestBody TraineeDTO data) {
+//        Trainee newTrainee = traineeHibernateService.createTrainee(data);
+//        return new ResponseEntity<>(newTrainee, HttpStatus.CREATED); // Status 201
+//    }
+//
+//    @PostMapping("{id}/update")
+//    public ResponseEntity<Trainee> updateTrainee(@PathVariable Long id, @RequestBody TraineeDTO data){
+//        Trainee updatedTrainee = traineeHibernateService.updateTrainee(id, data);
+//        return new ResponseEntity<>(updatedTrainee, HttpStatus.OK); // Status 200
+//    }
 
     @PostMapping("/username/{username}/delete")
     public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username, @RequestBody Credentials credentials){

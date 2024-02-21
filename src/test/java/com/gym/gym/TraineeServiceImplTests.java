@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.gym.gym.dtos.Credentials;
-import com.gym.gym.dtos.TraineeDTO;
-import com.gym.gym.dtos.UserDTO;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.User;
@@ -13,7 +11,6 @@ import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TraineeRepository;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
 import com.gym.gym.services.implementations.UserServiceImpl;
-import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,16 +27,11 @@ public class TraineeServiceImplTests {
     @Mock
     UserServiceImpl userService;
 
-    @Mock
-    Validator validator;
-
     @InjectMocks
     TraineeServiceImpl traineeService;
 
     User user;
-    UserDTO userDTO;
     Trainee trainee;
-    TraineeDTO traineeDTO;
 
     @BeforeEach
     public void setUp(){
@@ -59,17 +51,6 @@ public class TraineeServiceImplTests {
                             .user(user)
                             .dateOfBirth(new Date())
                             .address("20 Street").build();
-
-        this.userDTO = UserDTO.builder()
-                              .firstname("John")
-                              .lastname("Doe")
-                              .username("John.Doe")
-                              .password("passtest")
-                              .build();
-
-        this.traineeDTO = TraineeDTO.builder()
-                                    .dateOfBirth("2020-12-18")
-                                    .address("20 Street").build();
     }
 
     @Test
@@ -115,10 +96,10 @@ public class TraineeServiceImplTests {
     @Test
     public void testCreateTrainee(){
         // Arrange
-        Date dateOfBirth = traineeService.createDate(traineeDTO.dateOfBirth);
-        when(userService.createUser(traineeDTO.userDTO)).thenReturn(user);
+        Date dateOfBirth = trainee.getDateOfBirth();
+        when(userService.createUser(trainee.getUser())).thenReturn(user);
         // Act
-        Trainee createdTrainee = traineeService.createTrainee(traineeDTO);
+        Trainee createdTrainee = traineeService.createTrainee(trainee);
         // Assert
         assertEquals("John", createdTrainee.getUser().getFirstName());
         assertEquals("Doe", createdTrainee.getUser().getLastName());
@@ -142,33 +123,26 @@ public class TraineeServiceImplTests {
         User userUpdated = User.builder()               // User service should return update user
                             .firstName("testName")
                             .lastName("testLastName")
-                            .username("John.Doe")
+                            .username("testUsername")
                             .password("passtest")
                             .build();
 
-        UserDTO userDTOUpdated = UserDTO.builder()      // Needed for the corresponding user update
-                .firstname("testName")
-                .lastname("testLastName")
-                .username("John.Doe")
-                .password("passtest")
-                .build();
+        Trainee traineeUpdated = Trainee.builder()
+                                      .user(userUpdated)
+                                      .address("50 Street")
+                                      .dateOfBirth(new Date())
+                                      .build();
 
-        TraineeDTO traineeDTOUpdated = TraineeDTO.builder() // Actual trainee update
-                                .userDTO(userDTOUpdated)
-                                .address("50 Street")
-                                .dateOfBirth("2010-10-10")
-                                .build();
-
-        Date dateOfBirth = traineeService.createDate(traineeDTOUpdated.dateOfBirth);
+        Date dateOfBirth = traineeUpdated.getDateOfBirth();
 
         when(traineeRepository.findById(anyLong())).thenReturn(Optional.of(trainee));
-        when(userService.updateUser(traineeDTOUpdated.userDTO)).thenReturn(userUpdated);
+        when(userService.updateUser(traineeUpdated.getUser())).thenReturn(userUpdated);
         // Act
-        Trainee updatedTrainee = traineeService.updateTrainee(1L, traineeDTOUpdated);
+        Trainee updatedTrainee = traineeService.updateTrainee(1L, traineeUpdated);
         // Assert
         assertEquals("testName", updatedTrainee.getUser().getFirstName());
         assertEquals("testLastName", updatedTrainee.getUser().getLastName());
-        assertEquals("John.Doe", updatedTrainee.getUser().getUsername());
+        assertEquals("testUsername", updatedTrainee.getUser().getUsername());
         assertEquals(8, updatedTrainee.getUser().getPassword().length());
         assertEquals("50 Street", updatedTrainee.getAddress());
         assertEquals(dateOfBirth, updatedTrainee.getDateOfBirth());

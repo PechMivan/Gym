@@ -5,14 +5,12 @@ import static org.mockito.Mockito.*;
 
 import java.util.*;
 
-import com.gym.gym.dtos.UserDTO;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.InvalidPasswordException;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.repositories.UserRepository;
 import com.gym.gym.services.implementations.UserServiceImpl;
-import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,29 +21,30 @@ public class UserServiceImplTests {
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    Validator validator;
-
     @InjectMocks
     private UserServiceImpl userService;
     User user;
-    UserDTO userdto;
+    User newUser;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+
         this.user = User.builder()
                 .id(1L)
                 .firstName("John")
                 .lastName("Doe")
                 .username("John.Doe")
                 .password("passtest")
-                .isActive(true)
                 .build();
 
-        this.userdto = UserDTO.builder()
-                .firstname("John")
-                .lastname("Doe")
+        this.newUser = User.builder()
+                .id(1L)
+                .firstName("John")
+                .lastName("Doe")
+                .username("John.Doe")
+                .password("passtest")
+                .isActive(true)
                 .build();
     }
 
@@ -96,11 +95,10 @@ public class UserServiceImplTests {
     @Test
     public void testCreateUser(){
         // Arrange
-        when(validator.validate(userdto)).thenReturn(Collections.emptySet());
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.save(any(User.class))).thenReturn(newUser);
 
         // Act
-        User result = userService.createUser(userdto);
+        User result = userService.createUser(user);
 
         // Assert
         assertNotNull(result);
@@ -111,26 +109,28 @@ public class UserServiceImplTests {
         verify(userRepository, times(1)).save(any(User.class));
     }
 
+    //TODO: Manage authorization in a better way.
     @Test
     public void testUpdateUser(){
         // Arrange
-        UserDTO userdto = UserDTO.builder()
-                .firstname("newName")
-                .lastname("newLastname")
-                .username("John.Doe")
-                .password("passtest")
-                .build();
+        User updateUser = User.builder()
+                            .id(1L)
+                            .firstName("newName")
+                            .lastName("newLastname")
+                            .username("John.Doe")
+                            .password("passtest")
+                            .isActive(false)
+                            .build();
+
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenReturn(user);
         // Act
-        User result = userService.updateUser(userdto);
+        User result = userService.updateUser(updateUser);
         // Assert
         assertEquals(1L, result.getId());
         assertEquals("newName", result.getFirstName());
         assertEquals("newLastname", result.getLastName());
-        // Username and password are used as credentials and shouldn't be updated here.
         assertEquals("John.Doe", result.getUsername());
-        assertEquals("passtest", result.getPassword());
+        assertEquals("passtest", result.getPassword());        // Password shouldn't be updated here.
         verify(userRepository, times(1)).save(any(User.class));
     }
 
@@ -173,10 +173,10 @@ public class UserServiceImplTests {
     @Test
     public void testAuthenticateUser_With_Valid_Data(){
         // Arrange
-        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername("John.Doe")).thenReturn(Optional.of(user));
 
         // Act and Assert
-        assertDoesNotThrow(()-> userService.authenticateUser("John", "passtest"));
+        assertDoesNotThrow(()-> userService.authenticateUser("John.Doe", "passtest"));
     }
 
     @Test

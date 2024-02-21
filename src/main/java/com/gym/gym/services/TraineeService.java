@@ -1,11 +1,9 @@
 package com.gym.gym.services;
 
 import com.gym.gym.dtos.Credentials;
-import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
 import jakarta.transaction.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 public interface TraineeService {
@@ -15,12 +13,12 @@ public interface TraineeService {
 
     List<Trainee> getAllTrainees();
 
-    Trainee createTrainee(TraineeDTO traineeData);
+    Trainee createTrainee(Trainee trainee);
 
     @Transactional
     void saveTrainee(Trainee trainee);
 
-    Trainee updateTrainee(long id, TraineeDTO traineeData);
+    Trainee updateTrainee(long id, Trainee trainee);
 
     void deleteTrainee(long id, Credentials credentials);
 
@@ -28,8 +26,6 @@ public interface TraineeService {
     long deleteTraineeByUsername(String username, Credentials credentials);
 
     Boolean toggleTraineeActive(long id, Credentials credentials);
-
-    Date createDate(String dateOfBirth);
 
     boolean changePassword(String username, String oldPassword, String newPassword);
 }

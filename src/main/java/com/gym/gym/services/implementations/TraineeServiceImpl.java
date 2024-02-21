@@ -1,7 +1,6 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.dtos.Credentials;
-import com.gym.gym.dtos.TraineeDTO;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.User;
@@ -9,20 +8,13 @@ import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TraineeRepository;
 import com.gym.gym.services.TraineeService;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Set;
 
 @Service
 public class TraineeServiceImpl implements TraineeService {
@@ -30,8 +22,6 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Autowired
     private TraineeRepository traineeRepository;
-    @Autowired
-    Validator validator;
     @Autowired
     private UserServiceImpl userHibernateService;
 
@@ -53,15 +43,14 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public Trainee createTrainee(TraineeDTO traineeData){
-        validateData(traineeData);
-        User newUser = userHibernateService.createUser(traineeData.userDTO);
-        Date newDate = createDate(traineeData.dateOfBirth);
+    public Trainee createTrainee(Trainee trainee){
+        User newUser = userHibernateService.createUser(trainee.getUser());
+        Date newDate = trainee.getDateOfBirth();
 
         Trainee newTrainee = Trainee.builder()
                 .user(newUser)
                 .dateOfBirth(newDate)
-                .address(traineeData.address)
+                .address(trainee.getAddress())
                 .build();
 
         saveTrainee(newTrainee);
@@ -76,18 +65,18 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public Trainee updateTrainee(long id, TraineeDTO traineeData) {
-        userHibernateService.authenticateUser(traineeData.userDTO.username, traineeData.userDTO.password);
+    public Trainee updateTrainee(long id, Trainee trainee) {
+        userHibernateService.authenticateUser(trainee.getUser().getUsername(), trainee.getUser().getPassword());
         Trainee existingTrainee = getTraineeById(id);
 
-        User updatedUser = userHibernateService.updateUser(traineeData.userDTO);
-        Date updatedDate = createDate(traineeData.dateOfBirth);
+        User updatedUser = userHibernateService.updateUser(trainee.getUser());
+        Date updatedDate = trainee.getDateOfBirth();
 
         Trainee updatedTrainee = Trainee.builder()
                 .id(existingTrainee.getId())
                 .user(updatedUser)
                 .dateOfBirth(updatedDate)
-                .address(traineeData.address)
+                .address(trainee.getAddress())
                 .build();
 
         saveTrainee(updatedTrainee);
@@ -124,32 +113,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public Date createDate(String dateOfBirth){
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
-        Date date;
-        try {
-            date = formatter.parse(dateOfBirth);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        return date;
-    }
-
-    @Override
     public boolean changePassword(String username, String oldPassword, String newPassword){
         return userHibernateService.changePassword(username, oldPassword, newPassword);
-    }
-
-    public void validateData(TraineeDTO traineeData){
-        Set<ConstraintViolation<TraineeDTO>> violations = validator.validate(traineeData);
-
-        if (!violations.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            for (ConstraintViolation<TraineeDTO> constraintViolation : violations) {
-                sb.append(constraintViolation.getMessage());
-            }
-
-            throw new ConstraintViolationException("Error occurred: " + sb.toString(), violations);
-        }
     }
 }
