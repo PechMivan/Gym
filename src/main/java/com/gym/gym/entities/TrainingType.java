@@ -20,6 +20,6 @@ public class TrainingType implements Serializable {
     private long id;
 
     @Column(length = 50, nullable = false)
-    private String trainingTypeName;
+    private String name;
 }
 

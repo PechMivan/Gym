@@ -23,7 +23,7 @@ public class Training implements Serializable {
     private long id;
 
     @Column(length = 50, nullable = false)
-    private String trainingName;
+    private String name;
 
     @ManyToOne
     @JoinColumn(name="trainingTypeId", nullable=false)
@@ -31,10 +31,10 @@ public class Training implements Serializable {
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private Date trainingDate;
+    private Date date;
 
     @Column(nullable = false)
-    private int trainingDuration;
+    private int duration;
 
     @ManyToOne
     @JoinColumn(name="traineeId", nullable=false)

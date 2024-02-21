@@ -46,8 +46,8 @@ public class TrainerServiceImplTests {
 
         this.user = User.builder()
                 .id(1L)
-                .firstName("John")
-                .lastName("Doe")
+                .firstname("John")
+                .lastname("Doe")
                 .username("John.Doe")
                 .password("passtest")
                 .isActive(true)
@@ -55,7 +55,7 @@ public class TrainerServiceImplTests {
 
         this.trainingType = TrainingType.builder()
                                         .id(1L)
-                                        .trainingTypeName("HIIT")
+                                        .name("HIIT")
                                         .build();
 
         this.trainer = Trainer.builder()
@@ -86,7 +86,7 @@ public class TrainerServiceImplTests {
         // Assert
         assertNotNull(result);
         assertEquals(trainerId, result.getId());
-        assertEquals("John", result.getUser().getFirstName());
+        assertEquals("John", result.getUser().getFirstname());
         assertThrows(NotFoundException.class, () ->trainerService.getTrainerById(100L));
     }
 
@@ -100,7 +100,7 @@ public class TrainerServiceImplTests {
         // Assert
         assertNotNull(trainer);
         assertEquals(username, result.getUser().getUsername());
-        assertEquals("John", result.getUser().getFirstName());
+        assertEquals("John", result.getUser().getFirstname());
         assertThrows(NotFoundException.class, () ->trainerService.getTrainerByUsername("wrongUsername"));
     }
 
@@ -109,16 +109,16 @@ public class TrainerServiceImplTests {
         // Arrange
         when(userService.createUser(trainer.getUser())).thenReturn(user);
         when(trainingTypeService
-                .getTrainingTypeByName(trainer.getSpecialization().getTrainingTypeName()))
+                .getTrainingTypeByName(trainer.getSpecialization().getName()))
                 .thenReturn(trainingType);
         // Act
         Trainer createdTrainer = trainerService.createTrainer(trainer);
         // Assert
-        assertEquals("John", createdTrainer.getUser().getFirstName());
-        assertEquals("Doe", createdTrainer.getUser().getLastName());
+        assertEquals("John", createdTrainer.getUser().getFirstname());
+        assertEquals("Doe", createdTrainer.getUser().getLastname());
         assertEquals("John.Doe", createdTrainer.getUser().getUsername());
         assertEquals(8, createdTrainer.getUser().getPassword().length());
-        assertEquals("HIIT", createdTrainer.getSpecialization().getTrainingTypeName());
+        assertEquals("HIIT", createdTrainer.getSpecialization().getName());
     }
 
     @Test
@@ -134,12 +134,12 @@ public class TrainerServiceImplTests {
         // Arrange
         User userUpdated = User.builder()
                 .id(1L)
-                .firstName("testName")
+                .firstname("testName")
                 .build();
 
         TrainingType trainingTypeUpdated = TrainingType.builder()
                 .id(2L)
-                .trainingTypeName("CARDIO")
+                .name("CARDIO")
                 .build();
         
         Trainer updateTrainer = Trainer.builder()
@@ -149,14 +149,14 @@ public class TrainerServiceImplTests {
 
         when(userService.updateUser(updateTrainer.getUser())).thenReturn(userUpdated);
         when(trainingTypeService
-                .getTrainingTypeByName(updateTrainer.getSpecialization().getTrainingTypeName()))
+                .getTrainingTypeByName(updateTrainer.getSpecialization().getName()))
                 .thenReturn(trainingTypeUpdated);
         when(trainerRepository.findById(1L)).thenReturn(Optional.of(trainer));
         // Act
         Trainer updatedTrainer = trainerService.updateTrainer(1L, updateTrainer);
         // Assert
-        assertEquals("testName", updatedTrainer.getUser().getFirstName());
-        assertEquals(updateTrainer.getSpecialization().getTrainingTypeName(), updatedTrainer.getSpecialization().getTrainingTypeName());
+        assertEquals("testName", updatedTrainer.getUser().getFirstname());
+        assertEquals(updateTrainer.getSpecialization().getName(), updatedTrainer.getSpecialization().getName());
     }
 
 

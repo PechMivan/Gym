@@ -2,7 +2,10 @@ package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.request.PasswordChangeRequest;
+import com.gym.gym.dtos.request.TraineeRegistrateRequest;
+import com.gym.gym.dtos.response.TraineeFindResponse;
 import com.gym.gym.entities.Trainee;
+import com.gym.gym.mappers.TraineeMapper;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,9 @@ public class TraineeController {
     @Autowired
     TraineeServiceImpl traineeHibernateService;
 
+    @Autowired
+    TraineeMapper traineeMapper;
+
     @GetMapping("{id}")
     public ResponseEntity< Trainee > getTraineeById(@PathVariable Long id){
         Trainee trainee = traineeHibernateService.getTraineeById(id);
@@ -30,13 +36,10 @@ public class TraineeController {
     }
 
     @GetMapping("/username/{username}")
-    public ResponseEntity< Trainee > getTraineeByUsername(@PathVariable String username){
+    public ResponseEntity< TraineeFindResponse > getTraineeByUsername(@PathVariable String username){
         Trainee trainee = traineeHibernateService.getTraineeByUsername(username);
-        if(trainee != null){
-            return new ResponseEntity<>(trainee, HttpStatus.OK); // Status 200
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Status 404
-        }
+        TraineeFindResponse response = traineeMapper.mapToFindResponse(trainee);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping
@@ -45,12 +48,14 @@ public class TraineeController {
         return new ResponseEntity<>( trainees, HttpStatus.OK ); // Status 200
     }
 
-//    @PostMapping
-//    public  ResponseEntity<Trainee> createTrainee(@RequestBody TraineeDTO data) {
-//        Trainee newTrainee = traineeHibernateService.createTrainee(data);
-//        return new ResponseEntity<>(newTrainee, HttpStatus.CREATED); // Status 201
-//    }
-//
+    @PostMapping
+    public  ResponseEntity<Credentials> createTrainee(@RequestBody TraineeRegistrateRequest data) {
+        Trainee trainee = traineeMapper.mapFromRegistrateRequest(data);
+        Trainee newTrainee = traineeHibernateService.createTrainee(trainee);
+        Credentials newCredentials = traineeMapper.mapToCredentials(newTrainee);
+        return new ResponseEntity<>(newCredentials, HttpStatus.CREATED); // Status 201
+    }
+
 //    @PostMapping("{id}/update")
 //    public ResponseEntity<Trainee> updateTrainee(@PathVariable Long id, @RequestBody TraineeDTO data){
 //        Trainee updatedTrainee = traineeHibernateService.updateTrainee(id, data);

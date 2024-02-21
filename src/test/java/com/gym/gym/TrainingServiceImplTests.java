@@ -6,7 +6,6 @@ import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
 import com.gym.gym.services.implementations.TrainingServiceImpl;
-import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,9 +25,6 @@ public class TrainingServiceImplTests {
     TrainerServiceImpl trainerService;
     @Mock
     TraineeServiceImpl traineeService;
-
-    @Mock
-    Validator validator;
 
     List<Training>trainings;
 
@@ -57,14 +53,14 @@ public class TrainingServiceImplTests {
         long trainingId = 1L;
         Training training = new Training();
         training.setId(trainingId);
-        training.setTrainingName("test");
+        training.setName("test");
         when(trainingRepository.findById(trainingId)).thenReturn(Optional.of(training));
         // Act
         Training result = trainingService.getTrainingById(trainingId);
         // Assert
         assertNotNull(result);
         assertEquals(training.getId(), result.getId());
-        assertEquals(training.getTrainingName(), result.getTrainingName());
+        assertEquals(training.getName(), result.getName());
         assertThrows(NotFoundException.class, ()-> trainingService.getTrainingById(100L));
     }
 
@@ -107,16 +103,16 @@ public class TrainingServiceImplTests {
         Trainee trainee = Trainee.builder().user(user).build();
         Trainer trainer = Trainer.builder().user(user).build();
 
-        TrainingType existingTrainingType = TrainingType.builder().id(1L).trainingTypeName("HIIT").build();
+        TrainingType existingTrainingType = TrainingType.builder().id(1L).name("HIIT").build();
         Trainee existingTrainee = Trainee.builder().id(1L).user(user).build();
         Trainer existingTrainer = Trainer.builder().id(1L).user(user).specialization(existingTrainingType).build();
 
         Training training = Training.builder()
                                   .trainee(trainee)
                                   .trainer(trainer)
-                                  .trainingName("trainingName")
-                                  .trainingDate(new Date())
-                                  .trainingDuration(10)
+                                  .name("name")
+                                  .date(new Date())
+                                  .duration(10)
                                   .build();
 
         when(traineeService.getTraineeByUsername(training.getTrainee().getUser().getUsername())).thenReturn(existingTrainee);
@@ -130,9 +126,9 @@ public class TrainingServiceImplTests {
         assertNotNull(training);
         assertEquals(1L, result.getTrainee().getId());
         assertEquals(1L, result.getTrainer().getId());
-        assertEquals(existingTrainingType.getTrainingTypeName(), result.getTrainingType().getTrainingTypeName());
-        assertEquals(training.getTrainingName(), result.getTrainingName());
-        assertEquals(training.getTrainingDuration(), result.getTrainingDuration());
+        assertEquals(existingTrainingType.getName(), result.getTrainingType().getName());
+        assertEquals(training.getName(), result.getName());
+        assertEquals(training.getDuration(), result.getDuration());
     }
 
     @Test
@@ -174,9 +170,9 @@ public class TrainingServiceImplTests {
     @Test
     public void testGetTrainingsByTraineeUsernameAndTrainingType(){
         // Act
-        trainingService.getTrainingsByTraineeUsernameAndTrainingType("traineeUsername", "trainingTypeName");
+        trainingService.getTrainingsByTraineeUsernameAndTrainingType("traineeUsername", "name");
         // Assert
-        verify(trainingRepository, times(1)).findAllTrainingsByTraineeUsernameAndTrainingType("traineeUsername", "trainingTypeName");
+        verify(trainingRepository, times(1)).findAllTrainingsByTraineeUsernameAndTrainingType("traineeUsername", "name");
     }
 
     @Test

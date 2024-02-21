@@ -48,7 +48,7 @@ public class TrainerServiceImpl implements TrainerService {
     public Trainer createTrainer(Trainer trainer) {
         User newUser = userHibernateService.createUser(trainer.getUser());
         TrainingType selectedTrainingType = trainingTypeService
-                .getTrainingTypeByName(trainer.getSpecialization().getTrainingTypeName());
+                .getTrainingTypeByName(trainer.getSpecialization().getName());
 
         Trainer newTrainer = Trainer.builder()
                 .user(newUser)
@@ -72,7 +72,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         Trainer existingTrainer = getTrainerById(id);
         TrainingType updatedTrainingType = trainingTypeService
-                .getTrainingTypeByName(trainer.getSpecialization().getTrainingTypeName());
+                .getTrainingTypeByName(trainer.getSpecialization().getName());
         User updatedUser = userHibernateService.updateUser(trainer.getUser());
 
         Trainer updatedTrainer = Trainer.builder()

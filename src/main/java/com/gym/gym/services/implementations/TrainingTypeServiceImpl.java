@@ -25,7 +25,7 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
 
     @Override
     public TrainingType getTrainingTypeByName(String name){
-        return trainingTypeRepository.findByTrainingTypeName(name).orElse(null);
+        return trainingTypeRepository.findByName(name).orElse(null);
     }
 
     @Override

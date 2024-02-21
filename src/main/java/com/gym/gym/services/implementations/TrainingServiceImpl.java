@@ -63,15 +63,15 @@ public class TrainingServiceImpl implements TrainingService {
         Trainee existingTrainee = traineeHibernateService.getTraineeByUsername(training.getTrainee().getUser().getUsername());
         Trainer existingTrainer = trainerHibernateService.getTrainerByUsername(training.getTrainer().getUser().getUsername());
         TrainingType trainingType = existingTrainer.getSpecialization();
-        Date trainingDate = training.getTrainingDate();
+        Date trainingDate = training.getDate();
 
         Training newTraining = Training.builder()
                                 .trainee(existingTrainee)
                                 .trainer(existingTrainer)
                                 .trainingType(trainingType)
-                                .trainingName(training.getTrainingName())
-                                .trainingDate(trainingDate)
-                                .trainingDuration(training.getTrainingDuration())
+                                .name(training.getName())
+                                .date(trainingDate)
+                                .duration(training.getDuration())
                                 .build();
 
         saveTraining(newTraining);

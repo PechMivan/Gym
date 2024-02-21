@@ -1,7 +1,6 @@
 package com.gym.gym;
 
 import com.gym.gym.entities.Training;
-import com.gym.gym.entities.TrainingType;
 import com.gym.gym.storages.TrainingDataStorage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         Map<Long, Training> testData = new HashMap<>();
         Training training = Training.builder()
                         .id(1L)
-                        .trainingName("Super-Cardio")
-                        .trainingDate(new Date())
-                        .trainingDuration(10)
+                        .name("Super-Cardio")
+                        .date(new Date())
+                        .duration(10)
                         .build();
         testData.put(1L, training);
 

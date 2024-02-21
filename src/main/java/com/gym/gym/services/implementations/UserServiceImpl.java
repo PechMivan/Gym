@@ -44,12 +44,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        String newUsername = createUsername(user.getFirstName(), user.getLastName());
+        String newUsername = createUsername(user.getFirstname(), user.getLastname());
         String newPassword = createPassword();
 
         User newUser = User.builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
                 .username(newUsername)
                 .password(newPassword)
                 .isActive(user.isActive())
@@ -67,8 +67,8 @@ public class UserServiceImpl implements UserService {
 
         User updatedUser = User.builder()
                 .id(existingUser.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
                 .username(user.getUsername())
                 .password(existingUser.getPassword())
                 .isActive(user.isActive())

@@ -17,7 +17,7 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
             "JOIN t.trainee tr " +
             "JOIN tr.user u " +
             "WHERE u.username = :username " +
-            "AND t.trainingDate BETWEEN :startDate AND :endDate")
+            "AND t.date BETWEEN :startDate AND :endDate")
     List<Training> findAllTrainingsByTraineeUsernameAndBetweenDates(@Param("username") String username,
                                                                     @Param("startDate") Date startDate,
                                                                     @Param("endDate") Date endDate);
@@ -27,7 +27,7 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
             "JOIN t.trainer tr " +
             "JOIN tr.user u " +
             "WHERE u.username = :username " +
-            "AND t.trainingDate BETWEEN :startDate AND :endDate")
+            "AND t.date BETWEEN :startDate AND :endDate")
     List<Training> findAllTrainingsByTrainerUsernameAndBetweenDates(@Param("username") String username,
                                                                     @Param("startDate") Date startDate,
                                                                     @Param("endDate") Date endDate);
@@ -38,7 +38,7 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
             "JOIN t.trainer tn " +
             "JOIN tn.user tnu " +
             "WHERE tu.username = :traineeUsername " +
-            "AND tnu.firstName = :trainerName")
+            "AND tnu.firstname = :trainerName")
     List<Training> findAllTrainingsByTraineeUsernameAndTrainerName(@Param("traineeUsername") String traineeUsername,
                                                                    @Param("trainerName") String trainerName);
 
@@ -48,7 +48,7 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
             "JOIN t.trainee tn " +
             "JOIN tn.user tnu " +
             "WHERE tu.username = :trainerUsername " +
-            "AND tnu.firstName = :traineeName")
+            "AND tnu.firstname = :traineeName")
     List<Training> findAllTrainingsByTrainerUsernameAndTraineeName(@Param("trainerUsername") String trainerUsername,
                                                                    @Param("traineeName") String traineeName);
 
@@ -57,7 +57,7 @@ public interface TrainingRepository extends JpaRepository<Training,Long> {
             "JOIN tr.user tu " +
             "JOIN t.trainingType tt " +
             "WHERE tu.username = :traineeUsername " +
-            "AND tt.trainingTypeName = :trainingType")
+            "AND tt.name = :trainingType")
     List<Training> findAllTrainingsByTraineeUsernameAndTrainingType(@Param("traineeUsername") String traineeUsername,
                                                                    @Param("trainingType") String trainingType);
 }

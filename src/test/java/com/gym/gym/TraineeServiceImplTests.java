@@ -39,8 +39,8 @@ public class TraineeServiceImplTests {
 
         this.user = User.builder()
                 .id(1L)
-                .firstName("John")
-                .lastName("Doe")
+                .firstname("John")
+                .lastname("Doe")
                 .username("John.Doe")
                 .password("passtest")
                 .isActive(true)
@@ -75,7 +75,7 @@ public class TraineeServiceImplTests {
         // Assert
         assertNotNull(result);
         assertEquals(traineeId, result.getId());
-        assertEquals("John", result.getUser().getFirstName());
+        assertEquals("John", result.getUser().getFirstname());
         assertThrows(NotFoundException.class, () -> traineeService.getTraineeById(100L));
     }
 
@@ -89,7 +89,7 @@ public class TraineeServiceImplTests {
         // Assert
         assertNotNull(result);
         assertEquals(username, result.getUser().getUsername());
-        assertEquals("John", result.getUser().getFirstName());
+        assertEquals("John", result.getUser().getFirstname());
         assertThrows(NotFoundException.class, () -> traineeService.getTraineeByUsername("wrongUsername"));
     }
 
@@ -101,8 +101,8 @@ public class TraineeServiceImplTests {
         // Act
         Trainee createdTrainee = traineeService.createTrainee(trainee);
         // Assert
-        assertEquals("John", createdTrainee.getUser().getFirstName());
-        assertEquals("Doe", createdTrainee.getUser().getLastName());
+        assertEquals("John", createdTrainee.getUser().getFirstname());
+        assertEquals("Doe", createdTrainee.getUser().getLastname());
         assertEquals("John.Doe", createdTrainee.getUser().getUsername());
         assertEquals(8, createdTrainee.getUser().getPassword().length());
         assertEquals("20 Street", createdTrainee.getAddress());
@@ -121,8 +121,8 @@ public class TraineeServiceImplTests {
     public void testUpdateTrainee(){
         // Arrange
         User userUpdated = User.builder()               // User service should return update user
-                            .firstName("testName")
-                            .lastName("testLastName")
+                            .firstname("testName")
+                            .lastname("testLastName")
                             .username("testUsername")
                             .password("passtest")
                             .build();
@@ -140,8 +140,8 @@ public class TraineeServiceImplTests {
         // Act
         Trainee updatedTrainee = traineeService.updateTrainee(1L, traineeUpdated);
         // Assert
-        assertEquals("testName", updatedTrainee.getUser().getFirstName());
-        assertEquals("testLastName", updatedTrainee.getUser().getLastName());
+        assertEquals("testName", updatedTrainee.getUser().getFirstname());
+        assertEquals("testLastName", updatedTrainee.getUser().getLastname());
         assertEquals("testUsername", updatedTrainee.getUser().getUsername());
         assertEquals(8, updatedTrainee.getUser().getPassword().length());
         assertEquals("50 Street", updatedTrainee.getAddress());

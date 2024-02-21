@@ -7,8 +7,6 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 
 public interface TraineeService {
-    //TODO: Implement Mapper and return a DTO for this method and getAll.
-    //TODO: Implement Authorization for the important methods.
     Trainee getTraineeById(long id);
 
     List<Trainee> getAllTrainees();

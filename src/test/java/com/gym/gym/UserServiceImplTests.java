@@ -32,16 +32,16 @@ public class UserServiceImplTests {
 
         this.user = User.builder()
                 .id(1L)
-                .firstName("John")
-                .lastName("Doe")
+                .firstname("John")
+                .lastname("Doe")
                 .username("John.Doe")
                 .password("passtest")
                 .build();
 
         this.newUser = User.builder()
                 .id(1L)
-                .firstName("John")
-                .lastName("Doe")
+                .firstname("John")
+                .lastname("Doe")
                 .username("John.Doe")
                 .password("passtest")
                 .isActive(true)
@@ -102,8 +102,8 @@ public class UserServiceImplTests {
 
         // Assert
         assertNotNull(result);
-        assertEquals("John", result.getFirstName());
-        assertEquals("Doe", result.getLastName());
+        assertEquals("John", result.getFirstname());
+        assertEquals("Doe", result.getLastname());
         assertEquals("John.Doe", result.getUsername());
         assertEquals(10, result.getPassword().length());
         verify(userRepository, times(1)).save(any(User.class));
@@ -115,8 +115,8 @@ public class UserServiceImplTests {
         // Arrange
         User updateUser = User.builder()
                             .id(1L)
-                            .firstName("newName")
-                            .lastName("newLastname")
+                            .firstname("newName")
+                            .lastname("newLastname")
                             .username("John.Doe")
                             .password("passtest")
                             .isActive(false)
@@ -127,8 +127,8 @@ public class UserServiceImplTests {
         User result = userService.updateUser(updateUser);
         // Assert
         assertEquals(1L, result.getId());
-        assertEquals("newName", result.getFirstName());
-        assertEquals("newLastname", result.getLastName());
+        assertEquals("newName", result.getFirstname());
+        assertEquals("newLastname", result.getLastname());
         assertEquals("John.Doe", result.getUsername());
         assertEquals("passtest", result.getPassword());        // Password shouldn't be updated here.
         verify(userRepository, times(1)).save(any(User.class));

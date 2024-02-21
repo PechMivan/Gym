@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface TrainingTypeRepository extends CrudRepository<TrainingType,Long> {
 
-    Optional<TrainingType> findByTrainingTypeName(String name);
+    Optional<TrainingType> findByName(String name);
 }

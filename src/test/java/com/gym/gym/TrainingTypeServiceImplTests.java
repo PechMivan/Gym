@@ -32,7 +32,7 @@ public class TrainingTypeServiceImplTests {
 
         this.trainingType = TrainingType.builder()
                                         .id(1L)
-                                        .trainingTypeName("HIIT")
+                                        .name("HIIT")
                                         .build();
     }
 
@@ -56,7 +56,7 @@ public class TrainingTypeServiceImplTests {
         TrainingType result = trainingTypeService.getTrainingTypeById(trainingTypeId);
         // Assert
         assertNotNull(result);
-        assertEquals("HIIT", result.getTrainingTypeName());
+        assertEquals("HIIT", result.getName());
     }
 
     @Test
@@ -68,6 +68,6 @@ public class TrainingTypeServiceImplTests {
         TrainingType result = trainingTypeService.getTrainingTypeByName(name);
         // Assert
         assertNotNull(result);
-        assertEquals("HIIT", result.getTrainingTypeName());
+        assertEquals("HIIT", result.getName());
     }
 }

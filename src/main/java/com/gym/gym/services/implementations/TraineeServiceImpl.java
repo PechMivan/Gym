@@ -25,7 +25,6 @@ public class TraineeServiceImpl implements TraineeService {
     @Autowired
     private UserServiceImpl userHibernateService;
 
-    //TODO: Implement Mapper and return a DTO for this method and getAll.
     @Override
     public Trainee getTraineeById(long id) {
         return traineeRepository.findById(id)
