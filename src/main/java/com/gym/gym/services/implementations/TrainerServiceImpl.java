@@ -23,7 +23,7 @@ public class TrainerServiceImpl implements TrainerService {
     @Autowired
     TrainerRepository trainerRepository;
     @Autowired
-    UserServiceImpl userHibernateService;
+    UserServiceImpl userService;
     @Autowired
     TrainingTypeService trainingTypeService;
 
@@ -46,7 +46,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer createTrainer(Trainer trainer) {
-        User newUser = userHibernateService.createUser(trainer.getUser());
+        User newUser = userService.createUser(trainer.getUser());
         TrainingType selectedTrainingType = trainingTypeService
                 .getTrainingTypeByName(trainer.getSpecialization().getName());
 
@@ -68,12 +68,12 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer updateTrainer(String username, Trainer trainer) {
-        //userHibernateService.authenticateUser(trainer.getUser().getUsername(), trainer.getUser().getUsername());
+        //userService.authenticateUser(trainer.getUser().getUsername(), trainer.getUser().getUsername());
 
         Trainer existingTrainer = getTrainerByUsername(username);
         TrainingType updatedTrainingType = trainingTypeService
                 .getTrainingTypeByName(trainer.getSpecialization().getName());
-        User updatedUser = userHibernateService.updateUser(username, trainer.getUser());
+        User updatedUser = userService.updateUser(username, trainer.getUser());
 
         Trainer updatedTrainer = Trainer.builder()
                 .id(existingTrainer.getId())
@@ -84,18 +84,6 @@ public class TrainerServiceImpl implements TrainerService {
         saveTrainer(updatedTrainer);
         logger.info(String.format("Trainee with id %d successfully updated.", updatedTrainer.getId()));
         return updatedTrainer;
-    }
-
-    //TODO: Change unit testing
-    @Override
-    public Boolean changeActiveState(String username, boolean activeState){
-        //userHibernateService.authenticateUser(credentials.username, credentials.password);
-        return userHibernateService.changeActiveState(username, activeState);
-    }
-
-    @Override
-    public boolean changePassword(String username, String oldPassword, String newPassword){
-        return userHibernateService.changePassword(username, oldPassword, newPassword);
     }
 
 }

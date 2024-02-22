@@ -22,8 +22,4 @@ public interface TraineeService {
 
     @Transactional
     long deleteTraineeByUsername(String username, Credentials credentials);
-
-    Boolean changeActiveState(String username, boolean activeState);
-
-    boolean changePassword(String username, String oldPassword, String newPassword);
 }

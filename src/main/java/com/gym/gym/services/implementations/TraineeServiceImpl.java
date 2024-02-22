@@ -27,7 +27,7 @@ public class TraineeServiceImpl implements TraineeService {
     @Autowired
     private TrainerService trainerService;
     @Autowired
-    private UserServiceImpl userHibernateService;
+    private UserServiceImpl userService;
 
     @Override
     public Trainee getTraineeById(long id) {
@@ -47,7 +47,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public Trainee createTrainee(Trainee trainee){
-        User newUser = userHibernateService.createUser(trainee.getUser());
+        User newUser = userService.createUser(trainee.getUser());
         Date newDate = trainee.getDateOfBirth();
 
         Trainee newTrainee = Trainee.builder()
@@ -71,7 +71,7 @@ public class TraineeServiceImpl implements TraineeService {
     public Trainee updateTrainee(String username, Trainee trainee) {
         Trainee existingTrainee = getTraineeByUsername(username);
 
-        User updatedUser = userHibernateService.updateUser(username, trainee.getUser());
+        User updatedUser = userService.updateUser(username, trainee.getUser());
         Date updatedDate = trainee.getDateOfBirth();
 
         Trainee updatedTrainee = Trainee.builder()
@@ -95,7 +95,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public void deleteTrainee(long id, Credentials credentials) {
-        userHibernateService.authenticateUser(credentials.username, credentials.password);
+        userService.authenticateUser(credentials.username, credentials.password);
         traineeRepository.deleteById(id);
         logger.info(String.format("Trainee with id %d successfully deleted.", id));
     }
@@ -103,7 +103,7 @@ public class TraineeServiceImpl implements TraineeService {
     @Transactional
     @Override
     public long deleteTraineeByUsername(String username, Credentials credentials){
-        userHibernateService.authenticateUser(credentials.username, credentials.password);
+        userService.authenticateUser(credentials.username, credentials.password);
         logger.info(String.format("Trainee with username %s successfully deleted.", username));
         return traineeRepository.deleteByUserUsername(username);
     }
@@ -124,16 +124,5 @@ public class TraineeServiceImpl implements TraineeService {
         trainee.setTrainers(trainers);
         saveTrainee(trainee);
         return trainee.getTrainers();
-    }
-
-    @Override
-    public Boolean changeActiveState(String username, boolean activeState){
-        //userHibernateService.authenticateUser(credentials.username, credentials.password);
-        return userHibernateService.changeActiveState(username, activeState);
-    }
-
-    @Override
-    public boolean changePassword(String username, String oldPassword, String newPassword){
-        return userHibernateService.changePassword(username, oldPassword, newPassword);
     }
 }

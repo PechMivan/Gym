@@ -129,8 +129,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean changePassword(String username, String oldPassword, String newPassword) {
-        validatePassword(newPassword);
         authenticateUser(username, oldPassword);
+        validatePassword(newPassword);
         User existingUser = getUserByUsername(username);
         existingUser.setPassword(newPassword);
         saveUser(existingUser);

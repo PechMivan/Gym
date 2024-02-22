@@ -1,8 +1,6 @@
 package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.Credentials;
-import com.gym.gym.dtos.request.ActiveStateChangeRequest;
-import com.gym.gym.dtos.request.PasswordChangeRequest;
 import com.gym.gym.dtos.request.TrainerRegistrateRequest;
 import com.gym.gym.dtos.request.TrainerUpdateRequest;
 import com.gym.gym.dtos.response.TrainerFindResponse;
@@ -21,14 +19,14 @@ import org.springframework.web.bind.annotation.*;
 public class TrainerController {
 
     @Autowired
-    TrainerServiceImpl trainerHibernateService;
+    TrainerServiceImpl trainerService;
 
     @Autowired
     TrainerMapper trainerMapper;
 
     @GetMapping("/username/{username}")
     public ResponseEntity<TrainerFindResponse> getTraineeByUsername(@PathVariable String username){
-        Trainer trainer = trainerHibernateService.getTrainerByUsername(username);
+        Trainer trainer = trainerService.getTrainerByUsername(username);
         TrainerFindResponse response = trainerMapper.mapToFindResponse(trainer);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -36,7 +34,7 @@ public class TrainerController {
     @PostMapping
     public ResponseEntity<Credentials> createTrainer(@RequestBody TrainerRegistrateRequest request){
         Trainer trainer = trainerMapper.mapFromRegistrateRequest(request);
-        Trainer newTrainer = trainerHibernateService.createTrainer(trainer);
+        Trainer newTrainer = trainerService.createTrainer(trainer);
         Credentials credentials = trainerMapper.mapToCredentials(newTrainer);
         return new ResponseEntity<>(credentials, HttpStatus.OK);
 
@@ -45,22 +43,9 @@ public class TrainerController {
     @PostMapping("{username}/update")
     public ResponseEntity<TrainerUpdateResponse> updateTrainer(@PathVariable String username, @RequestBody TrainerUpdateRequest request){
         Trainer trainer = trainerMapper.mapFromUpdateRequest(request);
-        Trainer updatedTrainer = trainerHibernateService.updateTrainer(username, trainer);
+        Trainer updatedTrainer = trainerService.updateTrainer(username, trainer);
         TrainerUpdateResponse response = trainerMapper.mapToUpdateResponse(updatedTrainer);
         return new ResponseEntity<>(response, HttpStatus.OK);
 
-    }
-
-    //TODO: Change toggle endpoint
-    @PostMapping("/active/change")
-    public ResponseEntity<HttpStatus> changeActiveState(@RequestBody ActiveStateChangeRequest request){
-        Boolean activeState = trainerHibernateService.changeActiveState(request.username, request.active);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/updatePassword")
-    public ResponseEntity<HttpStatus> changePassword(@RequestBody PasswordChangeRequest data){
-        boolean passwordChanged = trainerHibernateService.changePassword(data.username, data.oldPassword, data.newPassword);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

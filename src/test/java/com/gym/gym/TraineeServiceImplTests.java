@@ -168,23 +168,6 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void testToggleTraineeActive(){
-        // Act
-        traineeService.toggleTraineeActive(1L, new Credentials());
-        // Assert
-        verify(userService, times(1)).toggleActive(1L);
-    }
-
-    @Test
-    public void testChangePassword(){
-        // Act
-        traineeService.changePassword("username", "oldPassword", "newPassword");
-        // Assert
-        verify(userService, times(1))
-                .changePassword("username", "oldPassword", "newPassword");
-    }
-
-    @Test
     public void testUpdateTrainersList(){
         // Arrange
         Trainee trainee = Trainee.builder().trainers(new ArrayList<>()).build();

@@ -19,8 +19,4 @@ public interface TrainerService {
     void saveTrainer(Trainer trainer);
 
     Trainer updateTrainer(String username, Trainer trainer);
-
-    Boolean changeActiveState(String username, boolean activeState);
-
-    boolean changePassword(String username, String oldPassword, String newPassword);
 }

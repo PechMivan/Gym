@@ -22,14 +22,14 @@ import java.util.List;
 public class TraineeController {
 
     @Autowired
-    TraineeServiceImpl traineeHibernateService;
+    TraineeServiceImpl traineeService;
 
     @Autowired
     TraineeMapper traineeMapper;
 
     @GetMapping("/username/{username}")
     public ResponseEntity< TraineeFindResponse > getTraineeByUsername(@PathVariable String username){
-        Trainee trainee = traineeHibernateService.getTraineeByUsername(username);
+        Trainee trainee = traineeService.getTraineeByUsername(username);
         TraineeFindResponse response = traineeMapper.mapToFindResponse(trainee);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -37,7 +37,7 @@ public class TraineeController {
     @PostMapping
     public  ResponseEntity<Credentials> createTrainee(@RequestBody TraineeRegistrateRequest request) {
         Trainee trainee = traineeMapper.mapFromRegistrateRequest(request);
-        Trainee newTrainee = traineeHibernateService.createTrainee(trainee);
+        Trainee newTrainee = traineeService.createTrainee(trainee);
         Credentials newCredentials = traineeMapper.mapToCredentials(newTrainee);
         return new ResponseEntity<>(newCredentials, HttpStatus.CREATED); // Status 201
     }
@@ -45,35 +45,22 @@ public class TraineeController {
     @PostMapping("{username}")
     public ResponseEntity<TraineeUpdateResponse> updateTrainee(@PathVariable String username, @RequestBody TraineeUpdateRequest request){
         Trainee trainee = traineeMapper.mapFromUpdateRequest(request);
-        Trainee updatedTrainee = traineeHibernateService.updateTrainee(username, trainee);
+        Trainee updatedTrainee = traineeService.updateTrainee(username, trainee);
         TraineeUpdateResponse response = traineeMapper.mapToUpdateResponse(updatedTrainee);
         return new ResponseEntity<>(response, HttpStatus.OK); // Status 200
     }
 
     @PostMapping("/username/{username}/delete")
     public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username, @RequestBody Credentials credentials){
-        long count = traineeHibernateService.deleteTraineeByUsername(username, credentials);
+        long count = traineeService.deleteTraineeByUsername(username, credentials);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("{username}/update-trainers")
     public ResponseEntity<List<TrainerDTO>> updateTrainerList(@PathVariable String username, @RequestBody TraineeTrainersListUpdateRequest request){
-        List<Trainer> updatedTrainerList = traineeHibernateService.updateTrainerList(username, request.getUsernames());
+        List<Trainer> updatedTrainerList = traineeService.updateTrainerList(username, request.getUsernames());
         List<TrainerDTO> response = traineeMapper.trainerListToTrainerDTOList(updatedTrainerList);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-    //TODO:Check toggleTraineeActive
-    @PostMapping("/active/change")
-    public ResponseEntity<HttpStatus> changeActiveState(@RequestBody ActiveStateChangeRequest request){
-        Boolean activeState = traineeHibernateService.changeActiveState(request.username, request.active);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @PostMapping("/updatePassword")
-    public ResponseEntity<HttpStatus> changePassword(@RequestBody PasswordChangeRequest request){
-        boolean passwordChanged = traineeHibernateService.changePassword(request.username, request.oldPassword, request.newPassword);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
+    
 }

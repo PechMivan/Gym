@@ -1,6 +1,5 @@
 package com.gym.gym;
 
-import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.entities.User;
@@ -159,23 +158,5 @@ public class TrainerServiceImplTests {
         // Assert
         assertEquals("testName", updatedTrainer.getUser().getFirstname());
         assertEquals(updateTrainer.getSpecialization().getName(), updatedTrainer.getSpecialization().getName());
-    }
-
-
-    @Test
-    public void testToggleTrainerActive(){
-        // Act
-        trainerService.toggleTraineeActive(1L, new Credentials());
-        // Assert
-        verify(userService, times(1)).toggleActive(1L);
-    }
-
-    @Test
-    public void testChangePassword(){
-        // Act
-        trainerService.changePassword("username", "oldPassword", "newPassword");
-        // Assert
-        verify(userService, times(1))
-                .changePassword("username", "oldPassword", "newPassword");
     }
 }
