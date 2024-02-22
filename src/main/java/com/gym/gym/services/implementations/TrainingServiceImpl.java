@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @SuppressWarnings("unused")
@@ -84,7 +85,9 @@ public class TrainingServiceImpl implements TrainingService {
         List<Trainer> trainers = trainerHibernateService.getAllTrainers();
         List<Trainer> trainersOfTrainee = trainee.getTrainers();
 
-        trainers.removeAll(trainersOfTrainee);
+        trainers = trainers.stream()
+                .filter(trainer -> !trainersOfTrainee.contains(trainer) && trainer.getUser().isActive())
+                .collect(Collectors.toList());
 
         return trainers;
     }

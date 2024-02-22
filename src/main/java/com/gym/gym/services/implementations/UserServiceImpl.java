@@ -150,14 +150,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    //TODO: Modify unit testing.
     @Override
-    public Boolean toggleActive(long id){
-        User existingUser = getUserById(id);
-        // Toggles the state of active from true to false and viceversa.
-        boolean activeState = !existingUser.isActive();
+    public Boolean changeActiveState(String username, boolean activeState){
+        User existingUser = getUserByUsername(username);
         existingUser.setActive(activeState);
         saveUser(existingUser);
-        logger.info(String.format("Active status successfully change for user with id %d", existingUser.getId()));
+        logger.info(String.format("Active status successfully changed for user with id %d", existingUser.getId()));
         return activeState;
     }
 }

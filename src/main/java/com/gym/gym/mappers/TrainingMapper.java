@@ -1,15 +1,20 @@
 package com.gym.gym.mappers;
 
+import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.dtos.request.TrainingCreateRequest;
 import com.gym.gym.dtos.response.TraineeTrainingFindResponse;
 import com.gym.gym.dtos.response.TrainerTrainingFindResponse;
+import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Mappings;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+import java.util.List;
+
+//TODO: Refactor and optimize mappers by utilizing "uses"
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = { TraineeMapper.class })
 @SuppressWarnings("unused")
 public interface TrainingMapper {
 
@@ -31,4 +36,6 @@ public interface TrainingMapper {
             @Mapping(source = "trainingType.name", target = "trainingTypeName")
     })
     TrainerTrainingFindResponse mapToFindTrainerTrainingResponse(Training training);
+
+    List<TrainerDTO> mapTrainerListToTrainerDTOList(List<Trainer> trainers);
 }

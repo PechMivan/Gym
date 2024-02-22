@@ -20,7 +20,7 @@ public interface TrainerService {
 
     Trainer updateTrainer(String username, Trainer trainer);
 
-    Boolean toggleTraineeActive(long id, Credentials credentials);
+    Boolean changeActiveState(String username, boolean activeState);
 
     boolean changePassword(String username, String oldPassword, String newPassword);
 }

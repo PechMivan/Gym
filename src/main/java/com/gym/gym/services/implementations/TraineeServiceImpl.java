@@ -105,9 +105,9 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public Boolean toggleTraineeActive(long id, Credentials credentials){
-        userHibernateService.authenticateUser(credentials.username, credentials.password);
-        return userHibernateService.toggleActive(id);
+    public Boolean changeActiveState(String username, boolean activeState){
+        //userHibernateService.authenticateUser(credentials.username, credentials.password);
+        return userHibernateService.changeActiveState(username, activeState);
     }
 
     @Override

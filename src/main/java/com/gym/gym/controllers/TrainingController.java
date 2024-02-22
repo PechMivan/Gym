@@ -1,5 +1,6 @@
 package com.gym.gym.controllers;
 
+import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.dtos.request.TrainingCreateRequest;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
@@ -28,6 +29,13 @@ public class TrainingController {
         Training training = trainingMapper.mapFromCreateRequest(request);
         Training newTraining = trainingService.createTraining(training);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("{username}")
+    public ResponseEntity<List<TrainerDTO>> getAllTrainersNotInTraineeTrainersListByUsername(@PathVariable String username){
+        List<Trainer> trainers = trainingService.getAllTrainersNotInTraineeTrainersListByUsername(username);
+        List<TrainerDTO> response = trainingMapper.mapTrainerListToTrainerDTOList(trainers);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/trainee/username/{username}")
