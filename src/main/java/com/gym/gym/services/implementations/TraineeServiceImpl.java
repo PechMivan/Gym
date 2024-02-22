@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -102,6 +103,15 @@ public class TraineeServiceImpl implements TraineeService {
         userHibernateService.authenticateUser(credentials.username, credentials.password);
         logger.info(String.format("Trainee with username %s successfully deleted.", username));
         return traineeRepository.deleteByUserUsername(username);
+    }
+
+    //TODO: Implement unit testing for this method.
+    public List<Trainer> updateTrainerList(String username, List<Trainer> trainers){
+        Trainee trainee = getTraineeByUsername(username);
+        //Verify if each trainer exist before saving.
+        List<Trainer> traineeTrainerList = trainee.getTrainers();
+        traineeTrainerList.addAll(trainers);
+        return traineeTrainerList;
     }
 
     @Override
