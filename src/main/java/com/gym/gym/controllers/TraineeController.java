@@ -1,19 +1,20 @@
 package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.Credentials;
-import com.gym.gym.dtos.request.ActiveStateChangeRequest;
-import com.gym.gym.dtos.request.PasswordChangeRequest;
-import com.gym.gym.dtos.request.TraineeRegistrateRequest;
-import com.gym.gym.dtos.request.TraineeUpdateRequest;
+import com.gym.gym.dtos.TrainerDTO;
+import com.gym.gym.dtos.request.*;
 import com.gym.gym.dtos.response.TraineeFindResponse;
 import com.gym.gym.dtos.response.TraineeUpdateResponse;
 import com.gym.gym.entities.Trainee;
+import com.gym.gym.entities.Trainer;
 import com.gym.gym.mappers.TraineeMapper;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/gym/trainees")
@@ -53,6 +54,13 @@ public class TraineeController {
     public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username, @RequestBody Credentials credentials){
         long count = traineeHibernateService.deleteTraineeByUsername(username, credentials);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("{username}/update-trainers")
+    public ResponseEntity<List<TrainerDTO>> updateTrainerList(@PathVariable String username, @RequestBody TraineeTrainersListUpdateRequest request){
+        List<Trainer> updatedTrainerList = traineeHibernateService.updateTrainerList(username, request.getUsernames());
+        List<TrainerDTO> response = traineeMapper.trainerListToTrainerDTOList(updatedTrainerList);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     //TODO:Check toggleTraineeActive

@@ -2,7 +2,6 @@ package com.gym.gym.mappers;
 
 import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.TraineeDTO;
-import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.dtos.request.TrainerRegistrateRequest;
 import com.gym.gym.dtos.request.TrainerUpdateRequest;
 import com.gym.gym.dtos.response.TrainerFindResponse;

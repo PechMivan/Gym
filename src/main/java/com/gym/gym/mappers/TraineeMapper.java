@@ -3,11 +3,13 @@ package com.gym.gym.mappers;
 import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.dtos.request.TraineeRegistrateRequest;
+import com.gym.gym.dtos.request.TraineeTrainersListUpdateRequest;
 import com.gym.gym.dtos.request.TraineeUpdateRequest;
 import com.gym.gym.dtos.response.TraineeFindResponse;
 import com.gym.gym.dtos.response.TraineeUpdateResponse;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
+import com.gym.gym.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -41,25 +43,6 @@ public interface TraineeMapper {
     })
     TraineeFindResponse mapToFindResponse(Trainee trainee);
 
-//    default List<TrainerDTO> mapToTrainerDTOList(List<Trainer> trainers) {
-//        if(trainers == null){
-//            return null;
-//        }
-//
-//        List<TrainerDTO> trainerDTOS = new ArrayList<>();
-//        TrainerDTO trainerDTO = new TrainerDTO();
-//
-//        for(Trainer trainer : trainers){
-//            trainerDTO.setUsername(trainer.getUser().getUsername());
-//            trainerDTO.setFirstname(trainer.getUser().getFirstname());
-//            trainerDTO.setLastname(trainer.getUser().getLastname());
-//            trainerDTO.setSpecialization(trainer.getSpecialization().getName());
-//            trainerDTOS.add(trainerDTO);
-//        }
-
- //       return trainerDTOS;
- //   }
-
     //TODO: Pasar a Trainer y conectarlos
     default TrainerDTO mapToTrainerDTO(Trainer trainer) {
         TrainerDTO trainerDTO = new TrainerDTO();
@@ -68,6 +51,19 @@ public interface TraineeMapper {
         trainerDTO.setLastname(trainer.getUser().getLastname());
         trainerDTO.setSpecialization(trainer.getSpecialization().getName());
         return trainerDTO;
+    }
+
+    default List<TrainerDTO> trainerListToTrainerDTOList(List<Trainer> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<TrainerDTO> list1 = new ArrayList<TrainerDTO>( list.size() );
+        for ( Trainer trainer : list ) {
+            list1.add( mapToTrainerDTO( trainer ) );
+        }
+
+        return list1;
     }
 
     @Mappings({
@@ -86,14 +82,6 @@ public interface TraineeMapper {
             @Mapping(source = "dateOfBirth", target = "dateOfBirth", dateFormat = "yyyy-MM-dd")
     })
     TraineeUpdateResponse mapToUpdateResponse(Trainee trainee);
-
-    //    @Mappings({
-    //        @Mapping(source = "user.username", target = "username"),
-//            @Mapping(source = "user.firstname", target = "firstname"),
-//            @Mapping(source = "user.lastname", target = "lastname"),
-//            @Mapping(source = "user.active", target = "isActive")
-//    })
-//    TraineeFindResponse mapToUpdateResponse(Trainee trainee);
 
 //TODO: hacer el mapping a TraineeDTO
 }

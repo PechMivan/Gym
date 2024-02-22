@@ -1,8 +1,15 @@
 package com.gym.gym.dtos.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TraineeTrainersListUpdateRequest {
-    public String username;
-    public List<String> trainerUsernames;
+
+    public List<String> usernames;
 }

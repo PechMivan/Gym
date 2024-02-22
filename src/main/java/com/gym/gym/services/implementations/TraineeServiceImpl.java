@@ -7,6 +7,7 @@ import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TraineeRepository;
 import com.gym.gym.services.TraineeService;
+import com.gym.gym.services.TrainerService;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Autowired
     private TraineeRepository traineeRepository;
+    @Autowired
+    private TrainerService trainerService;
     @Autowired
     private UserServiceImpl userHibernateService;
 
@@ -105,13 +108,22 @@ public class TraineeServiceImpl implements TraineeService {
         return traineeRepository.deleteByUserUsername(username);
     }
 
-    //TODO: Implement unit testing for this method.
-    public List<Trainer> updateTrainerList(String username, List<Trainer> trainers){
+    //TODO: Implement unit testing for this method and add to the service interface
+    public List<Trainer> updateTrainerList(String username, List<String> trainerUsernames){
         Trainee trainee = getTraineeByUsername(username);
         //Verify if each trainer exist before saving.
-        List<Trainer> traineeTrainerList = trainee.getTrainers();
-        traineeTrainerList.addAll(trainers);
-        return traineeTrainerList;
+
+        List<Trainer> trainers = new ArrayList<>();
+        Trainer trainer;
+
+        for(String trainerUsername : trainerUsernames){
+            trainer = trainerService.getTrainerByUsername(trainerUsername);
+            trainers.add(trainer);
+        }
+
+        trainee.setTrainers(trainers);
+        saveTrainee(trainee);
+        return trainee.getTrainers();
     }
 
     @Override
