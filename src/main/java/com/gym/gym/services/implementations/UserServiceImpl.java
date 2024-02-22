@@ -1,5 +1,6 @@
 package com.gym.gym.services.implementations;
 
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.InvalidPasswordException;
 import com.gym.gym.exceptions.NotFoundException;
@@ -152,7 +153,8 @@ public class UserServiceImpl implements UserService {
 
     //TODO: Modify unit testing.
     @Override
-    public Boolean changeActiveState(String username, boolean activeState){
+    public Boolean changeActiveState(String username, boolean activeState, Credentials credentials){
+        authenticateUser(credentials.username, credentials.password);
         User existingUser = getUserByUsername(username);
         existingUser.setActive(activeState);
         saveUser(existingUser);

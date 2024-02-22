@@ -67,8 +67,8 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public Trainer updateTrainer(String username, Trainer trainer) {
-        //userService.authenticateUser(trainer.getUser().getUsername(), trainer.getUser().getUsername());
+    public Trainer updateTrainer(String username, Trainer trainer, Credentials credentials) {
+        userService.authenticateUser(credentials.username, credentials.password);
 
         Trainer existingTrainer = getTrainerByUsername(username);
         TrainingType updatedTrainingType = trainingTypeService
@@ -82,7 +82,7 @@ public class TrainerServiceImpl implements TrainerService {
                 .build();
 
         saveTrainer(updatedTrainer);
-        logger.info(String.format("Trainee with id %d successfully updated.", updatedTrainer.getId()));
+        logger.info(String.format("Trainer with id %d successfully updated.", updatedTrainer.getId()));
         return updatedTrainer;
     }
 

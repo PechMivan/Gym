@@ -1,5 +1,6 @@
 package com.gym.gym.services;
 
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.User;
 
 import java.util.List;
@@ -18,5 +19,5 @@ public interface UserService {
     void authenticateUser(String username, String password);
     boolean changePassword(String username, String oldPassword, String newPassword);
     void validatePassword(String newPassword);
-    Boolean changeActiveState(String username, boolean activeState);
+    Boolean changeActiveState(String username, boolean activeState, Credentials credentials);
 }

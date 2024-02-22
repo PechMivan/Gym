@@ -28,7 +28,7 @@ public class UserController {
 
     @PostMapping("/active/change")
     public ResponseEntity<HttpStatus> changeActiveState(@RequestBody ActiveStateChangeRequest request){
-        Boolean activeState = userService.changeActiveState(request.username, request.active);
+        Boolean activeState = userService.changeActiveState(request.username, request.active, request.credentials);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

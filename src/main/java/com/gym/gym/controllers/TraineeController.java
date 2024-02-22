@@ -45,7 +45,7 @@ public class TraineeController {
     @PostMapping("{username}")
     public ResponseEntity<TraineeUpdateResponse> updateTrainee(@PathVariable String username, @RequestBody TraineeUpdateRequest request){
         Trainee trainee = traineeMapper.mapFromUpdateRequest(request);
-        Trainee updatedTrainee = traineeService.updateTrainee(username, trainee);
+        Trainee updatedTrainee = traineeService.updateTrainee(username, trainee, request.credentials);
         TraineeUpdateResponse response = traineeMapper.mapToUpdateResponse(updatedTrainee);
         return new ResponseEntity<>(response, HttpStatus.OK); // Status 200
     }
@@ -58,7 +58,7 @@ public class TraineeController {
 
     @PostMapping("{username}/update-trainers")
     public ResponseEntity<List<TrainerDTO>> updateTrainerList(@PathVariable String username, @RequestBody TraineeTrainersListUpdateRequest request){
-        List<Trainer> updatedTrainerList = traineeService.updateTrainerList(username, request.getUsernames());
+        List<Trainer> updatedTrainerList = traineeService.updateTrainerList(username, request.getUsernames(), request.credentials);
         List<TrainerDTO> response = traineeMapper.trainerListToTrainerDTOList(updatedTrainerList);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
