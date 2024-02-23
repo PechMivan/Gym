@@ -3,8 +3,10 @@ package com.gym.gym.specifications;
 import com.gym.gym.dtos.request.TraineeTrainingFindRequest;
 import com.gym.gym.dtos.request.TrainerTrainingFindRequest;
 import com.gym.gym.entities.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.text.ParseException;
@@ -28,17 +30,7 @@ public class TrainingSpecifications {
 
             predicates.add(criteriaBuilder.equal(userTraineeJoin.get("username"), params.username));
 
-            if(params.periodFrom != null && params.periodTo != null){
-                Date periodFrom = parseDate(params.periodFrom);
-                Date periodTo= parseDate(params.periodTo);
-                predicates.add(criteriaBuilder.between(root.get("date"), periodFrom, periodTo));
-            } else if (params.periodFrom != null) {
-                Date periodFrom = parseDate(params.periodFrom);
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("date"), periodFrom));
-            } else if (params.periodTo != null) {
-                Date periodTo = parseDate(params.periodTo);
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), periodTo));
-            }
+            predicates.addAll(getDateFilters(root, criteriaBuilder, params.periodFrom, params.periodTo));
 
             if(params.trainerName != null){
                 predicates.add(criteriaBuilder.equal(userTrainerJoin.get("firstname"), params.trainerName));
@@ -64,17 +56,7 @@ public class TrainingSpecifications {
 
             predicates.add(criteriaBuilder.equal(userTrainerJoin.get("username"), params.username));
 
-            if(params.periodFrom != null && params.periodTo != null){
-                Date periodFrom = parseDate(params.periodFrom);
-                Date periodTo= parseDate(params.periodTo);
-                predicates.add(criteriaBuilder.between(root.get("date"), periodFrom, periodTo));
-            } else if (params.periodFrom != null) {
-                Date periodFrom = parseDate(params.periodFrom);
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("date"), periodFrom));
-            } else if (params.periodTo != null) {
-                Date periodTo = parseDate(params.periodTo);
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), periodTo));
-            }
+            predicates.addAll(getDateFilters(root, criteriaBuilder, params.periodFrom, params.periodTo));
 
             if(params.traineeName != null){
                 predicates.add(criteriaBuilder.equal(userTraineeJoin.get("firstname"), params.traineeName));
@@ -82,6 +64,24 @@ public class TrainingSpecifications {
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    private static List<Predicate> getDateFilters(Root<Training> root, CriteriaBuilder criteriaBuilder, String strPeriodFrom, String strPeriodTo){
+        List<Predicate> predicates = new ArrayList<>();
+
+        if(strPeriodFrom != null && strPeriodTo != null){
+            Date periodFrom = parseDate(strPeriodFrom);
+            Date periodTo= parseDate(strPeriodTo);
+            predicates.add(criteriaBuilder.between(root.get("date"), periodFrom, periodTo));
+        } else if (strPeriodFrom != null) {
+            Date periodFrom = parseDate(strPeriodFrom);
+            predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("date"), periodFrom));
+        } else if (strPeriodTo != null) {
+            Date periodTo = parseDate(strPeriodTo);
+            predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), periodTo));
+        }
+
+        return predicates;
     }
 
     private static Date parseDate(String strDate){
