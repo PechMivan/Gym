@@ -14,14 +14,4 @@ public interface TrainingService {
     void saveTraining(Training training);
 
     Training createTraining(Training training);
-
-    List<Training> getTrainingsByTraineeUsernameAndBetweenDates(String username, String startDate, String endDate);
-
-    List<Training> getTrainingsByTrainerUsernameAndBetweenDates(String username, String startDate, String endDate);
-
-    List<Training> getByTraineeUsernameAndTrainerName(String username, String trainerName);
-
-    List<Training> getTrainingsByTrainerUsernameAndTraineeName(String username, String trainerName);
-
-    List<Training> getTrainingsByTraineeUsernameAndTrainingType(String username, String trainingType);
 }

@@ -1,10 +1,15 @@
 package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.TrainerDTO;
+import com.gym.gym.dtos.request.TraineeTrainingFindRequest;
+import com.gym.gym.dtos.request.TrainerTrainingFindRequest;
 import com.gym.gym.dtos.request.TrainingCreateRequest;
+import com.gym.gym.dtos.response.TraineeTrainingFindResponse;
+import com.gym.gym.dtos.response.TrainerTrainingFindResponse;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
 import com.gym.gym.mappers.TrainingMapper;
+import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.implementations.TrainingServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +30,9 @@ public class TrainingController {
     TrainingServiceImpl trainingService;
 
     @Autowired
+    TrainingRepository trainingRepository;
+
+    @Autowired
     TrainingMapper trainingMapper;
 
     @PostMapping
@@ -41,53 +49,18 @@ public class TrainingController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/trainee/username/{username}")
-    public ResponseEntity<List<Training>> getTrainingsByTraineeUsernameAndBetweenDates(@PathVariable String username,
-                                                                                        @RequestParam String startDate,
-                                                                                       @RequestParam String endDate){
-
-        List<Training> trainings = trainingService.getTrainingsByTraineeUsernameAndBetweenDates(username, startDate, endDate);
-        return new ResponseEntity<>(trainings, HttpStatus.OK);
+    @GetMapping("/trainee/filter")
+    public ResponseEntity< List<TraineeTrainingFindResponse> > getFilteredTrainingsForTrainee(@RequestBody @Valid TraineeTrainingFindRequest request){
+        List<Training> trainings = trainingService.getFilteredTrainingsForTrainee(request);
+        List<TraineeTrainingFindResponse> responses = trainingMapper.mapToFindTraineeTrainingResponseList(trainings);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
-    @GetMapping("/trainee/username2/{username}")
-    public ResponseEntity<List<Training>> getTrainingsByTraineeUsernameAndTrainerName(@PathVariable String username,
-                                                                                       @RequestParam String trainerName){
-
-        List<Training> trainings = trainingService.getByTraineeUsernameAndTrainerName(username, trainerName);
-        return new ResponseEntity<>(trainings, HttpStatus.OK);
-    }
-
-    @GetMapping("/trainee/username3/{username}")
-    public ResponseEntity<List<Training>> getTrainingsByTraineeUsernameAndTrainingType(@PathVariable String username,
-                                                                                           @RequestParam String trainingType){
-
-        List<Training> trainings = trainingService.getTrainingsByTraineeUsernameAndTrainingType(username, trainingType);
-        return new ResponseEntity<>(trainings, HttpStatus.OK);
-    }
-
-    @GetMapping("/trainee/username4/{username}")
-    public ResponseEntity<List<Training>> getTrainingsByTrainerUsernameAndBetweenDates(@PathVariable String username,
-                                                                                       @RequestParam String startDate,
-                                                                                       @RequestParam String endDate){
-
-        List<Training> trainings = trainingService.getTrainingsByTrainerUsernameAndBetweenDates(username, startDate, endDate);
-        return new ResponseEntity<>(trainings, HttpStatus.OK);
-    }
-
-    @GetMapping("/trainee/username5/{username}")
-    public ResponseEntity<List<Training>> getTrainingsByTrainerUsernameAndTraineeName(@PathVariable String username,
-                                                                                      @RequestParam String traineeName){
-
-        List<Training> trainings = trainingService.getTrainingsByTrainerUsernameAndTraineeName(username, traineeName);
-        return new ResponseEntity<>(trainings, HttpStatus.OK);
-    }
-
-    @GetMapping("/trainee_trainers/{username}")
-    public ResponseEntity<List<Trainer>> getTrainingsByTrainerUsernameAndTraineeName(@PathVariable String username){
-
-        List<Trainer> trainers = trainingService.getAllTrainersNotInTraineeTrainersListByUsername(username);
-        return new ResponseEntity<>(trainers, HttpStatus.OK);
+    @GetMapping("/trainer/filter")
+    public ResponseEntity< List<TrainerTrainingFindResponse> > getFilteredTrainingsForTrainer(@RequestBody @Valid TrainerTrainingFindRequest request){
+        List<Training> trainings = trainingService.getFilteredTrainingsForTrainer(request);
+        List<TrainerTrainingFindResponse> responses = trainingMapper.mapToFindTrainerTrainingResponseList(trainings);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
 }
