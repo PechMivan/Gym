@@ -1,6 +1,7 @@
 package com.gym.gym.dtos.request;
 
 import com.gym.gym.dtos.Credentials;
+import com.gym.gym.validators.CheckDateFormat;
 import com.gym.gym.validators.OnlyLetters;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ public class TraineeUpdateRequest {
     @NotBlank(message = "lastname cannot be null or blank.")
     @OnlyLetters(message = "lastname cannot contain number or symbols.")
     public String lastname;
+    @CheckDateFormat
     public String dateOfBirth;
     public String address;
     public boolean active;
