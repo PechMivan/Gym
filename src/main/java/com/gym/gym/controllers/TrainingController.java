@@ -6,15 +6,18 @@ import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
 import com.gym.gym.mappers.TrainingMapper;
 import com.gym.gym.services.implementations.TrainingServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/gym/trainings")
+@Validated
 @SuppressWarnings("unused")
 public class TrainingController {
 
@@ -25,7 +28,7 @@ public class TrainingController {
     TrainingMapper trainingMapper;
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createTraining(@RequestBody TrainingCreateRequest request){
+    public ResponseEntity<HttpStatus> createTraining(@RequestBody @Valid TrainingCreateRequest request){
         Training training = trainingMapper.mapFromCreateRequest(request);
         Training newTraining = trainingService.createTraining(training);
         return new ResponseEntity<>(HttpStatus.OK);

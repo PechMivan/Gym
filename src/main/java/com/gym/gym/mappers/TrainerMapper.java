@@ -41,7 +41,7 @@ public interface TrainerMapper {
     @Mappings({
             @Mapping(source = "firstname", target = "user.firstname"),
             @Mapping(source = "lastname", target = "user.lastname"),
-            @Mapping(source = "isActive", target = "user.isActive"),
+            @Mapping(source = "active", target = "user.isActive"),
             @Mapping(source = "specialization", target = "specialization.name")
 
     })

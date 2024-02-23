@@ -9,15 +9,18 @@ import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.mappers.TraineeMapper;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("api/gym/trainees")
+@Validated
 @SuppressWarnings("unused")
 public class TraineeController {
 
@@ -35,7 +38,7 @@ public class TraineeController {
     }
 
     @PostMapping
-    public  ResponseEntity<Credentials> createTrainee(@RequestBody TraineeRegistrateRequest request) {
+    public  ResponseEntity<Credentials> createTrainee(@RequestBody @Valid TraineeRegistrateRequest request) {
         Trainee trainee = traineeMapper.mapFromRegistrateRequest(request);
         Trainee newTrainee = traineeService.createTrainee(trainee);
         Credentials newCredentials = traineeMapper.mapToCredentials(newTrainee);
@@ -43,7 +46,7 @@ public class TraineeController {
     }
 
     @PostMapping("{username}")
-    public ResponseEntity<TraineeUpdateResponse> updateTrainee(@PathVariable String username, @RequestBody TraineeUpdateRequest request){
+    public ResponseEntity<TraineeUpdateResponse> updateTrainee(@PathVariable String username, @RequestBody @Valid TraineeUpdateRequest request){
         Trainee trainee = traineeMapper.mapFromUpdateRequest(request);
         Trainee updatedTrainee = traineeService.updateTrainee(username, trainee, request.credentials);
         TraineeUpdateResponse response = traineeMapper.mapToUpdateResponse(updatedTrainee);
@@ -51,13 +54,14 @@ public class TraineeController {
     }
 
     @PostMapping("/username/{username}/delete")
-    public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username, @RequestBody Credentials credentials){
+    public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username, @RequestBody @Valid Credentials credentials){
         long count = traineeService.deleteTraineeByUsername(username, credentials);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //TODO: Add validation to the request
     @PostMapping("{username}/update-trainers")
-    public ResponseEntity<List<TrainerDTO>> updateTrainerList(@PathVariable String username, @RequestBody TraineeTrainersListUpdateRequest request){
+    public ResponseEntity<List<TrainerDTO>> updateTrainerList(@PathVariable String username, @RequestBody @Valid TraineeTrainersListUpdateRequest request){
         List<Trainer> updatedTrainerList = traineeService.updateTrainerList(username, request.getUsernames(), request.credentials);
         List<TrainerDTO> response = traineeMapper.trainerListToTrainerDTOList(updatedTrainerList);
         return new ResponseEntity<>(response, HttpStatus.OK);

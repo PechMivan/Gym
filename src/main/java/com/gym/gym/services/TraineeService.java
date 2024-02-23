@@ -4,6 +4,8 @@ import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 

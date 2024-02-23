@@ -8,13 +8,16 @@ import com.gym.gym.dtos.response.TrainerUpdateResponse;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.mappers.TrainerMapper;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/gym/trainers")
+@Validated
 @SuppressWarnings("unused")
 public class TrainerController {
 
@@ -32,7 +35,7 @@ public class TrainerController {
     }
 
     @PostMapping
-    public ResponseEntity<Credentials> createTrainer(@RequestBody TrainerRegistrateRequest request){
+    public ResponseEntity<Credentials> createTrainer(@RequestBody @Valid TrainerRegistrateRequest request){
         Trainer trainer = trainerMapper.mapFromRegistrateRequest(request);
         Trainer newTrainer = trainerService.createTrainer(trainer);
         Credentials credentials = trainerMapper.mapToCredentials(newTrainer);
@@ -41,7 +44,7 @@ public class TrainerController {
     }
 
     @PostMapping("{username}/update")
-    public ResponseEntity<TrainerUpdateResponse> updateTrainer(@PathVariable String username, @RequestBody TrainerUpdateRequest request){
+    public ResponseEntity<TrainerUpdateResponse> updateTrainer(@PathVariable String username, @RequestBody @Valid TrainerUpdateRequest request){
         Trainer trainer = trainerMapper.mapFromUpdateRequest(request);
         Trainer updatedTrainer = trainerService.updateTrainer(username, trainer, request.credentials);
         TrainerUpdateResponse response = trainerMapper.mapToUpdateResponse(updatedTrainer);
