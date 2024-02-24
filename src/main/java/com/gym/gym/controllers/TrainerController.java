@@ -27,7 +27,7 @@ public class TrainerController {
     @Autowired
     TrainerMapper trainerMapper;
 
-    @GetMapping("/username/{username}")
+    @GetMapping("/user/{username}")
     public ResponseEntity<TrainerFindResponse> getTraineeByUsername(@PathVariable String username){
         Trainer trainer = trainerService.getTrainerByUsername(username);
         TrainerFindResponse response = trainerMapper.mapToFindResponse(trainer);
@@ -43,7 +43,7 @@ public class TrainerController {
 
     }
 
-    @PostMapping("{username}/update")
+    @PutMapping("/user/{username}")
     public ResponseEntity<TrainerUpdateResponse> updateTrainer(@PathVariable String username, @RequestBody @Valid TrainerUpdateRequest request){
         Trainer trainer = trainerMapper.mapFromUpdateRequest(request);
         Trainer updatedTrainer = trainerService.updateTrainer(username, trainer, request.credentials);

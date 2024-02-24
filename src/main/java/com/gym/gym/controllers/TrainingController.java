@@ -42,13 +42,14 @@ public class TrainingController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("{username}")
+    @GetMapping("/trainee/{username}")
     public ResponseEntity<List<TrainerDTO>> getAllTrainersNotInTraineeTrainersListByUsername(@PathVariable String username){
         List<Trainer> trainers = trainingService.getAllTrainersNotInTraineeTrainersListByUsername(username);
         List<TrainerDTO> response = trainingMapper.mapTrainerListToTrainerDTOList(trainers);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    //TODO:Mejorar con params y pathvariable, requestmapping: "/trainee/user/{username}?etc=asd...
     @GetMapping("/trainee/filter")
     public ResponseEntity< List<TraineeTrainingFindResponse> > getFilteredTrainingsForTrainee(@RequestBody @Valid TraineeTrainingFindRequest request){
         List<Training> trainings = trainingService.getFilteredTrainingsForTrainee(request);
@@ -56,6 +57,7 @@ public class TrainingController {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
+    //TODO:Mejorar con params y pathvariable, requestmapping: "/trainer/user/{username}?etc=asd...
     @GetMapping("/trainer/filter")
     public ResponseEntity< List<TrainerTrainingFindResponse> > getFilteredTrainingsForTrainer(@RequestBody @Valid TrainerTrainingFindRequest request){
         List<Training> trainings = trainingService.getFilteredTrainingsForTrainer(request);

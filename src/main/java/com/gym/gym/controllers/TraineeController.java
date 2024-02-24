@@ -30,7 +30,7 @@ public class TraineeController {
     @Autowired
     TraineeMapper traineeMapper;
 
-    @GetMapping("/username/{username}")
+    @GetMapping("/user/{username}")
     public ResponseEntity< TraineeFindResponse > getTraineeByUsername(@PathVariable String username){
         Trainee trainee = traineeService.getTraineeByUsername(username);
         TraineeFindResponse response = traineeMapper.mapToFindResponse(trainee);
@@ -45,7 +45,7 @@ public class TraineeController {
         return new ResponseEntity<>(newCredentials, HttpStatus.CREATED); // Status 201
     }
 
-    @PostMapping("{username}")
+    @PutMapping("/user/{username}")
     public ResponseEntity<TraineeUpdateResponse> updateTrainee(@PathVariable String username, @RequestBody @Valid TraineeUpdateRequest request){
         Trainee trainee = traineeMapper.mapFromUpdateRequest(request);
         Trainee updatedTrainee = traineeService.updateTrainee(username, trainee, request.credentials);
@@ -53,14 +53,14 @@ public class TraineeController {
         return new ResponseEntity<>(response, HttpStatus.OK); // Status 200
     }
 
-    @PostMapping("/username/{username}/delete")
+    @DeleteMapping("/user/{username}")
     public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username, @RequestBody @Valid Credentials credentials){
         long count = traineeService.deleteTraineeByUsername(username, credentials);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //TODO: Add validation to the request
-    @PostMapping("{username}/update-trainers")
+    @PutMapping("/user/{username}/trainers/")
     public ResponseEntity<List<TrainerDTO>> updateTrainerList(@PathVariable String username, @RequestBody @Valid TraineeTrainersListUpdateRequest request){
         List<Trainer> updatedTrainerList = traineeService.updateTrainerList(username, request.getUsernames(), request.credentials);
         List<TrainerDTO> response = traineeMapper.trainerListToTrainerDTOList(updatedTrainerList);
