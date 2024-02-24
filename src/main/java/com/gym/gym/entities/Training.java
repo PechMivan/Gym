@@ -1,6 +1,7 @@
 package com.gym.gym.entities;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,4 +45,5 @@ public class Training implements Serializable {
     @ManyToOne
     @JoinColumn(name="trainerId", nullable=false)
     private com.gym.gym.entities.Trainer trainer;
+
 }

@@ -1,7 +1,6 @@
 package com.gym.gym.exceptions;
 
 import com.gym.gym.exceptions.apierror.ApiError;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
