@@ -1,6 +1,7 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.entities.TrainingType;
+import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingTypeRepository;
 import com.gym.gym.services.TrainingTypeService;
 import org.slf4j.Logger;
@@ -25,7 +26,8 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
 
     @Override
     public TrainingType getTrainingTypeByName(String name){
-        return trainingTypeRepository.findByName(name).orElse(null);
+        return trainingTypeRepository.findByName(name)
+                .orElseThrow(() -> new NotFoundException(String.format("Training Type with name %s not found", name)));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.gym.gym.dtos.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gym.gym.dtos.TrainerDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;

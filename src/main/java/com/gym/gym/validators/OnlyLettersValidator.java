@@ -10,7 +10,7 @@ public class OnlyLettersValidator implements ConstraintValidator<OnlyLetters, St
 
     @Override
     public boolean isValid(String object, ConstraintValidatorContext constraintContext) {
-        if ( object == null ) {
+        if ( object == null || object.isBlank() ) {
             return true;
         }
 
