@@ -11,8 +11,7 @@ import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.TrainingService;
 import com.gym.gym.specifications.TrainingSpecifications;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @SuppressWarnings("unused")
 public class TrainingServiceImpl implements TrainingService {
 
@@ -32,8 +32,6 @@ public class TrainingServiceImpl implements TrainingService {
     TrainerServiceImpl trainerHibernateService;
     @Autowired
     TraineeServiceImpl traineeHibernateService;
-
-    Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
 
     @Override
     public Training getTrainingById(long id) {
@@ -69,7 +67,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         saveTraining(newTraining);
         traineeHibernateService.updateTrainersList(existingTrainee.getId(), existingTrainer);
-        logger.info(String.format("Training successfully created with id %d ", newTraining.getId()));
+        log.info(String.format("Training successfully created with id %d ", newTraining.getId()));
         return newTraining;
     }
 

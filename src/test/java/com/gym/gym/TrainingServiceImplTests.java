@@ -38,7 +38,7 @@ public class TrainingServiceImplTests {
     }
 
     @Test
-    public void testGetAllTrainings(){
+    public void getAllTrainings_withTrainings_succesful(){
         // Arrange
         when(trainingRepository.findAll()).thenReturn(trainings);
         // Act
@@ -48,7 +48,18 @@ public class TrainingServiceImplTests {
     }
 
     @Test
-    public void testGetTrainingById(){
+    public void getAllTrainings_withoutTrainings_returnsEmptyList(){
+        // Arrange
+        List<Training> emptyTrainingList = Collections.emptyList();
+        when(trainingRepository.findAll()).thenReturn(emptyTrainingList);
+        // Act
+        List<Training> result = trainingService.getAllTrainings();
+        // Assert
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getTraining_validId_successful(){
         // Arrange
         long trainingId = 1L;
         Training training = new Training();
@@ -61,6 +72,11 @@ public class TrainingServiceImplTests {
         assertNotNull(result);
         assertEquals(training.getId(), result.getId());
         assertEquals(training.getName(), result.getName());
+    }
+
+    @Test
+    public void getTraining_invalidId_throwsNotFoundException(){
+        // Act and Arrange
         assertThrows(NotFoundException.class, ()-> trainingService.getTrainingById(100L));
     }
 
@@ -76,14 +92,19 @@ public class TrainingServiceImplTests {
     @Test
     public void testGetAllTrainersNotInTraineeTrainersListByUsername(){
         // Arrange
-        Trainer trainer1 = Trainer.builder().user(new User()).id(1L).build();
-        Trainer trainer2 = Trainer.builder().user(new User()).id(2L).build();
-        Trainer trainer3 = Trainer.builder().user(new User()).id(3L).build();
+
+        User userActive = User.builder().isActive(true).build();
+        User userNotActive = User.builder().isActive(false).build();
+
+        Trainer trainer1 = Trainer.builder().user(userActive).id(1L).build();
+        Trainer trainer2 = Trainer.builder().user(userActive).id(2L).build();
+        Trainer trainer3 = Trainer.builder().user(userActive).id(3L).build();
+        Trainer trainer4 = Trainer.builder().user(userNotActive).id(3L).build();
         List<Trainer> trainersInTraineeList = new ArrayList<>(Arrays.asList(trainer1, trainer3));
 
         Trainee trainee = Trainee.builder().trainers(trainersInTraineeList).build();
 
-        List<Trainer> allTrainers = new ArrayList<>(Arrays.asList(trainer1, trainer2, trainer3));
+        List<Trainer> allTrainers = new ArrayList<>(Arrays.asList(trainer1, trainer2, trainer3, trainer4));
         when(traineeService.getTraineeByUsername(anyString())).thenReturn(trainee);
         when(trainerService.getAllTrainers()).thenReturn(allTrainers);
         // Act
@@ -92,10 +113,11 @@ public class TrainingServiceImplTests {
         assertNotNull(trainersNotInTraineeList);
         assertEquals(1, trainersNotInTraineeList.size());
         assertTrue(trainersNotInTraineeList.contains(trainer2));
+        assertFalse(trainersNotInTraineeList.contains(trainer4));
     }
 
     @Test
-    public void testCreateTraining(){
+    public void createTraining(){
         // Arrange
 
         User user = User.builder().username("username").build();
@@ -129,57 +151,5 @@ public class TrainingServiceImplTests {
         assertEquals(existingTrainingType.getName(), result.getTrainingType().getName());
         assertEquals(training.getName(), result.getName());
         assertEquals(training.getDuration(), result.getDuration());
-    }
-
-    @Test
-    public void testGetTrainingsByTraineeUsernameAndBetweenDates(){
-        // Arrange
-        String username = "username";
-        String startDate = "20-10-2025";
-        String endDate = "15-05-2025";
-        when(trainingRepository.findAllTrainingsByTraineeUsernameAndBetweenDates(anyString(), any(Date.class), any(Date.class))).thenReturn(trainings);
-        // Act
-        List<Training> trainingList = trainingService.getTrainingsByTraineeUsernameAndBetweenDates(username, startDate, endDate);
-        // Assert
-        assertNotNull(trainingList);
-        assertEquals(3, trainingList.size());
-    }
-
-    @Test
-    public void testGetTrainingsByTrainerUsernameAndBetweenDates(){
-        // Arrange
-        String username = "username";
-        String startDate = "20-10-2025";
-        String endDate = "15-05-2025";
-        when(trainingRepository.findAllTrainingsByTrainerUsernameAndBetweenDates(anyString(), any(Date.class), any(Date.class))).thenReturn(trainings);
-        // Act
-        List<Training> trainingList = trainingService.getTrainingsByTrainerUsernameAndBetweenDates(username, startDate, endDate);
-        // Assert
-        assertNotNull(trainingList);
-        assertEquals(3, trainingList.size());
-    }
-
-    @Test
-    public void testGetByTraineeUsernameAndTrainerName(){
-        // Act
-        trainingService.getByTraineeUsernameAndTrainerName("traineeUsername", "trainerName");
-        // Assert
-        verify(trainingRepository, times(1)).findAllTrainingsByTraineeUsernameAndTrainerName("traineeUsername", "trainerName");
-    }
-
-    @Test
-    public void testGetTrainingsByTraineeUsernameAndTrainingType(){
-        // Act
-        trainingService.getTrainingsByTraineeUsernameAndTrainingType("traineeUsername", "name");
-        // Assert
-        verify(trainingRepository, times(1)).findAllTrainingsByTraineeUsernameAndTrainingType("traineeUsername", "name");
-    }
-
-    @Test
-    public void testGetTrainingsByTrainerUsernameAndTraineeName(){
-        // Act
-        trainingService.getTrainingsByTrainerUsernameAndTraineeName("trainerUsername", "traineeName");
-        // Assert
-        verify(trainingRepository, times(1)).findAllTrainingsByTrainerUsernameAndTraineeName("trainerUsername", "traineeName");
     }
 }

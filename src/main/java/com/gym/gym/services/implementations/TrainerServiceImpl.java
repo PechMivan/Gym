@@ -9,17 +9,16 @@ import com.gym.gym.repositories.TrainerRepository;
 import com.gym.gym.services.TrainerService;
 import com.gym.gym.services.TrainingTypeService;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class TrainerServiceImpl implements TrainerService {
 
-    Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
     @Autowired
     TrainerRepository trainerRepository;
     @Autowired
@@ -56,7 +55,7 @@ public class TrainerServiceImpl implements TrainerService {
                 .build();
 
         saveTrainer(newTrainer);
-        logger.info(String.format("Trainer successfully created with id %d", newTrainer.getId()));
+        log.info(String.format("Trainer successfully created with id %d", newTrainer.getId()));
         return newTrainer;
     }
 
@@ -82,7 +81,7 @@ public class TrainerServiceImpl implements TrainerService {
                 .build();
 
         saveTrainer(updatedTrainer);
-        logger.info(String.format("Trainer with id %d successfully updated.", updatedTrainer.getId()));
+        log.info(String.format("Trainer with id %d successfully updated.", updatedTrainer.getId()));
         return updatedTrainer;
     }
 

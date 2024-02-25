@@ -32,17 +32,24 @@ public class TraineeServiceImplTests {
 
     User user;
     Trainee trainee;
+    String username;
+    Credentials credentials;
 
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.openMocks(this);
 
+        username = "John.Doe";
+        String password = "passtest";
+
+        this.credentials = new Credentials(username, password);
+
         this.user = User.builder()
                 .id(1L)
                 .firstname("John")
                 .lastname("Doe")
-                .username("John.Doe")
-                .password("passtest")
+                .username(username)
+                .password(password)
                 .isActive(true)
                 .build();
 
@@ -54,19 +61,31 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void testGetAllTrainees(){
+    public void getAllTrainees_withTrainees_successful(){
         // Arrange
         List<Trainee> trainees = Arrays.asList(new Trainee(), new Trainee());
         when(traineeRepository.findAll()).thenReturn(trainees);
         // Act
-        List<Trainee> traineeList = traineeService.getAllTrainees();
+        List<Trainee> result = traineeService.getAllTrainees();
         // Assert
-        assertNotNull(traineeList);
-        assertEquals(trainees.size(), traineeList.size());
+        assertNotNull(result);
+        assertEquals(trainees.size(), result.size());
     }
 
     @Test
-    public void testGetTraineeById(){
+    public void getAllTrainees_withoutTrainees_returnsEmptyList(){
+        // Arrange
+        List<Trainee> trainees = Collections.emptyList();
+        when(traineeRepository.findAll()).thenReturn(trainees);
+        // Act
+        List<Trainee> result = traineeService.getAllTrainees();
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getTrainee_validId_successful(){
         // Arrange
         long traineeId = 1L;
         when(traineeRepository.findById(traineeId)).thenReturn(Optional.of(trainee));
@@ -76,13 +95,17 @@ public class TraineeServiceImplTests {
         assertNotNull(result);
         assertEquals(traineeId, result.getId());
         assertEquals("John", result.getUser().getFirstname());
+    }
+
+    @Test
+    public void getTrainee_invalidId_throwsNotFoundException(){
+        // Act and Assert
         assertThrows(NotFoundException.class, () -> traineeService.getTraineeById(100L));
     }
 
     @Test
-    public void testGetTraineeByUsername(){
+    public void getTrainee_validUsername_successful(){
         // Arrange
-        String username = "John.Doe";
         when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(trainee));
         // Act
         Trainee result = traineeService.getTraineeByUsername(username);
@@ -90,11 +113,16 @@ public class TraineeServiceImplTests {
         assertNotNull(result);
         assertEquals(username, result.getUser().getUsername());
         assertEquals("John", result.getUser().getFirstname());
+    }
+
+    @Test
+    public void getTrainee_invalidUsername_throwsNotFoundException(){
+        // Act and Assert
         assertThrows(NotFoundException.class, () -> traineeService.getTraineeByUsername("wrongUsername"));
     }
 
     @Test
-    public void testCreateTrainee(){
+    public void createTrainee(){
         // Arrange
         Date dateOfBirth = trainee.getDateOfBirth();
         when(userService.createUser(trainee.getUser())).thenReturn(user);
@@ -110,7 +138,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void testSaveTrainee(){
+    public void saveTrainee(){
         // Act
         traineeService.saveTrainee(trainee);
         // Assert
@@ -118,9 +146,8 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void testUpdateTrainee(){
+    public void updateTrainee(){
         // Arrange
-        String username = "John.Doe";
 
         User userUpdated = User.builder()               // User service should return update user
                             .firstname("testName")
@@ -140,7 +167,7 @@ public class TraineeServiceImplTests {
         when(traineeRepository.findByUserUsername(anyString())).thenReturn(Optional.of(trainee));
         when(userService.updateUser(username, traineeUpdated.getUser())).thenReturn(userUpdated);
         // Act
-        Trainee updatedTrainee = traineeService.updateTrainee(username, traineeUpdated);
+        Trainee updatedTrainee = traineeService.updateTrainee(username, traineeUpdated, credentials);
         // Assert
         assertEquals("testName", updatedTrainee.getUser().getFirstname());
         assertEquals("testLastName", updatedTrainee.getUser().getLastname());
@@ -150,25 +177,28 @@ public class TraineeServiceImplTests {
         assertEquals(dateOfBirth, updatedTrainee.getDateOfBirth());
     }
 
-
     @Test
-    public void testDeleteTraineeById(){
+    public void deleteTrainee_validUsername_successful(){
+        // Arrange
+        when(traineeRepository.deleteByUserUsername(user.getUsername())).thenReturn(user.getId());
         // Act
-        traineeService.deleteTrainee(1L, new Credentials());
+        long id = traineeService.deleteTraineeByUsername(user.getUsername(), new Credentials());
         // Assert
-        verify(traineeRepository, times(1)).deleteById(1L);
+        assertEquals(user.getId(), id);
     }
 
     @Test
-    public void testDeleteTraineeByUsername(){
+    public void deleteTrainee_invalidUsername_throwNotFoundException(){
+        // Arrange
+        when(traineeRepository.deleteByUserUsername(user.getUsername())).thenReturn(user.getId());
         // Act
-        traineeService.deleteTraineeByUsername("test", new Credentials());
+        long id = traineeService.deleteTraineeByUsername("wrongUsername", new Credentials());
         // Assert
-        verify(traineeRepository, times(1)).deleteByUserUsername("test");
+        assertNotEquals(user.getId(), id);
     }
 
     @Test
-    public void testUpdateTrainersList(){
+    public void updateTrainersList_oneTrainer_successful(){
         // Arrange
         Trainee trainee = Trainee.builder().trainers(new ArrayList<>()).build();
         when(traineeRepository.findById(anyLong())).thenReturn(Optional.of(trainee));
@@ -177,5 +207,14 @@ public class TraineeServiceImplTests {
         // Assert
         assertEquals(1, trainee.getTrainers().size());
         verify(traineeRepository, times(1)).save(trainee);
+    }
+
+    @Test
+    public void updateTrainersList_multipleTrainers_successful(){
+        // Arrange
+
+        // Act
+
+        // Assert
     }
 }

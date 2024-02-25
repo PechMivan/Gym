@@ -1,5 +1,6 @@
 package com.gym.gym;
 
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.entities.User;
@@ -16,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,10 +40,17 @@ public class TrainerServiceImplTests {
     User user;
     TrainingType trainingType;
     Trainer trainer;
+    String username;
+    Credentials credentials;
 
     @BeforeEach
     public void setUp(){
         MockitoAnnotations.openMocks(this);
+
+        username = "John.Doe";
+        String password = "passtest";
+
+        this.credentials = new Credentials(username, password);
 
         this.user = User.builder()
                 .id(1L)
@@ -65,18 +74,29 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void testGetAllTrainers(){
+    public void getAllTrainers_withTrainers_successful(){
         // Arrange
         List<Trainer> trainers = Arrays.asList(new Trainer(), new Trainer());
         when(trainerRepository.findAll()).thenReturn(trainers);
         // Act
-        List<Trainer> trainersList = trainerService.getAllTrainers();
+        List<Trainer> result = trainerService.getAllTrainers();
         // Assert
-        assertEquals(trainers.size(), trainersList.size());
+        assertEquals(trainers.size(), result.size());
     }
 
     @Test
-    public void testGetTrainerById(){
+    public void getAllTrainers_withoutTrainers_returnsEmptyList(){
+        // Arrange
+        List<Trainer> trainers = Collections.emptyList();
+        when(trainerRepository.findAll()).thenReturn(trainers);
+        // Act
+        List<Trainer> result = trainerService.getAllTrainers();
+        // Assert
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getTrainer_validId_successful(){
         // Arrange
         long trainerId = 1L;
         when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(trainer));
@@ -86,11 +106,16 @@ public class TrainerServiceImplTests {
         assertNotNull(result);
         assertEquals(trainerId, result.getId());
         assertEquals("John", result.getUser().getFirstname());
+    }
+
+    @Test
+    public void getTrainerById_invalidId_throwsNotFoundException(){
+        // Act and Assert
         assertThrows(NotFoundException.class, () ->trainerService.getTrainerById(100L));
     }
 
     @Test
-    public void testGetTrainerByUsername(){
+    public void getTrainer_validUsername_successful(){
         // Arrange
         String username = "John.Doe";
         when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(trainer));
@@ -100,11 +125,16 @@ public class TrainerServiceImplTests {
         assertNotNull(trainer);
         assertEquals(username, result.getUser().getUsername());
         assertEquals("John", result.getUser().getFirstname());
-        assertThrows(NotFoundException.class, () ->trainerService.getTrainerByUsername("wrongUsername"));
     }
 
     @Test
-    public void testCreateTrainer(){
+    public void getTrainer_invalidUsername_successful(){
+        // Act and Assert
+        assertThrows(NotFoundException.class, ()-> trainerService.getTrainerByUsername("wrongUsername"));
+    }
+
+    @Test
+    public void createTrainer(){
         // Arrange
         when(userService.createUser(trainer.getUser())).thenReturn(user);
         when(trainingTypeService
@@ -121,7 +151,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void testSaveTrainer(){
+    public void saveTrainer(){
         // Act
         trainerService.saveTrainer(trainer);
         // Assert
@@ -129,7 +159,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void testUpdateTrainer() {
+    public void updateTrainer() {
         // Arrange
         String username = "John.Doe";
 
@@ -154,7 +184,7 @@ public class TrainerServiceImplTests {
                 .thenReturn(trainingTypeUpdated);
         when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(trainer));
         // Act
-        Trainer updatedTrainer = trainerService.updateTrainer(username, updateTrainer);
+        Trainer updatedTrainer = trainerService.updateTrainer(username, updateTrainer, credentials);
         // Assert
         assertEquals("testName", updatedTrainer.getUser().getFirstname());
         assertEquals(updateTrainer.getSpecialization().getName(), updatedTrainer.getSpecialization().getName());

@@ -8,8 +8,7 @@ import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.repositories.UserRepository;
 import com.gym.gym.services.UserService;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +16,11 @@ import java.util.List;
 import java.util.Random;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
-
-    Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     Random random = new Random();
 
@@ -57,7 +55,7 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         saveUser(newUser);
-        logger.info(String.format("User successfully created with id: %d", newUser.getId()));
+        log.info(String.format("User successfully created with id: %d", newUser.getId()));
         return  newUser;
     }
 
@@ -76,7 +74,7 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         saveUser(updatedUser);
-        logger.info(String.format("User with id %d successfully updated", updatedUser.getId()));
+        log.info(String.format("User with id %d successfully updated", updatedUser.getId()));
         return updatedUser;
     }
 
@@ -123,7 +121,7 @@ public class UserServiceImpl implements UserService {
     public void authenticateUser(String username, String password) {
         User existingUser = getUserByUsername(username);
         if(!password.equals(existingUser.getPassword())){
-            logger.error("Unauthorized login attempt");
+            log.error("Unauthorized login attempt");
             throw new UnauthorizedAccessException("Invalid login attempt: Password or username don't match.");
         }
     }
@@ -135,18 +133,18 @@ public class UserServiceImpl implements UserService {
         User existingUser = getUserByUsername(username);
         existingUser.setPassword(newPassword);
         saveUser(existingUser);
-        logger.info(String.format("Password successfully changed for user with id %d", existingUser.getId()));
+        log.info(String.format("Password successfully changed for user with id %d", existingUser.getId()));
         return true;
     }
 
     @Override
     public void validatePassword(String newPassword){
         if(newPassword == null || newPassword.isEmpty()){
-            logger.error("New Password cannot be null or blank.");
+            log.error("New Password cannot be null or blank.");
             throw new InvalidPasswordException("New Password cannot be null or blank.");
         }
         if(newPassword.length() < 8 || newPassword.length() > 10){
-            logger.error("New Password should contain at least 8 and no more than 10 characters");
+            log.error("New Password should contain at least 8 and no more than 10 characters");
             throw new InvalidPasswordException("New Password should contain at least 8 and no more than 10 characters");
         }
     }
@@ -158,7 +156,7 @@ public class UserServiceImpl implements UserService {
         User existingUser = getUserByUsername(username);
         existingUser.setActive(activeState);
         saveUser(existingUser);
-        logger.info(String.format("Active status successfully changed for user with id %d", existingUser.getId()));
+        log.info(String.format("Active status successfully changed for user with id %d", existingUser.getId()));
         return activeState;
     }
 }

@@ -9,20 +9,17 @@ import com.gym.gym.repositories.TraineeRepository;
 import com.gym.gym.services.TraineeService;
 import com.gym.gym.services.TrainerService;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class TraineeServiceImpl implements TraineeService {
-    Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
 
     @Autowired
     private TraineeRepository traineeRepository;
@@ -59,7 +56,7 @@ public class TraineeServiceImpl implements TraineeService {
                 .build();
 
         saveTrainee(newTrainee);
-        logger.info(String.format("Trainee successfully created with id %d", newTrainee.getId()));
+        log.info(String.format("Trainee successfully created with id %d", newTrainee.getId()));
         return newTrainee;
     }
 
@@ -85,23 +82,23 @@ public class TraineeServiceImpl implements TraineeService {
                 .build();
 
         saveTrainee(updatedTrainee);
-        logger.info(String.format("Trainee with id %d successfully updated.", updatedTrainee.getId()));
+        log.info(String.format("Trainee with id %d successfully updated.", updatedTrainee.getId()));
         return updatedTrainee;
-    }
-
-    public void updateTrainersList(long id, Trainer trainer){
-        Trainee trainee = getTraineeById(id);
-        trainee.getTrainers().add(trainer);
-        saveTrainee(trainee);
-        logger.info(String.format("Trainer with id %d has been added to list of Trainers of Trainee with id %d", trainer.getId(), trainee.getId()));
     }
 
     @Transactional
     @Override
     public long deleteTraineeByUsername(String username, Credentials credentials){
         userService.authenticateUser(credentials.username, credentials.password);
-        logger.info(String.format("Trainee with username %s successfully deleted.", username));
+        log.info(String.format("Trainee with username %s successfully deleted.", username));
         return traineeRepository.deleteByUserUsername(username);
+    }
+
+    public void updateTrainersList(long id, Trainer trainer){
+        Trainee trainee = getTraineeById(id);
+        trainee.getTrainers().add(trainer);
+        saveTrainee(trainee);
+        log.info(String.format("Trainer with id %d has been added to list of Trainers of Trainee with id %d", trainer.getId(), trainee.getId()));
     }
 
     //TODO: Implement unit testing for this method
@@ -109,8 +106,8 @@ public class TraineeServiceImpl implements TraineeService {
     public List<Trainer> updateTrainerList(String username, List<String> trainerUsernames, Credentials credentials){
         userService.authenticateUser(credentials.username, credentials.password);
         Trainee trainee = getTraineeByUsername(username);
-        //Verify if each trainer exist before saving.
 
+        //Verify if each trainer exist before saving.
         List<Trainer> trainers = new ArrayList<>();
         Trainer trainer;
 

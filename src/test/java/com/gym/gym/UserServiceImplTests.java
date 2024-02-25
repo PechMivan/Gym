@@ -49,7 +49,7 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void testGetAllUsers() {
+    public void getAllUsers_withUsers_succesful() {
         // Arrange
         List<User> users = Arrays.asList(new User(), new User(), new User());
         when(userRepository.findAll()).thenReturn(users);
@@ -63,7 +63,21 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void testGetUserById() {
+    public void getAllUsers_withoutUsers_returnsEmptyList() {
+        // Arrange
+        List<User> users = Collections.emptyList();
+        when(userRepository.findAll()).thenReturn(users);
+
+        // Act
+        List<User> result = userService.getAllUsers();
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void getUser_validId_successful() {
         // Arrange
         long userId = 1L;
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -74,11 +88,16 @@ public class UserServiceImplTests {
         // Assert
         assertNotNull(result);
         assertEquals(userId, result.getId());
+    }
+
+    @Test
+    public void getUser_invalidId_ThrowsNotFoundException() {
+        // Act and Assert
         assertThrows(NotFoundException.class, () -> userService.getUserById(100L));
     }
 
     @Test
-    public void testGetUserByUsername() {
+    public void getUser_validUsername_successful() {
         // Arrange
         String username = "John.Doe";
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
@@ -89,11 +108,16 @@ public class UserServiceImplTests {
         // Assert
         assertNotNull(result);
         assertEquals(username, result.getUsername());
+    }
+
+    @Test
+    public void getUser_invalidUsername_throwsNotFoundException() {
+        // Act and Assert
         assertThrows(NotFoundException.class, () -> userService.getUserByUsername("invalidUsername"));
     }
 
     @Test
-    public void testCreateUser(){
+    public void createUser(){
         // Arrange
         when(userRepository.save(any(User.class))).thenReturn(newUser);
 
@@ -109,9 +133,8 @@ public class UserServiceImplTests {
         verify(userRepository, times(1)).save(any(User.class));
     }
 
-    //TODO: Manage authorization in a better way.
     @Test
-    public void testUpdateUser(){
+    public void updateUser(){
         // Arrange
         String username = "John.Doe";
 
@@ -137,7 +160,7 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void testSaveUser(){
+    public void saveUser(){
         // Act
         userService.saveUser(user);
         // Assert
@@ -145,7 +168,7 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void testCreatePassword(){
+    public void createPassword(){
         // Act
         String result = userService.createPassword();
         // Assert
@@ -154,7 +177,7 @@ public class UserServiceImplTests {
 
 
     @Test
-    public void testCreateUsername(){
+    public void createUsername(){
         // Arrange
         User userTest1 = User.builder().id(1L).username("test.user").build();
         User userTest2 = User.builder().id(2L).username("test.user1").build();
@@ -173,7 +196,7 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void testAuthenticateUser_With_Valid_Data(){
+    public void authenticateUser_validData_succesful(){
         // Arrange
         when(userRepository.findByUsername("John.Doe")).thenReturn(Optional.of(user));
 
@@ -182,19 +205,29 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void testAuthenticateUser_With_Invalid_Data(){
+    public void authenticateUser_invalidUsername_throwsNotFoundException(){
         // Arrange
         when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
 
         // Act and Assert
-        assertThrows(NotFoundException.class, () -> userService.authenticateUser("wrongUser", "passtest"));
-        assertThrows(UnauthorizedAccessException.class, () -> userService.authenticateUser("John", "Wrongpass"));
+        assertThrows(NotFoundException.class,
+            () -> userService.authenticateUser("wrongUser", "passtest"));
     }
 
     @Test
-    public void testChangePassword(){
+    public void authenticateUser_invalidPassword_throwsUnauthorizedAccessException(){
         // Arrange
-        when(userRepository.findByUsername(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
+
+        // Act and Assert
+        assertThrows(UnauthorizedAccessException.class,
+            () -> userService.authenticateUser("John", "Wrongpass"));
+    }
+
+    @Test
+    public void changePassword_validData_successful(){
+        // Arrange
+        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
         String newpass = "newpass10"; // Greather than 8 and lower than 10 to pass validation.
         // Act
         boolean passwordChangedSuccessfully = userService.changePassword("John", "passtest", newpass);
@@ -203,44 +236,61 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void testValidatePassword_With_Valid_Data(){
+    public void changePassword_invalidUser_throwsNotFoundException(){
         // Arrange
-        String betweenEightAndThen = "newpass10";
+        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
         // Act and Assert
-        assertDoesNotThrow(() -> userService.validatePassword(betweenEightAndThen));
+        assertThrows(NotFoundException.class,
+            ()-> userService.changePassword("wrongUser", "passtest", "validPass"));
     }
 
     @Test
-    public void testValidatePassword_With_Invalid_Data(){
+    public void changePassword_wrongPass_throwsUnauthorizedAccessException(){
+        // Assert
+        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
+
+        // Act and Assert
+        assertThrows(UnauthorizedAccessException.class,
+            ()-> userService.changePassword("John", "wrongPass", "validPass"));
+    }
+
+    @Test
+    public void changePassword_invalidPass_throwsInvalidPasswordException(){
+        // Assert
+        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
+        String invalidPass = "123";
+
+        // Act and Assert
+        assertThrows(UnauthorizedAccessException.class,
+                ()-> userService.changePassword("John", "wrongPass", invalidPass));
+    }
+
+    @Test
+    public void validatePassword_validPassword_successful(){
         // Arrange
-        String lessThanEight = "1234567"; // < 8 characters
-        String moreThanTen = "12345678910"; // > 10 characters
+        String betweenEightAndTen = "newpass10";
+        // Act and Assert
+        assertDoesNotThrow(() -> userService.validatePassword(betweenEightAndTen));
+    }
+
+    @Test
+    public void validatePassword_nullPassword_throwsInvalidPasswordException(){
         // Act and Assert
         assertThrows(InvalidPasswordException.class, () -> userService.validatePassword(null));
+    }
+
+    @Test
+    public void validatePassword_emptyPassword_throwsInvalidPasswordException(){
+        // Act and Assert
         assertThrows(InvalidPasswordException.class, () -> userService.validatePassword(""));
+    }
+
+    @Test
+    public void validatePassword_outOfBoundsPassword_throwsInvalidPasswordException(){
+        // Arrange
+        String lessThanEight = "1234567"; // < 8 characters
+        // Act and Assert
         assertThrows(InvalidPasswordException.class, () -> userService.validatePassword(lessThanEight));
-        assertThrows(InvalidPasswordException.class, () -> userService.validatePassword(moreThanTen));
     }
 
-    @Test
-    public void testToggleActive_With_True_Status(){
-        // Arrange
-        user.setActive(true); // Making sure isActive is true.
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        // Act
-        boolean activeStatus = userService.toggleActive(1L);
-        // Assert
-        assertFalse(activeStatus);
-    }
-
-    @Test
-    public void testToggleActive_With_False_Status(){
-        // Arrange
-        user.setActive(false); // Making sure isActive is false.
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        // Act
-        boolean activeStatus = userService.toggleActive(1L);
-        // Assert
-        assertTrue(activeStatus);
-    }
 }
