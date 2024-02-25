@@ -55,11 +55,10 @@ public class TraineeController {
 
     @DeleteMapping("/user/{username}")
     public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username, @RequestBody @Valid Credentials credentials){
-        long count = traineeService.deleteTraineeByUsername(username, credentials);
+        traineeService.deleteTraineeByUsername(username, credentials);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //TODO: Add validation to the request
     @PutMapping("/user/{username}/trainers/")
     public ResponseEntity<List<TrainerDTO>> updateTrainerList(@PathVariable String username, @RequestBody @Valid TraineeTrainersListUpdateRequest request){
         List<Trainer> updatedTrainerList = traineeService.updateTrainerList(username, request.getUsernames(), request.credentials);
