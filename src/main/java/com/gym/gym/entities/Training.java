@@ -38,12 +38,11 @@ public class Training implements Serializable {
     private int duration;
 
     @ManyToOne
-    @JoinColumn(name="traineeId", nullable=false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name="traineeId")
     private com.gym.gym.entities.Trainee trainee;
 
     @ManyToOne
-    @JoinColumn(name="trainerId", nullable=false)
+    @JoinColumn(name="trainerId")
     private com.gym.gym.entities.Trainer trainer;
 
 }

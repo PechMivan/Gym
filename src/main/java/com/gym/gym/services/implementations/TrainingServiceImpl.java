@@ -27,11 +27,11 @@ public class TrainingServiceImpl implements TrainingService {
     @Autowired
     TrainingRepository trainingRepository;
     @Autowired
-    TrainingTypeServiceImpl trainingTypeHibernateService;
+    TrainingTypeServiceImpl trainingTypeService;
     @Autowired
-    TrainerServiceImpl trainerHibernateService;
+    TrainerServiceImpl trainerService;
     @Autowired
-    TraineeServiceImpl traineeHibernateService;
+    TraineeServiceImpl traineeService;
 
     @Override
     public Training getTrainingById(long id) {
@@ -52,8 +52,8 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public Training createTraining(Training training) {
-        Trainee existingTrainee = traineeHibernateService.getTraineeByUsername(training.getTrainee().getUser().getUsername());
-        Trainer existingTrainer = trainerHibernateService.getTrainerByUsername(training.getTrainer().getUser().getUsername());
+        Trainee existingTrainee = traineeService.getTraineeByUsername(training.getTrainee().getUser().getUsername());
+        Trainer existingTrainer = trainerService.getTrainerByUsername(training.getTrainer().getUser().getUsername());
         TrainingType trainingType = existingTrainer.getSpecialization();
 
         Training newTraining = Training.builder()
@@ -66,15 +66,15 @@ public class TrainingServiceImpl implements TrainingService {
                                 .build();
 
         saveTraining(newTraining);
-        traineeHibernateService.updateTrainersList(existingTrainee.getId(), existingTrainer);
+        traineeService.updateTrainersList(existingTrainee.getId(), existingTrainer);
         log.info(String.format("Training successfully created with id %d ", newTraining.getId()));
         return newTraining;
     }
 
     @Override
     public List<Trainer> getAllTrainersNotInTraineeTrainersListByUsername(String username){
-        Trainee trainee = traineeHibernateService.getTraineeByUsername(username);
-        List<Trainer> trainers = trainerHibernateService.getAllTrainers();
+        Trainee trainee = traineeService.getTraineeByUsername(username);
+        List<Trainer> trainers = trainerService.getAllTrainers();
         List<Trainer> trainersOfTrainee = trainee.getTrainers();
 
         trainers = trainers.stream()

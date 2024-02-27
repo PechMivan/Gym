@@ -34,7 +34,10 @@ public class Trainee implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL)
+    List<Training> trainings = new ArrayList<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name="trainee_trainer",
             joinColumns=@JoinColumn(name="trainee_id"),
             inverseJoinColumns=@JoinColumn(name="trainer_id"))

@@ -90,6 +90,8 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public long deleteTraineeByUsername(String username, Credentials credentials){
         userService.authenticateUser(credentials.username, credentials.password);
+        // Verifies if trainee exists
+        getTraineeByUsername(username);
         log.info(String.format("Trainee with username %s successfully deleted.", username));
         return traineeRepository.deleteByUserUsername(username);
     }
