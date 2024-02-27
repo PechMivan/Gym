@@ -94,6 +94,7 @@ public class TraineeServiceImpl implements TraineeService {
         return traineeRepository.deleteByUserUsername(username);
     }
 
+    @Override
     public void updateTrainersList(long id, Trainer trainer){
         Trainee trainee = getTraineeById(id);
         trainee.getTrainers().add(trainer);

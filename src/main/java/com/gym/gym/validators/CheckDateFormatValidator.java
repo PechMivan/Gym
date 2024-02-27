@@ -27,7 +27,6 @@ public class CheckDateFormatValidator implements ConstraintValidator<CheckDateFo
             formatter.parse(object);
             return true; // Parsing succeeded, so the format is valid
         } catch (ParseException e) {
-            //TODO: [Optional] return custom message depending on result rather than default.
             return false; // Parsing failed, so the format is invalid
         }
     }

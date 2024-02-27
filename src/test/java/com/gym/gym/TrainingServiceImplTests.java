@@ -152,4 +152,6 @@ public class TrainingServiceImplTests {
         assertEquals(training.getName(), result.getName());
         assertEquals(training.getDuration(), result.getDuration());
     }
+
+
 }

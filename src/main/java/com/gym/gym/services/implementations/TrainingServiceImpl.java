@@ -71,6 +71,7 @@ public class TrainingServiceImpl implements TrainingService {
         return newTraining;
     }
 
+    @Override
     public List<Trainer> getAllTrainersNotInTraineeTrainersListByUsername(String username){
         Trainee trainee = traineeHibernateService.getTraineeByUsername(username);
         List<Trainer> trainers = trainerHibernateService.getAllTrainers();
@@ -83,11 +84,13 @@ public class TrainingServiceImpl implements TrainingService {
         return trainers;
     }
 
+    @Override
     public List<Training> getFilteredTrainingsForTrainee(TraineeTrainingFindRequest params) {
         Specification<Training> specification = TrainingSpecifications.getFilteredTrainingsForTrainee(params);
         return trainingRepository.findAll(specification);
     }
 
+    @Override
     public List<Training> getFilteredTrainingsForTrainer(TrainerTrainingFindRequest params) {
         Specification<Training> specification = TrainingSpecifications.getFilteredTrainingsForTrainer(params);
         return trainingRepository.findAll(specification);

@@ -10,6 +10,7 @@ import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TraineeRepository;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
+import com.gym.gym.services.implementations.TrainerServiceImpl;
 import com.gym.gym.services.implementations.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,9 @@ public class TraineeServiceImplTests {
 
     @Mock
     UserServiceImpl userService;
+
+    @Mock
+    TrainerServiceImpl trainerService;
 
     @InjectMocks
     TraineeServiceImpl traineeService;
@@ -212,9 +216,30 @@ public class TraineeServiceImplTests {
     @Test
     public void updateTrainersList_multipleTrainers_successful(){
         // Arrange
+        List<String> trainerUsernames = new ArrayList<>();
+        trainerUsernames.add("trainer1");
+        trainerUsernames.add("trainer2");
+        Trainer trainer1 = Trainer.builder().id(1L).user(new User()).build();
+        Trainer trainer2 = Trainer.builder().id(2L).user(new User()).build();
+
+        when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(trainee));
+
+        when(trainerService.getTrainerByUsername(anyString())).thenReturn(trainer1);
+        when(trainerService.getTrainerByUsername(anyString())).thenReturn(trainer2);
+
+        when(traineeRepository.save(trainee)).thenReturn(trainee);
 
         // Act
+        List<Trainer> updatedTrainers = traineeService.updateTrainerList(username, trainerUsernames, credentials);
 
         // Assert
+        assertEquals(2, updatedTrainers.size());
+
+
+        verify(userService, times(1)).authenticateUser(credentials.getUsername(), credentials.getPassword());
+        verify(traineeRepository, times(1)).findByUserUsername(username);
+        verify(trainerService, times(1)).getTrainerByUsername("trainer1");
+        verify(trainerService, times(1)).getTrainerByUsername("trainer2");
+        verify(traineeRepository, times(1)).save(trainee);
     }
 }

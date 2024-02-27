@@ -21,6 +21,8 @@ public interface TraineeService {
 
     Trainee updateTrainee(String username, Trainee trainee, Credentials credentials);
 
+    void updateTrainersList(long id, Trainer trainer);
+
     List<Trainer> updateTrainerList(String username, List<String> trainerUsernames, Credentials credentials);
 
     @Transactional
