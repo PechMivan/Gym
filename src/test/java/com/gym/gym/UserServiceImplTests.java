@@ -126,9 +126,9 @@ public class UserServiceImplTests {
 
         // Assert
         assertNotNull(result);
-        assertEquals("John", result.getFirstname());
-        assertEquals("Doe", result.getLastname());
-        assertEquals("John.Doe", result.getUsername());
+        assertEquals(user.getFirstname(), result.getFirstname());
+        assertEquals(user.getLastname(), result.getLastname());
+        assertEquals(user.getUsername().toLowerCase(), result.getUsername());
         assertEquals(10, result.getPassword().length());
         verify(userRepository, times(1)).save(any(User.class));
     }
@@ -179,8 +179,8 @@ public class UserServiceImplTests {
     @Test
     public void createUsername(){
         // Arrange
-        User userTest1 = User.builder().id(1L).username("test.user").build();
-        User userTest2 = User.builder().id(2L).username("test.user1").build();
+        User userTest1 = User.builder().id(1L).firstname("test").lastname("user").username("test.user").build();
+        User userTest2 = User.builder().id(2L).firstname("test").lastname("user").username("test.user1").build();
         List<User> users = new ArrayList<>();
         users.add(userTest1);
         users.add(userTest2);
@@ -188,7 +188,7 @@ public class UserServiceImplTests {
         when(userRepository.findAll()).thenReturn(users);
 
         // Act
-        String username = userService.createUsername("test", "user");
+        String username = userService.createUsername("Test", "User"); // Notice capital letters
 
         // Assert
         assertNotNull(username);

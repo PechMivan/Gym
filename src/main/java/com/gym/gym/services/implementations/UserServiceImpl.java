@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
@@ -102,18 +105,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public String createUsername(String firstname, String lastname) {
         StringBuilder username = new StringBuilder();
-        username.append(firstname);
+        username.append(firstname.toLowerCase());
         username.append(".");
-        username.append(lastname);
+        username.append(lastname.toLowerCase());
 
-        //Finds all usernames with the same username (ignoring suffix) and counts them.
-        long repeatedUsernameSize = getAllUsers().stream()
-                .filter(user -> user.getUsername().toLowerCase().contains(username.toString().toLowerCase()))
-                .count();
+        //Finds all usernames with the same firstname and lastname.
+        List<String> existingUsernames = getAllUsers().stream()
+                .filter(user -> (
+                        user.getFirstname().equalsIgnoreCase(firstname)
+                        && user.getLastname().equalsIgnoreCase(lastname)
+                )).map(User::getUsername)
+                .toList();
 
-        if(repeatedUsernameSize > 0){
-            username.append(repeatedUsernameSize);
+        int baseId = 1;
+        String originalUsername = username.toString();
+        while (existingUsernames.contains(username.toString())) {
+            username.setLength(originalUsername.length()); // Reset to original length
+            username.append(baseId);
+            baseId++;
         }
+
         return username.toString();
     }
 

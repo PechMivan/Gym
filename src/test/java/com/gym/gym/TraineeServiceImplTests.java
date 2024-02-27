@@ -185,6 +185,7 @@ public class TraineeServiceImplTests {
     public void deleteTrainee_validUsername_successful(){
         // Arrange
         when(traineeRepository.deleteByUserUsername(user.getUsername())).thenReturn(user.getId());
+        when(traineeRepository.findByUserUsername(user.getUsername())).thenReturn(Optional.of(trainee));
         // Act
         long id = traineeService.deleteTraineeByUsername(user.getUsername(), new Credentials());
         // Assert
@@ -195,10 +196,9 @@ public class TraineeServiceImplTests {
     public void deleteTrainee_invalidUsername_throwNotFoundException(){
         // Arrange
         when(traineeRepository.deleteByUserUsername(user.getUsername())).thenReturn(user.getId());
-        // Act
-        long id = traineeService.deleteTraineeByUsername("wrongUsername", new Credentials());
-        // Assert
-        assertNotEquals(user.getId(), id);
+        when(traineeRepository.findByUserUsername(user.getUsername())).thenReturn(Optional.of(trainee));
+        // Act and Assert
+        assertThrows(NotFoundException.class, () -> traineeService.deleteTraineeByUsername("wrongUsername", credentials));
     }
 
     @Test
