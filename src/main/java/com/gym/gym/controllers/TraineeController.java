@@ -12,6 +12,7 @@ import com.gym.gym.services.implementations.TraineeServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class TraineeController {
     @Autowired
     TraineeMapper traineeMapper;
 
-    @GetMapping("/user/{username}")
+    @GetMapping(value = "/user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity< TraineeFindResponse > getTraineeByUsername(@PathVariable String username){
         Trainee trainee = traineeService.getTraineeByUsername(username);
         TraineeFindResponse response = traineeMapper.mapToFindResponse(trainee);

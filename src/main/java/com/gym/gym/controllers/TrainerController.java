@@ -28,7 +28,7 @@ public class TrainerController {
     TrainerMapper trainerMapper;
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<TrainerFindResponse> getTraineeByUsername(@PathVariable String username){
+    public ResponseEntity<TrainerFindResponse> getTrainerByUsername(@PathVariable String username){
         Trainer trainer = trainerService.getTrainerByUsername(username);
         TrainerFindResponse response = trainerMapper.mapToFindResponse(trainer);
         return new ResponseEntity<>(response, HttpStatus.OK);
