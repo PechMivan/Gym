@@ -10,19 +10,31 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @Component
-public class Custom_db implements HealthIndicator {
+@SuppressWarnings("unused")
+public class CustomDB implements HealthIndicator {
 
     @Value("${database.name}")
-    private String DB_NAME;
+    private final String DB_NAME;
 
     @Value("${spring.datasource.url}")
-    private String DB_URL;
+    private final String DB_URL;
 
     @Value("${spring.datasource.username}")
-    private String DB_USER;
+    private final String DB_USER;
 
     @Value("${spring.datasource.password}")
-    private String DB_PASS;
+    private final String DB_PASS;
+
+    CustomDB(@Value("${database.name}") String DB_NAME,
+              @Value("${spring.datasource.url}") String DB_URL,
+              @Value("${spring.datasource.username}") String DB_USER,
+              @Value("${spring.datasource.password}") String DB_PASS){
+
+        this.DB_NAME = DB_NAME;
+        this.DB_URL = DB_URL;
+        this.DB_USER= DB_USER;
+        this.DB_PASS = DB_PASS;
+    }
 
     @Override
     public Health health() {
@@ -35,12 +47,8 @@ public class Custom_db implements HealthIndicator {
     private boolean isDatabaseConnected(){
         Connection connection = null;
         try {
-            String url = DB_URL;
-            String username = DB_USER;
-            String password = DB_PASS;
-
             // Verify if db is connected
-            connection = DriverManager.getConnection(url, username, password);
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
 
             // Verify with a ping if server is available
             String pingQuery = "/* ping */ SELECT 1";
