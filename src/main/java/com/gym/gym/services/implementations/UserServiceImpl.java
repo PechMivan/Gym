@@ -64,7 +64,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(String username, User user){
-        //authenticateUser(user.getUsername(), user.getPassword());
         User existingUser = getUserByUsername(username);
 
         User updatedUser = User.builder()
