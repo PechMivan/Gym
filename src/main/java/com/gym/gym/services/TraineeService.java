@@ -1,20 +1,30 @@
 package com.gym.gym.services;
 
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainee;
+import com.gym.gym.entities.Trainer;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
 public interface TraineeService {
-
     Trainee getTraineeById(long id);
 
     List<Trainee> getAllTrainees();
 
     Trainee createTrainee(Trainee trainee);
 
+    @Transactional
     void saveTrainee(Trainee trainee);
 
-    void updateTrainee(long id, Trainee updatedTrainee);
+    Trainee updateTrainee(String username, Trainee trainee, Credentials credentials);
 
-    void deleteTrainee(long id);
+    void updateTrainersList(long id, Trainer trainer);
+
+    List<Trainer> updateTrainerList(String username, List<String> trainerUsernames, Credentials credentials);
+
+    @Transactional
+    long deleteTraineeByUsername(String username, Credentials credentials);
 }

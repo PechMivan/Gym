@@ -1,119 +1,127 @@
 package com.gym.gym.services.implementations;
 
-import com.gym.gym.daos.implementations.TraineeDAOImpl;
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainee;
+import com.gym.gym.entities.Trainer;
+import com.gym.gym.entities.User;
+import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.repositories.TraineeRepository;
 import com.gym.gym.services.TraineeService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
+import com.gym.gym.services.TrainerService;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.beans.PropertyDescriptor;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-@Component
+@Service
+@Slf4j
 public class TraineeServiceImpl implements TraineeService {
 
-    Logger logger = LoggerFactory.getLogger(TraineeServiceImpl.class);
-    Random random = new Random();
-
-    private TraineeDAOImpl traineeDAO;
-
     @Autowired
-    public void setTraineeDAOImpl(TraineeDAOImpl traineeDAO){
-        this.traineeDAO = traineeDAO;
-    }
+    private TraineeRepository traineeRepository;
+    @Autowired
+    private TrainerService trainerService;
+    @Autowired
+    private UserServiceImpl userService;
 
     @Override
     public Trainee getTraineeById(long id) {
-        return traineeDAO.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Trainee doesn't exist with id: " + id));
+        return traineeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Trainee with id %d not found", id)));
+    }
+
+    public Trainee getTraineeByUsername(String username){
+        return traineeRepository.findByUserUsername(username)
+                .orElseThrow(() -> new NotFoundException(String.format("Trainee with username %s not found", username)));
     }
 
     @Override
     public List<Trainee> getAllTrainees() {
-        return traineeDAO.findAll();
+        return (List<Trainee>) traineeRepository.findAll();
     }
 
     @Override
     public Trainee createTrainee(Trainee trainee){
-        trainee.setUsername(createUsername(trainee.getFirstName(), trainee.getLastName()));
-        trainee.setPassword(createPassword());
-        saveTrainee(trainee);
-        logger.info("User of type Trainee successfully created.");
-        return trainee;
+        User newUser = userService.createUser(trainee.getUser());
+        Date newDate = trainee.getDateOfBirth();
+
+        Trainee newTrainee = Trainee.builder()
+                .user(newUser)
+                .dateOfBirth(newDate)
+                .address(trainee.getAddress())
+                .build();
+
+        saveTrainee(newTrainee);
+        log.info(String.format("Trainee successfully created with id %d", newTrainee.getId()));
+        return newTrainee;
     }
 
     @Override
+    @Transactional
     public void saveTrainee(Trainee trainee) {
-        traineeDAO.save(trainee);
+        traineeRepository.save(trainee);
     }
 
     @Override
-    public void updateTrainee(long id, Trainee updatedTrainee) {
-        Trainee existingTrainee = getTraineeById(id);
+    public Trainee updateTrainee(String username, Trainee trainee, Credentials credentials) {
+        userService.authenticateUser(username, credentials.password);
+        Trainee existingTrainee = getTraineeByUsername(username);
 
-        BeanUtils.copyProperties(updatedTrainee, existingTrainee, getNullPropertyNames(updatedTrainee));
+        User updatedUser = userService.updateUser(username, trainee.getUser());
+        Date updatedDate = trainee.getDateOfBirth();
 
-        saveTrainee(existingTrainee);
-        logger.info("User of type Trainee successfully updated.");
+        Trainee updatedTrainee = Trainee.builder()
+                .id(existingTrainee.getId())
+                .user(updatedUser)
+                .dateOfBirth(updatedDate)
+                .address(trainee.getAddress())
+                .trainers(existingTrainee.getTrainers())
+                .build();
+
+        saveTrainee(updatedTrainee);
+        log.info(String.format("Trainee with id %d successfully updated.", updatedTrainee.getId()));
+        return updatedTrainee;
+    }
+
+    @Transactional
+    @Override
+    public long deleteTraineeByUsername(String username, Credentials credentials){
+        userService.authenticateUser(username, credentials.password);
+        // Verifies if trainee exists
+        getTraineeByUsername(username);
+        log.info(String.format("Trainee with username %s successfully deleted.", username));
+        return traineeRepository.deleteByUserUsername(username);
     }
 
     @Override
-    public void deleteTrainee(long id) {
-        traineeDAO.delete(id);
-        logger.info("User of type Trainee successfully deleted.");
+    public void updateTrainersList(long id, Trainer trainer){
+        Trainee trainee = getTraineeById(id);
+        trainee.getTrainers().add(trainer);
+        saveTrainee(trainee);
+        log.info(String.format("Trainer with id %d has been added to list of Trainers of Trainee with id %d", trainer.getId(), trainee.getId()));
     }
 
-    public String createUsername(String firstname, String lastname){
-        StringBuilder username = new StringBuilder();
-        username.append(firstname);
-        username.append(".");
-        username.append(lastname);
+    //TODO: Implement unit testing for this method
+    @Override
+    public List<Trainer> updateTrainerList(String username, List<String> trainerUsernames, Credentials credentials){
+        userService.authenticateUser(username, credentials.password);
+        Trainee trainee = getTraineeByUsername(username);
 
-        //Finds all usernames with the same username (ignoring suffix) and counts them.
-        long repeatedUsernameSize = getAllTrainees().stream()
-                .filter(trainee -> trainee.getUsername().toLowerCase().contains(username.toString().toLowerCase()))
-                .count();
+        //Verify if each trainer exist before saving.
+        List<Trainer> trainers = new ArrayList<>();
+        Trainer trainer;
 
-        if(repeatedUsernameSize > 0){
-            username.append(repeatedUsernameSize);
-        }
-        logger.info("Username successfully created.");
-        return username.toString();
-    }
-
-    public String createPassword(){
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        int length = 10;
-
-        //Gets a character from characters Strings based on the random number generated.
-        StringBuilder password = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            int index = random.nextInt(characters.length());
-            password.append(characters.charAt(index));
+        for(String trainerUsername : trainerUsernames){
+            trainer = trainerService.getTrainerByUsername(trainerUsername);
+            trainers.add(trainer);
         }
 
-        logger.info("Password successfully created.");
-        return password.toString();
-
-    }
-
-
-    /* Finds and returns all fields names with null values from an object */
-    private String[] getNullPropertyNames(Object source) {
-        BeanWrapper src = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = src.getPropertyDescriptors();
-
-        Set<String> emptyNames = new HashSet<>();
-        for (PropertyDescriptor pd : pds) {
-            Object srcValue = src.getPropertyValue(pd.getName());
-            if (srcValue == null) emptyNames.add(pd.getName());
-        }
-        String[] result = new String[emptyNames.size()];
-        return emptyNames.toArray(result);
+        trainee.setTrainers(trainers);
+        saveTrainee(trainee);
+        return trainee.getTrainers();
     }
 }

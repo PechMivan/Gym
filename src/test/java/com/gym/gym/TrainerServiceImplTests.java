@@ -1,159 +1,192 @@
 package com.gym.gym;
-import static org.mockito.Mockito.*;
 
-import com.gym.gym.daos.implementations.TrainerDAOImpl;
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainer;
+import com.gym.gym.entities.TrainingType;
+import com.gym.gym.entities.User;
+import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.repositories.TrainerRepository;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
+import com.gym.gym.services.implementations.TrainingTypeServiceImpl;
+import com.gym.gym.services.implementations.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
- class TrainerServiceImplTests {
+import static org.mockito.Mockito.*;
+
+public class TrainerServiceImplTests {
 
     @Mock
-    private TrainerDAOImpl trainerDAO;
+    UserServiceImpl userService;
+
+    @Mock
+    TrainingTypeServiceImpl trainingTypeService;
+
+    @Mock
+    TrainerRepository trainerRepository;
 
     @InjectMocks
-    private TrainerServiceImpl trainerService;
+    TrainerServiceImpl trainerService;
+
+    User user;
+    TrainingType trainingType;
+    Trainer trainer;
+    String username;
+    Credentials credentials;
 
     @BeforeEach
-     void setUp() {
+    public void setUp(){
         MockitoAnnotations.openMocks(this);
+
+        username = "John.Doe";
+        String password = "passtest";
+
+        this.credentials = new Credentials(username, password);
+
+        this.user = User.builder()
+                .id(1L)
+                .firstname("John")
+                .lastname("Doe")
+                .username("John.Doe")
+                .password("passtest")
+                .isActive(true)
+                .build();
+
+        this.trainingType = TrainingType.builder()
+                                        .id(1L)
+                                        .name("HIIT")
+                                        .build();
+
+        this.trainer = Trainer.builder()
+                              .id(1L)
+                              .user(user)
+                              .specialization(trainingType)
+                              .build();
     }
 
     @Test
-     void getTrainerById_Exists_ReturnsTrainee() {
+    public void getAllTrainers_withTrainers_successful(){
         // Arrange
-        long id = 1L;
-        Trainer trainer = new Trainer();
-        trainer.setUserId(id);
-
-        when(trainerDAO.findById(id)).thenReturn(Optional.of(trainer));
-
-        // Act
-        Trainer result = trainerService.getTrainerById(id);
-
-        // Assert
-        assertEquals(trainer, result);
-    }
-
-    @Test
-     void getTrainerById_NotExists_ThrowsException() {
-        // Arrange
-        long id = 1L;
-
-        when(trainerDAO.findById(id)).thenReturn(Optional.empty());
-
-        // Act and Assert
-        assertThrows(IllegalStateException.class, () -> trainerService.getTrainerById(id));
-    }
-
-    @Test
-     void getAllTrainers() {
-        // Arrange
-        List<Trainer> trainers = new ArrayList<>();
-        trainers.add(new Trainer());
-        trainers.add(new Trainer());
-
-        when(trainerDAO.findAll()).thenReturn(trainers);
-
+        List<Trainer> trainers = Arrays.asList(new Trainer(), new Trainer());
+        when(trainerRepository.findAll()).thenReturn(trainers);
         // Act
         List<Trainer> result = trainerService.getAllTrainers();
-
         // Assert
-        assertEquals(trainers, result);
+        assertEquals(trainers.size(), result.size());
     }
 
     @Test
-     void createTrainer() {
+    public void getAllTrainers_withoutTrainers_returnsEmptyList(){
         // Arrange
-        Trainer trainer = new Trainer();
-        trainer.setFirstName("John");
-        trainer.setLastName("Doe");
-
-        when(trainerService.getAllTrainers()).thenReturn(new ArrayList<>());
-
+        List<Trainer> trainers = Collections.emptyList();
+        when(trainerRepository.findAll()).thenReturn(trainers);
         // Act
-        Trainer result = trainerService.createTrainer(trainer);
-
+        List<Trainer> result = trainerService.getAllTrainers();
         // Assert
-        assertNotNull(result.getUsername());
-        assertNotNull(result.getPassword());
-        verify(trainerDAO, times(1)).save(trainer);
+        assertTrue(result.isEmpty());
     }
 
     @Test
-     void createUsername() {
+    public void getTrainer_validId_successful(){
         // Arrange
-        Trainer trainer1 = new Trainer();
-        trainer1.setFirstName("John");
-        trainer1.setLastName("Doe");
-        trainer1.setUsername("John.Doe");
-
-        Trainer trainer2 = new Trainer();
-        trainer2.setFirstName("John");
-        trainer2.setLastName("Doe");
-        trainer2.setUsername("John.Doe1");
-
-        List<Trainer> existingTrainers = new ArrayList<>();
-        existingTrainers.add(trainer1);
-        existingTrainers.add(trainer2);
-
-        when(trainerService.getAllTrainers()).thenReturn(existingTrainers);
-
+        long trainerId = 1L;
+        when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(trainer));
         // Act
-        String username = trainerService.createUsername("John", "Doe");
-
+        Trainer result = trainerService.getTrainerById(1L);
         // Assert
-        assertEquals("John.Doe2", username); // Expecting "John.Doe2" as the username
+        assertNotNull(result);
+        assertEquals(trainerId, result.getId());
+        assertEquals("John", result.getUser().getFirstname());
     }
 
     @Test
-     void createPassword() {
+    public void getTrainerById_invalidId_throwsNotFoundException(){
         // Act and Assert
-        String password = trainerService.createPassword();
-        assertEquals(10, password.length()); // Expecting a password of length 10
+        assertThrows(NotFoundException.class, () ->trainerService.getTrainerById(100L));
     }
 
     @Test
-     void updateTrainer() {
+    public void getTrainer_validUsername_successful(){
         // Arrange
-        long id = 1L;
-        Trainer existingTrainer = new Trainer();
-        existingTrainer.setUserId(id);
-
-        Trainer updatedTrainer = new Trainer();
-        updatedTrainer.setFirstName("Updated");
-
-        when(trainerDAO.findById(id)).thenReturn(Optional.of(existingTrainer));
-
+        String username = "John.Doe";
+        when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(trainer));
         // Act
-        trainerService.updateTrainer(id, updatedTrainer);
-
+        Trainer result = trainerService.getTrainerByUsername(username);
         // Assert
-        assertEquals("Updated", existingTrainer.getFirstName()); // Expecting the first name to be updated
-        verify(trainerDAO, times(1)).save(existingTrainer); // Expecting save method to be called
+        assertNotNull(trainer);
+        assertEquals(username, result.getUser().getUsername());
+        assertEquals("John", result.getUser().getFirstname());
     }
 
     @Test
-     void deleteTrainer() {
+    public void getTrainer_invalidUsername_successful(){
+        // Act and Assert
+        assertThrows(NotFoundException.class, ()-> trainerService.getTrainerByUsername("wrongUsername"));
+    }
+
+    @Test
+    public void createTrainer(){
         // Arrange
-        long id = 1L;
-
+        when(userService.createUser(trainer.getUser())).thenReturn(user);
+        when(trainingTypeService
+                .getTrainingTypeByName(trainer.getSpecialization().getName()))
+                .thenReturn(trainingType);
         // Act
-        trainerService.deleteTrainer(id);
-
+        Trainer createdTrainer = trainerService.createTrainer(trainer);
         // Assert
-        verify(trainerDAO, times(1)).delete(id); // Expecting delete method to be called with given id
+        assertEquals("John", createdTrainer.getUser().getFirstname());
+        assertEquals("Doe", createdTrainer.getUser().getLastname());
+        assertEquals("John.Doe", createdTrainer.getUser().getUsername());
+        assertEquals(8, createdTrainer.getUser().getPassword().length());
+        assertEquals("HIIT", createdTrainer.getSpecialization().getName());
+    }
+
+    @Test
+    public void saveTrainer(){
+        // Act
+        trainerService.saveTrainer(trainer);
+        // Assert
+        verify(trainerRepository, times(1)).save(trainer);
+    }
+
+    @Test
+    public void updateTrainer() {
+        // Arrange
+        String username = "John.Doe";
+
+        User userUpdated = User.builder()
+                .id(1L)
+                .firstname("testName")
+                .build();
+
+        TrainingType trainingTypeUpdated = TrainingType.builder()
+                .id(2L)
+                .name("CARDIO")
+                .build();
+        
+        Trainer updateTrainer = Trainer.builder()
+                                       .user(userUpdated)
+                                       .specialization(trainingTypeUpdated)
+                                       .build();
+
+        when(userService.updateUser(username, updateTrainer.getUser())).thenReturn(userUpdated);
+        when(trainingTypeService
+                .getTrainingTypeByName(updateTrainer.getSpecialization().getName()))
+                .thenReturn(trainingTypeUpdated);
+        when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(trainer));
+        // Act
+        Trainer updatedTrainer = trainerService.updateTrainer(username, updateTrainer, credentials);
+        // Assert
+        assertEquals("testName", updatedTrainer.getUser().getFirstname());
+        assertEquals(updateTrainer.getSpecialization().getName(), updatedTrainer.getSpecialization().getName());
     }
 }

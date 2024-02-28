@@ -1,20 +1,22 @@
 package com.gym.gym.services;
 
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainer;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
 public interface TrainerService {
-
     Trainer getTrainerById(long id);
+
+    Trainer getTrainerByUsername(String username);
 
     List<Trainer> getAllTrainers();
 
     Trainer createTrainer(Trainer trainer);
 
+    @Transactional
     void saveTrainer(Trainer trainer);
 
-    void updateTrainer(long id, Trainer updatedTrainer);
-
-    void deleteTrainer(long id);
+    Trainer updateTrainer(String username, Trainer trainer, Credentials credentials);
 }

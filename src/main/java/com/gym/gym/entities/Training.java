@@ -1,9 +1,13 @@
 package com.gym.gym.entities;
 
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,13 +16,33 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
 public class Training implements Serializable {
-    private long trainingId;
-    private long traineeId;
-    private long trainerId;
-    private String trainingName;
-    private TrainingType trainingType;
-    private Date trainingDate;
-    private int trainingDuration;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(length = 50, nullable = false)
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name="trainingTypeId", nullable=false)
+    private com.gym.gym.entities.TrainingType trainingType;
+
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date date;
+
+    @Column(nullable = false)
+    private int duration;
+
+    @ManyToOne
+    @JoinColumn(name="traineeId")
+    private com.gym.gym.entities.Trainee trainee;
+
+    @ManyToOne
+    @JoinColumn(name="trainerId")
+    private com.gym.gym.entities.Trainer trainer;
 
 }

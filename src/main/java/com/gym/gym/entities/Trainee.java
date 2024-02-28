@@ -1,30 +1,45 @@
 package com.gym.gym.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-@Data
+@Builder
 @EqualsAndHashCode(callSuper = false)
+@Getter
+@Setter
 @NoArgsConstructor
-@SuperBuilder
+@AllArgsConstructor
 @SuppressWarnings("unused")
-public class Trainee extends User {
-    private long userId;
+@Entity
+public class Trainee implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Temporal(TemporalType.DATE)
+    @Column
     private Date dateOfBirth;
+
+    @Column(length = 100)
     private String address;
 
-    @Override
-    public String toString() {
-        return super.toString() + "Trainee{" +
-                "userId=" + userId +
-                ", dateOfBirth=" + dateOfBirth +
-                ", address='" + address + '\'' +
-                '}';
-    }
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL)
+    List<Training> trainings = new ArrayList<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name="trainee_trainer",
+            joinColumns=@JoinColumn(name="trainee_id"),
+            inverseJoinColumns=@JoinColumn(name="trainer_id"))
+    List<Trainer> trainers;
 }

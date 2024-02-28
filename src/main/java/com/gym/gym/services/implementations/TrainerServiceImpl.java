@@ -1,119 +1,88 @@
 package com.gym.gym.services.implementations;
 
-import com.gym.gym.daos.implementations.TrainerDAOImpl;
+import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainer;
+import com.gym.gym.entities.TrainingType;
+import com.gym.gym.entities.User;
+import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.repositories.TrainerRepository;
 import com.gym.gym.services.TrainerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
+import com.gym.gym.services.TrainingTypeService;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.beans.PropertyDescriptor;
-import java.util.*;
+import java.util.List;
 
-@Component
+@Service
+@Slf4j
 public class TrainerServiceImpl implements TrainerService {
 
-    Logger logger = LoggerFactory.getLogger(TrainerServiceImpl.class);
-    Random random = new Random();
-    private TrainerDAOImpl trainerDAO;
-
     @Autowired
-    public void setTrainerDAOImpl(TrainerDAOImpl trainerDAO){
-        this.trainerDAO = trainerDAO;
-    }
+    TrainerRepository trainerRepository;
+    @Autowired
+    UserServiceImpl userService;
+    @Autowired
+    TrainingTypeService trainingTypeService;
 
     @Override
     public Trainer getTrainerById(long id) {
-        return trainerDAO.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Trainer doesn't exist with id: " + id));
+        return trainerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Trainer with id %d not found", id)));
+    }
+
+    @Override
+    public Trainer getTrainerByUsername(String username){
+        return trainerRepository.findByUserUsername(username)
+                .orElseThrow(() -> new NotFoundException(String.format("Trainer with username %s not found", username)));
     }
 
     @Override
     public List<Trainer> getAllTrainers() {
-        return trainerDAO.findAll();
+        return (List<Trainer>) trainerRepository.findAll();
     }
 
     @Override
-    public Trainer createTrainer(Trainer trainer){
-        trainer.setUsername(createUsername(trainer.getFirstName(), trainer.getLastName()));
-        trainer.setPassword(createPassword());
-        saveTrainer(trainer);
-        logger.info("User of type Trainer successfully created.");
-        return trainer;
+    public Trainer createTrainer(Trainer trainer) {
+        TrainingType selectedTrainingType = trainingTypeService
+                .getTrainingTypeByName(trainer.getSpecialization().getName());
+        User newUser = userService.createUser(trainer.getUser());
+
+        Trainer newTrainer = Trainer.builder()
+                .user(newUser)
+                .specialization(selectedTrainingType)
+                .build();
+
+        saveTrainer(newTrainer);
+        log.info(String.format("Trainer successfully created with id %d", newTrainer.getId()));
+        return newTrainer;
     }
 
     @Override
+    @Transactional
     public void saveTrainer(Trainer trainer) {
-        trainerDAO.save(trainer);
+        trainerRepository.save(trainer);
     }
 
     @Override
-    public void updateTrainer(long id, Trainer updatedTrainer) {
-        Trainer existingTrainer = getTrainerById(id);
+    public Trainer updateTrainer(String username, Trainer trainer, Credentials credentials) {
+        userService.authenticateUser(username, credentials.password);
 
-        //Copies properties that are NOT NULL.
-        BeanUtils.copyProperties(updatedTrainer, existingTrainer, getNullPropertyNames(updatedTrainer));
+        Trainer existingTrainer = getTrainerByUsername(username);
+        TrainingType updatedTrainingType = trainingTypeService
+                .getTrainingTypeByName(trainer.getSpecialization().getName());
+        User updatedUser = userService.updateUser(username, trainer.getUser());
 
-        saveTrainer(existingTrainer);
-        logger.info("User of type Trainer successfully updated.");
+        Trainer updatedTrainer = Trainer.builder()
+                .id(existingTrainer.getId())
+                .user(updatedUser)
+                .specialization(updatedTrainingType)
+                .build();
+
+        saveTrainer(updatedTrainer);
+        log.info(String.format("Trainer with id %d successfully updated.", updatedTrainer.getId()));
+        return updatedTrainer;
     }
 
-    @Override
-    public void deleteTrainer(long id) {
-        trainerDAO.delete(id);
-        logger.info("User of type Trainee successfully deleted.");
-    }
-
-    public String createUsername(String firstname, String lastname){
-        StringBuilder username = new StringBuilder();
-        username.append(firstname);
-        username.append(".");
-        username.append(lastname);
-
-        //Finds all usernames with the same username (ignoring suffix) and counts them.
-        long repeatedUsernameSize = getAllTrainers().stream()
-                .filter(trainee -> trainee.getUsername().toLowerCase().contains(username.toString().toLowerCase()))
-                .count();
-
-        if(repeatedUsernameSize > 0){
-            logger.info("There are " + repeatedUsernameSize + " users with the same username.");
-            username.append(repeatedUsernameSize);
-        }
-        logger.info("Username successfully created.");
-        return username.toString();
-    }
-
-    //
-    public String createPassword(){
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        int length = 10;
-
-        StringBuilder password = new StringBuilder(length);
-        //Gets a character from characters Strings based on the random number generated.
-        for (int i = 0; i < length; i++) {
-            int index = random.nextInt(characters.length());
-            password.append(characters.charAt(index));
-        }
-
-        logger.info("Password successfully created.");
-        return password.toString();
-    }
-
-    /* Finds and returns all fields names with null values from an object */
-    private String[] getNullPropertyNames(Object source) {
-        BeanWrapper src = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = src.getPropertyDescriptors();
-
-        Set<String> emptyNames = new HashSet<>();
-        for (PropertyDescriptor pd : pds) {
-            Object srcValue = src.getPropertyValue(pd.getName());
-            if (srcValue == null) emptyNames.add(pd.getName());
-        }
-        String[] result = new String[emptyNames.size()];
-        return emptyNames.toArray(result);
-    }
 }
