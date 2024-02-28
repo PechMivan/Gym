@@ -15,7 +15,7 @@ public class OnlyLettersValidator implements ConstraintValidator<OnlyLetters, St
         }
 
         //Validates that String contains no numbers or symbols.
-        String regex = "^[a-zA-Z]+$";
+        String regex = "^\\p{L}+$";
 
         return object.matches(regex);
     }

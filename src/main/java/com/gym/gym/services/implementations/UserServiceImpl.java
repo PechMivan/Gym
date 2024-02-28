@@ -162,7 +162,7 @@ public class UserServiceImpl implements UserService {
     //TODO: Modify unit testing.
     @Override
     public Boolean changeActiveState(String username, boolean activeState, Credentials credentials){
-        authenticateUser(credentials.username, credentials.password);
+        authenticateUser(username, credentials.password);
         User existingUser = getUserByUsername(username);
         existingUser.setActive(activeState);
         saveUser(existingUser);

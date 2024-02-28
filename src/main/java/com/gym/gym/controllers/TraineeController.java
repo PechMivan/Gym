@@ -59,7 +59,7 @@ public class TraineeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/user/{username}/trainers/")
+    @PutMapping("/user/{username}/trainers")
     public ResponseEntity<List<TrainerDTO>> updateTrainerList(@PathVariable String username, @RequestBody @Valid TraineeTrainersListUpdateRequest request){
         List<Trainer> updatedTrainerList = traineeService.updateTrainerList(username, request.getUsernames(), request.credentials);
         List<TrainerDTO> response = traineeMapper.trainerListToTrainerDTOList(updatedTrainerList);

@@ -68,7 +68,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public Trainee updateTrainee(String username, Trainee trainee, Credentials credentials) {
-        userService.authenticateUser(trainee.getUser().getUsername(), credentials.password);
+        userService.authenticateUser(username, credentials.password);
         Trainee existingTrainee = getTraineeByUsername(username);
 
         User updatedUser = userService.updateUser(username, trainee.getUser());
@@ -79,6 +79,7 @@ public class TraineeServiceImpl implements TraineeService {
                 .user(updatedUser)
                 .dateOfBirth(updatedDate)
                 .address(trainee.getAddress())
+                .trainers(existingTrainee.getTrainers())
                 .build();
 
         saveTrainee(updatedTrainee);

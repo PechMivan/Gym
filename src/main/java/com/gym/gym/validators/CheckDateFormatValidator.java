@@ -27,6 +27,8 @@ public class CheckDateFormatValidator implements ConstraintValidator<CheckDateFo
             formatter.parse(object);
             return true; // Parsing succeeded, so the format is valid
         } catch (ParseException e) {
+            constraintContext.disableDefaultConstraintViolation(); // Disable default message
+            constraintContext.buildConstraintViolationWithTemplate(String.format("Invalid date format. It Should follow: [%s] format", format)).addConstraintViolation(); // Custom message
             return false; // Parsing failed, so the format is invalid
         }
     }
