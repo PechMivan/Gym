@@ -45,9 +45,9 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer createTrainer(Trainer trainer) {
-        User newUser = userService.createUser(trainer.getUser());
         TrainingType selectedTrainingType = trainingTypeService
                 .getTrainingTypeByName(trainer.getSpecialization().getName());
+        User newUser = userService.createUser(trainer.getUser());
 
         Trainer newTrainer = Trainer.builder()
                 .user(newUser)
