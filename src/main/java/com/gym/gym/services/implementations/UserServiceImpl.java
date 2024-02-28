@@ -110,10 +110,7 @@ public class UserServiceImpl implements UserService {
 
         //Finds all usernames with the same firstname and lastname.
         List<String> existingUsernames = getAllUsers().stream()
-                .filter(user -> (
-                        user.getFirstname().equalsIgnoreCase(firstname)
-                        && user.getLastname().equalsIgnoreCase(lastname)
-                )).map(User::getUsername)
+                .map(User::getUsername).filter(userUsername -> userUsername.contains(username))
                 .toList();
 
         int baseId = 1;
