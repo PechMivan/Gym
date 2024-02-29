@@ -9,6 +9,7 @@ import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.mappers.TraineeMapper;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
+import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,7 @@ public class TraineeController {
     }
 
     @PostMapping
+    @Timed(value = "create-trainee.time", description = "Time taken to create a trainee")
     public  ResponseEntity<Credentials> createTrainee(@RequestBody @Valid TraineeRegistrateRequest request) {
         Trainee trainee = traineeMapper.mapFromRegistrateRequest(request);
         Trainee newTrainee = traineeService.createTrainee(trainee);
