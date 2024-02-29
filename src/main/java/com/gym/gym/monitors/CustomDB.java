@@ -13,16 +13,9 @@ import java.sql.SQLException;
 @SuppressWarnings("unused")
 public class CustomDB implements HealthIndicator {
 
-    @Value("${database.name}")
     private final String DB_NAME;
-
-    @Value("${spring.datasource.url}")
     private final String DB_URL;
-
-    @Value("${spring.datasource.username}")
     private final String DB_USER;
-
-    @Value("${spring.datasource.password}")
     private final String DB_PASS;
 
     CustomDB(@Value("${database.name}") String DB_NAME,
