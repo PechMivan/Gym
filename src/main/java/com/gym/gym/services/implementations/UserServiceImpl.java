@@ -10,13 +10,11 @@ import com.gym.gym.services.UserService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
@@ -24,6 +22,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     Random random = new Random();
 
@@ -48,12 +49,14 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) {
         String newUsername = createUsername(user.getFirstname(), user.getLastname());
         String newPassword = createPassword();
+        String hashedPassword = passwordEncoder.encode(newPassword);
 
         User newUser = User.builder()
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .username(newUsername)
                 .password(newPassword)
+                .hashedPassword(hashedPassword)
                 .isActive(true)
                 .build();
 
@@ -71,7 +74,7 @@ public class UserServiceImpl implements UserService {
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .username(existingUser.getUsername())
-                .password(existingUser.getPassword())
+                .hashedPassword(existingUser.getHashedPassword())
                 .isActive(user.isActive())
                 .build();
 
@@ -138,7 +141,8 @@ public class UserServiceImpl implements UserService {
         authenticateUser(username, oldPassword);
         validatePassword(newPassword);
         User existingUser = getUserByUsername(username);
-        existingUser.setPassword(newPassword);
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        existingUser.setHashedPassword(hashedPassword);
         saveUser(existingUser);
         log.info(String.format("Password successfully changed for user with id %d", existingUser.getId()));
         return true;
@@ -150,9 +154,9 @@ public class UserServiceImpl implements UserService {
             log.error("New Password cannot be null or blank.");
             throw new InvalidPasswordException("New Password cannot be null or blank.");
         }
-        if(newPassword.length() < 8 || newPassword.length() > 10){
-            log.error("New Password should contain at least 8 and no more than 10 characters");
-            throw new InvalidPasswordException("New Password should contain at least 8 and no more than 10 characters");
+        if(newPassword.length() < 10){
+            log.error("New Password should contain at least 10 characters");
+            throw new InvalidPasswordException("New Password should contain at least 10 characters.");
         }
     }
 
