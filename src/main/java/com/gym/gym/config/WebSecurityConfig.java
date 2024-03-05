@@ -3,10 +3,13 @@ package com.gym.gym.config;
 import com.gym.gym.security.CustomUserDetailsService;
 import com.gym.gym.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,7 +29,6 @@ public class WebSecurityConfig {
     JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     CustomUserDetailsService customUserDetailsService;
-
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -51,12 +53,21 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager() {
+    public AuthenticationManager authenticationManager(AuthenticationEventPublisher eventPublisher) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(customUserDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
 
-        return new ProviderManager(authenticationProvider);
+        ProviderManager providerManager = new ProviderManager(authenticationProvider);
+        providerManager.setAuthenticationEventPublisher(eventPublisher);
+
+        return providerManager;
+    }
+
+    @Bean
+    public AuthenticationEventPublisher authenticationEventPublisher
+            (ApplicationEventPublisher applicationEventPublisher) {
+        return new DefaultAuthenticationEventPublisher(applicationEventPublisher);
     }
 
 }
