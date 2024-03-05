@@ -17,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/gym/trainers")
+@RequestMapping("gym/trainers")
 @Validated
 @SuppressWarnings("unused")
 public class TrainerController {
@@ -28,7 +28,7 @@ public class TrainerController {
     @Autowired
     TrainerMapper trainerMapper;
 
-    @GetMapping("/user/{username}")
+    @GetMapping("{username}")
     public ResponseEntity<TrainerFindResponse> getTrainerByUsername(@PathVariable String username){
         Trainer trainer = trainerService.getTrainerByUsername(username);
         TrainerFindResponse response = trainerMapper.mapToFindResponse(trainer);
@@ -45,7 +45,7 @@ public class TrainerController {
 
     }
 
-    @PutMapping("/user/{username}")
+    @PutMapping("{username}")
     public ResponseEntity<TrainerUpdateResponse> updateTrainer(@PathVariable String username, @RequestBody @Valid TrainerUpdateRequest request){
         Trainer trainer = trainerMapper.mapFromUpdateRequest(request);
         Trainer updatedTrainer = trainerService.updateTrainer(username, trainer, request.credentials);

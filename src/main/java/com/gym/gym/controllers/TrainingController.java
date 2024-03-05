@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/gym/trainings")
+@RequestMapping("gym/trainings")
 @Validated
 @SuppressWarnings("unused")
 public class TrainingController {

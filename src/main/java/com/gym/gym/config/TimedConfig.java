@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @SuppressWarnings("unused")
 // Enables @Timed annotation to create custom metrics for prometheus with a method scope.
-public class TimedConfiguration {
+public class TimedConfig {
     @Bean
     public TimedAspect timedAspect(MeterRegistry registry) {
         return new TimedAspect(registry);

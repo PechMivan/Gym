@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/gym/trainees")
+@RequestMapping("gym/trainees")
 @Validated
 @SuppressWarnings("unused")
 public class TraineeController {
@@ -32,7 +32,7 @@ public class TraineeController {
     @Autowired
     TraineeMapper traineeMapper;
 
-    @GetMapping(value = "/user/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{username}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity< TraineeFindResponse > getTraineeByUsername(@PathVariable String username){
         Trainee trainee = traineeService.getTraineeByUsername(username);
         TraineeFindResponse response = traineeMapper.mapToFindResponse(trainee);
@@ -48,7 +48,7 @@ public class TraineeController {
         return new ResponseEntity<>(newCredentials, HttpStatus.CREATED); // Status 201
     }
 
-    @PutMapping("/user/{username}")
+    @PutMapping("{username}")
     public ResponseEntity<TraineeUpdateResponse> updateTrainee(@PathVariable String username, @RequestBody @Valid TraineeUpdateRequest request){
         Trainee trainee = traineeMapper.mapFromUpdateRequest(request);
         Trainee updatedTrainee = traineeService.updateTrainee(username, trainee, request.credentials);
@@ -56,13 +56,13 @@ public class TraineeController {
         return new ResponseEntity<>(response, HttpStatus.OK); // Status 200
     }
 
-    @DeleteMapping("/user/{username}")
+    @DeleteMapping("{username}")
     public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username, @RequestBody @Valid Credentials credentials){
         traineeService.deleteTraineeByUsername(username, credentials);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/user/{username}/trainers")
+    @PutMapping("{username}/trainers")
     public ResponseEntity<List<TrainerDTO>> updateTrainerList(@PathVariable String username, @RequestBody @Valid TraineeTrainersListUpdateRequest request){
         List<Trainer> updatedTrainerList = traineeService.updateTrainerList(username, request.getUsernames(), request.credentials);
         List<TrainerDTO> response = traineeMapper.trainerListToTrainerDTOList(updatedTrainerList);

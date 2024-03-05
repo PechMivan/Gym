@@ -8,22 +8,34 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.gym.gym.security.JwtIssuer;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/gym/user")
+@RequestMapping("gym/user")
 @Validated
 @SuppressWarnings("unused")
 public class UserController {
 
     @Autowired
+    JwtIssuer jwtIssuer;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
     UserServiceImpl userService;
 
+    //TODO: Rework login
     @GetMapping("/login")
-    public ResponseEntity<HttpStatus> login(@RequestBody @Valid Credentials credentials){
-        userService.authenticateUser(credentials.username, credentials.password);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> login(@RequestBody @Valid Credentials credentials){
+        String token = jwtIssuer.issue(1L, "username", List.of("USER"));
+        //userService.authenticateUser(credentials.username, credentials.password);
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
     @PatchMapping("/active")
