@@ -13,4 +13,6 @@ public class Credentials {
     public String username;
     @NotBlank(message = "password cannot be null or blank")
     public String password;
+    @NotBlank(message = "accesstoken cannot be null or blank")
+    public String accessToken;
 }

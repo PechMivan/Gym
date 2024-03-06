@@ -39,7 +39,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public void createToken(User user, String jwtToken){
+    public Token createToken(User user, String jwtToken){
         Token token = Token.builder()
                            .user(user)
                            .token(jwtToken)
@@ -48,6 +48,7 @@ public class TokenServiceImpl implements TokenService {
                            .revoked(false)
                            .build();
         save(token);
+        return token;
     }
 
     @Transactional

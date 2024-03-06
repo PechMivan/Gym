@@ -13,7 +13,7 @@ public interface TokenService {
 
     Token getToken(String token);
 
-    void createToken(User user, String token);
+    Token createToken(User user, String token);
 
     @Transactional
     Token save(Token token);

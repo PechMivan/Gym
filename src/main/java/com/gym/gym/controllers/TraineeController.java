@@ -5,12 +5,14 @@ import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.dtos.request.*;
 import com.gym.gym.dtos.response.TraineeFindResponse;
 import com.gym.gym.dtos.response.TraineeUpdateResponse;
+import com.gym.gym.entities.Token;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.mappers.TraineeMapper;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
 import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("gym/trainees")
 @Validated
+@Slf4j
 @SuppressWarnings("unused")
 public class TraineeController {
 
@@ -44,7 +47,14 @@ public class TraineeController {
     public  ResponseEntity<Credentials> createTrainee(@RequestBody @Valid TraineeRegistrateRequest request) {
         Trainee trainee = traineeMapper.mapFromRegistrateRequest(request);
         Trainee newTrainee = traineeService.createTrainee(trainee);
-        Credentials newCredentials = traineeMapper.mapToCredentials(newTrainee);
+        // Gets the one and only token saved at the moment of creation.
+        Token accessToken = newTrainee.getUser().getTokens().get(0);
+        Credentials newCredentials = new Credentials
+        (
+                newTrainee.getUser().getUsername(),
+                newTrainee.getUser().getPassword(),
+                accessToken.getToken()
+        );
         return new ResponseEntity<>(newCredentials, HttpStatus.CREATED); // Status 201
     }
 

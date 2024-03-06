@@ -1,6 +1,7 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.dtos.Credentials;
+import com.gym.gym.entities.Token;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.InvalidPasswordException;
 import com.gym.gym.exceptions.NotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -61,13 +63,15 @@ public class UserServiceImpl implements UserService {
                 .username(newUsername)
                 .password(newPassword)
                 .hashedPassword(hashedPassword)
+                .tokens(new ArrayList<>())
                 .isActive(true)
                 .build();
 
         saveUser(newUser);
         log.info(String.format("User successfully created with id: %d", newUser.getId()));
         String jwtToken = tokenService.generateToken(newUser.getId(), newUser.getUsername(), List.of("USER"));
-        tokenService.createToken(newUser, jwtToken);
+        Token token = tokenService.createToken(newUser, jwtToken);
+        newUser.getTokens().add(token);
         return  newUser;
     }
 

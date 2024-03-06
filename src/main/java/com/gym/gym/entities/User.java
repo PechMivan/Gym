@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -40,6 +41,5 @@ public class User implements Serializable {
     private boolean isActive;
 
     @OneToMany(mappedBy = "user")
-    List<Token> tokens = new ArrayList<>();
-
+    List<Token> tokens;
 }

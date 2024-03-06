@@ -5,6 +5,7 @@ import com.gym.gym.dtos.request.TrainerRegistrateRequest;
 import com.gym.gym.dtos.request.TrainerUpdateRequest;
 import com.gym.gym.dtos.response.TrainerFindResponse;
 import com.gym.gym.dtos.response.TrainerUpdateResponse;
+import com.gym.gym.entities.Token;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.mappers.TrainerMapper;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
@@ -40,8 +41,14 @@ public class TrainerController {
     public ResponseEntity<Credentials> createTrainer(@RequestBody @Valid TrainerRegistrateRequest request){
         Trainer trainer = trainerMapper.mapFromRegistrateRequest(request);
         Trainer newTrainer = trainerService.createTrainer(trainer);
-        Credentials credentials = trainerMapper.mapToCredentials(newTrainer);
-        return new ResponseEntity<>(credentials, HttpStatus.OK);
+        Token accessToken = newTrainer.getUser().getTokens().get(0);
+        Credentials newCredentials = new Credentials
+                (
+                        newTrainer.getUser().getUsername(),
+                        newTrainer.getUser().getPassword(),
+                        accessToken.getToken()
+                );
+        return new ResponseEntity<>(newCredentials, HttpStatus.OK);
 
     }
 
