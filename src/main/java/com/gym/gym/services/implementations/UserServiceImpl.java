@@ -6,6 +6,7 @@ import com.gym.gym.exceptions.InvalidPasswordException;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.repositories.UserRepository;
+import com.gym.gym.services.TokenService;
 import com.gym.gym.services.UserService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
+
+    @Autowired
+    TokenService tokenService;
 
     Random random = new Random();
 
@@ -62,6 +66,8 @@ public class UserServiceImpl implements UserService {
 
         saveUser(newUser);
         log.info(String.format("User successfully created with id: %d", newUser.getId()));
+        String jwtToken = tokenService.generateToken(newUser.getId(), newUser.getUsername(), List.of("USER"));
+        tokenService.createToken(newUser, jwtToken);
         return  newUser;
     }
 

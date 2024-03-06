@@ -1,9 +1,12 @@
 package com.gym.gym.security;
 
+import com.gym.gym.entities.Token;
+import com.gym.gym.repositories.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,9 +17,13 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     JwtDecoder jwtDecoder;
+
+    @Autowired
+    TokenRepository tokenRepository;
 
     @Autowired
     JwtToPrincipalConverter jwtToPrincipalConverter;
@@ -33,12 +40,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private Optional<String> extractTokenFromRequest(HttpServletRequest request){
-        var token = request.getHeader("Authorization");
-
-        if(!StringUtils.isBlank(token) && token.startsWith("Bearer ")){
-            return Optional.of(token.substring(7));
+        String token = request.getHeader("Authorization");
+        if(StringUtils.isBlank(token) || !token.startsWith("Bearer ")){
+            return Optional.empty();
         }
 
-        return Optional.empty();
+        String jwt = token.substring(7);
+
+        boolean isValidToken = tokenRepository.findByToken(jwt)
+                               .map(t -> !t.isExpired() && !t.isRevoked()).orElse(false);
+
+        if(!isValidToken) return Optional.empty();
+        return Optional.of(jwt);
+
     }
 }

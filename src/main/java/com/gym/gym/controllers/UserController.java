@@ -3,7 +3,9 @@ package com.gym.gym.controllers;
 import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.request.ActiveStateChangeRequest;
 import com.gym.gym.dtos.request.PasswordChangeRequest;
+import com.gym.gym.entities.User;
 import com.gym.gym.security.UserPrincipal;
+import com.gym.gym.services.TokenService;
 import com.gym.gym.services.implementations.UserServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import com.gym.gym.security.JwtIssuer;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -27,13 +27,13 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    JwtIssuer jwtIssuer;
-
-    @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
     UserServiceImpl userService;
+
+    @Autowired
+    TokenService tokenService;
 
     //TODO: Rework login
     @GetMapping("/login")
@@ -45,9 +45,10 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserPrincipal principal = (UserPrincipal)authentication.getPrincipal();
-        String token = jwtIssuer.issue(principal.getUserId(), principal.getUsername(), List.of("USER"));
-        //userService.authenticateUser(credentials.username, credentials.password);
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        String jwtToken = tokenService.generateToken(principal.getUserId(), principal.getUsername(), List.of("USER"));
+        User user = User.builder().id(principal.getUserId()).username(principal.getUsername()).build();
+        tokenService.createToken(user, jwtToken);
+        return new ResponseEntity<>(jwtToken, HttpStatus.OK);
     }
 
     @PatchMapping("/active")

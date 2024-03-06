@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -36,5 +38,8 @@ public class User implements Serializable {
 
     @Column(name="active", nullable = false)
     private boolean isActive;
+
+    @OneToMany(mappedBy = "user")
+    List<Token> tokens = new ArrayList<>();
 
 }
