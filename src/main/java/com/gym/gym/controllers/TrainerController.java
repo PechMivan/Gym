@@ -1,6 +1,7 @@
 package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.Credentials;
+import com.gym.gym.dtos.CredentialsAndAccessToken;
 import com.gym.gym.dtos.request.TrainerRegistrateRequest;
 import com.gym.gym.dtos.request.TrainerUpdateRequest;
 import com.gym.gym.dtos.response.TrainerFindResponse;
@@ -38,16 +39,18 @@ public class TrainerController {
 
     @PostMapping
     @Timed(value = "create-trainer.time", description = "Time taken to create a trainer")
-    public ResponseEntity<Credentials> createTrainer(@RequestBody @Valid TrainerRegistrateRequest request){
+    public ResponseEntity<CredentialsAndAccessToken> createTrainer(@RequestBody @Valid TrainerRegistrateRequest request){
         Trainer trainer = trainerMapper.mapFromRegistrateRequest(request);
         Trainer newTrainer = trainerService.createTrainer(trainer);
         Token accessToken = newTrainer.getUser().getTokens().get(0);
-        Credentials newCredentials = new Credentials
-                (
-                        newTrainer.getUser().getUsername(),
-                        newTrainer.getUser().getPassword(),
-                        accessToken.getToken()
-                );
+        CredentialsAndAccessToken newCredentials = new CredentialsAndAccessToken
+        (
+            new Credentials(
+                    newTrainer.getUser().getUsername(),
+                    newTrainer.getUser().getPassword()
+            ),
+            accessToken.getToken()
+        );
         return new ResponseEntity<>(newCredentials, HttpStatus.OK);
 
     }

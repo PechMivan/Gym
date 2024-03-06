@@ -1,6 +1,7 @@
 package com.gym.gym.controllers;
 
 import com.gym.gym.dtos.Credentials;
+import com.gym.gym.dtos.CredentialsAndAccessToken;
 import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.dtos.request.*;
 import com.gym.gym.dtos.response.TraineeFindResponse;
@@ -44,16 +45,18 @@ public class TraineeController {
 
     @PostMapping
     @Timed(value = "create-trainee.time", description = "Time taken to create a trainee")
-    public  ResponseEntity<Credentials> createTrainee(@RequestBody @Valid TraineeRegistrateRequest request) {
+    public  ResponseEntity<CredentialsAndAccessToken> createTrainee(@RequestBody @Valid TraineeRegistrateRequest request) {
         Trainee trainee = traineeMapper.mapFromRegistrateRequest(request);
         Trainee newTrainee = traineeService.createTrainee(trainee);
         // Gets the one and only token saved at the moment of creation.
         Token accessToken = newTrainee.getUser().getTokens().get(0);
-        Credentials newCredentials = new Credentials
+        CredentialsAndAccessToken newCredentials = new CredentialsAndAccessToken
         (
-                newTrainee.getUser().getUsername(),
-                newTrainee.getUser().getPassword(),
-                accessToken.getToken()
+            new Credentials(
+                    newTrainee.getUser().getUsername(),
+                    newTrainee.getUser().getPassword()
+            ),
+            accessToken.getToken()
         );
         return new ResponseEntity<>(newCredentials, HttpStatus.CREATED); // Status 201
     }
