@@ -53,7 +53,7 @@ public class UserController {
 
     @PatchMapping("/active")
     public ResponseEntity<HttpStatus> changeActiveState(@RequestBody @Valid ActiveStateChangeRequest request){
-        Boolean activeState = userService.changeActiveState(request.username, request.active, request.credentials);
+        Boolean activeState = userService.changeActiveState(request.username, request.active);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -66,9 +66,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public Trainer updateTrainer(String username, Trainer trainer, Credentials credentials) {
-        userService.authenticateUser(username, credentials.password);
-
+    public Trainer updateTrainer(String username, Trainer trainer) {
         Trainer existingTrainer = getTrainerByUsername(username);
         TrainingType updatedTrainingType = trainingTypeService
                 .getTrainingTypeByName(trainer.getSpecialization().getName());

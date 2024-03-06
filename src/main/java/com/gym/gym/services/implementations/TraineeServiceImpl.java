@@ -67,8 +67,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public Trainee updateTrainee(String username, Trainee trainee, Credentials credentials) {
-        userService.authenticateUser(username, credentials.password);
+    public Trainee updateTrainee(String username, Trainee trainee) {
         Trainee existingTrainee = getTraineeByUsername(username);
 
         User updatedUser = userService.updateUser(username, trainee.getUser());
@@ -89,8 +88,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Transactional
     @Override
-    public long deleteTraineeByUsername(String username, Credentials credentials){
-        userService.authenticateUser(username, credentials.password);
+    public long deleteTraineeByUsername(String username){
         // Verifies if trainee exists
         getTraineeByUsername(username);
         log.info(String.format("Trainee with username %s successfully deleted.", username));
@@ -107,8 +105,7 @@ public class TraineeServiceImpl implements TraineeService {
 
     //TODO: Implement unit testing for this method
     @Override
-    public List<Trainer> updateTrainerList(String username, List<String> trainerUsernames, Credentials credentials){
-        userService.authenticateUser(username, credentials.password);
+    public List<Trainer> updateTrainerList(String username, List<String> trainerUsernames){
         Trainee trainee = getTraineeByUsername(username);
 
         //Verify if each trainer exist before saving.

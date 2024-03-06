@@ -19,5 +19,5 @@ public interface UserService {
     void authenticateUser(String username, String password);
     boolean changePassword(String username, String oldPassword, String newPassword);
     void validatePassword(String newPassword);
-    Boolean changeActiveState(String username, boolean activeState, Credentials credentials);
+    Boolean changeActiveState(String username, boolean activeState);
 }

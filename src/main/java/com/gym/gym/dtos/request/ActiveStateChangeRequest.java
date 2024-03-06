@@ -15,7 +15,4 @@ public class ActiveStateChangeRequest {
     @NotBlank(message = "username cannot be null or blank.")
     public String username;
     public boolean active;
-    @NotNull(message = "Missing credentials for authorization.")
-    @Valid
-    public Credentials credentials;
 }

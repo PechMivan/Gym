@@ -55,7 +55,7 @@ public class TrainerController {
     @PutMapping("{username}")
     public ResponseEntity<TrainerUpdateResponse> updateTrainer(@PathVariable String username, @RequestBody @Valid TrainerUpdateRequest request){
         Trainer trainer = trainerMapper.mapFromUpdateRequest(request);
-        Trainer updatedTrainer = trainerService.updateTrainer(username, trainer, request.credentials);
+        Trainer updatedTrainer = trainerService.updateTrainer(username, trainer);
         TrainerUpdateResponse response = trainerMapper.mapToUpdateResponse(updatedTrainer);
         return new ResponseEntity<>(response, HttpStatus.OK);
 

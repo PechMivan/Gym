@@ -61,20 +61,20 @@ public class TraineeController {
     @PutMapping("{username}")
     public ResponseEntity<TraineeUpdateResponse> updateTrainee(@PathVariable String username, @RequestBody @Valid TraineeUpdateRequest request){
         Trainee trainee = traineeMapper.mapFromUpdateRequest(request);
-        Trainee updatedTrainee = traineeService.updateTrainee(username, trainee, request.credentials);
+        Trainee updatedTrainee = traineeService.updateTrainee(username, trainee);
         TraineeUpdateResponse response = traineeMapper.mapToUpdateResponse(updatedTrainee);
         return new ResponseEntity<>(response, HttpStatus.OK); // Status 200
     }
 
     @DeleteMapping("{username}")
-    public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username, @RequestBody @Valid Credentials credentials){
-        traineeService.deleteTraineeByUsername(username, credentials);
+    public ResponseEntity<String> deleteTraineeByUsername(@PathVariable String username){
+        traineeService.deleteTraineeByUsername(username);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("{username}/trainers")
     public ResponseEntity<List<TrainerDTO>> updateTrainerList(@PathVariable String username, @RequestBody @Valid TraineeTrainersListUpdateRequest request){
-        List<Trainer> updatedTrainerList = traineeService.updateTrainerList(username, request.getUsernames(), request.credentials);
+        List<Trainer> updatedTrainerList = traineeService.updateTrainerList(username, request.getUsernames());
         List<TrainerDTO> response = traineeMapper.trainerListToTrainerDTOList(updatedTrainerList);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
