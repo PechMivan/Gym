@@ -138,17 +138,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void authenticateUser(String username, String password) {
-        User existingUser = getUserByUsername(username);
-        if(!password.equals(existingUser.getPassword())){
-            log.error("Unauthorized login attempt");
-            throw new UnauthorizedAccessException("Invalid login attempt: Password or username don't match.");
-        }
-    }
-
-    @Override
     public boolean changePassword(String username, String oldPassword, String newPassword) {
-        authenticateUser(username, oldPassword);
         validatePassword(newPassword);
         User existingUser = getUserByUsername(username);
         String hashedPassword = passwordEncoder.encode(newPassword);
