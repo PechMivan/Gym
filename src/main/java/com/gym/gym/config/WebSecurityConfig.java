@@ -17,9 +17,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +33,8 @@ public class WebSecurityConfig {
     @Autowired
     CustomUserDetailsService customUserDetailsService;
     @Autowired
+    LogoutHandler logoutHandler;
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Bean
@@ -41,14 +45,20 @@ public class WebSecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
-            .sessionManagement(session -> session.
-                    sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(request -> request
                     .requestMatchers(HttpMethod.GET,"/gym/user/login").permitAll()
                     .requestMatchers(HttpMethod.POST,"/gym/trainees", "/gym/trainers").permitAll()
                     .anyRequest().authenticated()
-            ).logout(LogoutConfigurer::permitAll);
+            ).logout(logout -> logout
+                    .logoutUrl("/gym/user/logout")
+                    .addLogoutHandler(logoutHandler)
+                    .logoutSuccessHandler(
+                            (request, response, authentication) -> SecurityContextHolder.clearContext()
+                    )
+            );
 
         return http.build();
     }
