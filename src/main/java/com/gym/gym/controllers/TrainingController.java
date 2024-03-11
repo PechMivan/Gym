@@ -11,6 +11,7 @@ import com.gym.gym.entities.Training;
 import com.gym.gym.mappers.TrainingMapper;
 import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.implementations.TrainingServiceImpl;
+import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/gym/trainings")
+@RequestMapping("gym/trainings")
 @Validated
 @SuppressWarnings("unused")
 public class TrainingController {
@@ -36,6 +37,7 @@ public class TrainingController {
     TrainingMapper trainingMapper;
 
     @PostMapping
+    @Timed(value = "create-training.time", description = "Time taken to create a training")
     public ResponseEntity<HttpStatus> createTraining(@RequestBody @Valid TrainingCreateRequest request){
         Training training = trainingMapper.mapFromCreateRequest(request);
         Training newTraining = trainingService.createTraining(training);

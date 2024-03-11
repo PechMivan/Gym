@@ -55,7 +55,7 @@ public class TrainerControllerTests {
         when(trainerMapper.mapToFindResponse(trainer)).thenReturn(response);
 
         // Act
-        ResponseEntity<TrainerFindResponse> responseEntity = trainerController.getTraineeByUsername(username);
+        ResponseEntity<TrainerFindResponse> responseEntity = trainerController.getTrainerByUsername(username);
 
         // Assert
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());

@@ -16,7 +16,4 @@ public class TrainerUpdateRequest {
     @NotBlank(message = "specialization cannot be blank.")
     public String specialization;
     public String active;
-    @NotNull(message = "Missing credentials for authorization.")
-    @Valid
-    public Credentials credentials;
 }

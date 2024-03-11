@@ -1,22 +1,23 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.dtos.Credentials;
+import com.gym.gym.entities.Token;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.InvalidPasswordException;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.repositories.UserRepository;
+import com.gym.gym.services.TokenService;
 import com.gym.gym.services.UserService;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @Slf4j
@@ -24,6 +25,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    TokenService tokenService;
 
     Random random = new Random();
 
@@ -48,17 +55,23 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) {
         String newUsername = createUsername(user.getFirstname(), user.getLastname());
         String newPassword = createPassword();
+        String hashedPassword = passwordEncoder.encode(newPassword);
 
         User newUser = User.builder()
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .username(newUsername)
                 .password(newPassword)
+                .hashedPassword(hashedPassword)
+                .tokens(new ArrayList<>())
                 .isActive(true)
                 .build();
 
         saveUser(newUser);
         log.info(String.format("User successfully created with id: %d", newUser.getId()));
+        String jwtToken = tokenService.generateToken(newUser.getId(), newUser.getUsername(), List.of("USER"));
+        Token token = tokenService.createToken(newUser, jwtToken);
+        newUser.getTokens().add(token);
         return  newUser;
     }
 
@@ -71,7 +84,7 @@ public class UserServiceImpl implements UserService {
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
                 .username(existingUser.getUsername())
-                .password(existingUser.getPassword())
+                .hashedPassword(existingUser.getHashedPassword())
                 .isActive(user.isActive())
                 .build();
 
@@ -125,20 +138,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void authenticateUser(String username, String password) {
-        User existingUser = getUserByUsername(username);
-        if(!password.equals(existingUser.getPassword())){
-            log.error("Unauthorized login attempt");
-            throw new UnauthorizedAccessException("Invalid login attempt: Password or username don't match.");
-        }
-    }
-
-    @Override
     public boolean changePassword(String username, String oldPassword, String newPassword) {
-        authenticateUser(username, oldPassword);
         validatePassword(newPassword);
         User existingUser = getUserByUsername(username);
-        existingUser.setPassword(newPassword);
+        String hashedPassword = passwordEncoder.encode(newPassword);
+        existingUser.setHashedPassword(hashedPassword);
         saveUser(existingUser);
         log.info(String.format("Password successfully changed for user with id %d", existingUser.getId()));
         return true;
@@ -150,16 +154,15 @@ public class UserServiceImpl implements UserService {
             log.error("New Password cannot be null or blank.");
             throw new InvalidPasswordException("New Password cannot be null or blank.");
         }
-        if(newPassword.length() < 8 || newPassword.length() > 10){
-            log.error("New Password should contain at least 8 and no more than 10 characters");
-            throw new InvalidPasswordException("New Password should contain at least 8 and no more than 10 characters");
+        if(newPassword.length() < 10){
+            log.error("New Password should contain at least 10 characters");
+            throw new InvalidPasswordException("New Password should contain at least 10 characters.");
         }
     }
 
     //TODO: Modify unit testing.
     @Override
-    public Boolean changeActiveState(String username, boolean activeState, Credentials credentials){
-        authenticateUser(username, credentials.password);
+    public Boolean changeActiveState(String username, boolean activeState){
         User existingUser = getUserByUsername(username);
         existingUser.setActive(activeState);
         saveUser(existingUser);

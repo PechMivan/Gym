@@ -19,7 +19,4 @@ public class TraineeTrainersListUpdateRequest {
             @NotBlank(message = "username cannot be null or blank.")
             String>
             usernames;
-    @NotNull
-    @Valid
-    public Credentials credentials;
 }

@@ -35,6 +35,10 @@ public class LoggingServiceImpl implements LoggingService{
 
     @Override
     public void displayResp(HttpServletRequest request, HttpServletResponse response, Object body) {
+        if(request.getRequestURI().equalsIgnoreCase("/actuator/prometheus")){
+            return;
+        }
+
         StringBuilder respMessage = new StringBuilder();
         Map<String,String> headers = getHeaders(response);
         respMessage.append("RESPONSE ");

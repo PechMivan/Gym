@@ -25,7 +25,4 @@ public class TraineeUpdateRequest {
     public String dateOfBirth;
     public String address;
     public boolean active;
-    @NotNull(message = "Missing credentials for authorization.")
-    @Valid
-    public Credentials credentials;
 }

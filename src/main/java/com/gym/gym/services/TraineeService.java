@@ -19,12 +19,12 @@ public interface TraineeService {
     @Transactional
     void saveTrainee(Trainee trainee);
 
-    Trainee updateTrainee(String username, Trainee trainee, Credentials credentials);
+    Trainee updateTrainee(String username, Trainee trainee);
 
     void updateTrainersList(long id, Trainer trainer);
 
-    List<Trainer> updateTrainerList(String username, List<String> trainerUsernames, Credentials credentials);
+    List<Trainer> updateTrainerList(String username, List<String> trainerUsernames);
 
     @Transactional
-    long deleteTraineeByUsername(String username, Credentials credentials);
+    long deleteTraineeByUsername(String username);
 }

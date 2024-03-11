@@ -18,5 +18,5 @@ public interface TrainerService {
     @Transactional
     void saveTrainer(Trainer trainer);
 
-    Trainer updateTrainer(String username, Trainer trainer, Credentials credentials);
+    Trainer updateTrainer(String username, Trainer trainer);
 }

@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 @Builder
@@ -27,10 +30,16 @@ public class User implements Serializable {
     @Column(length = 50, nullable = false)
     private String username;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 100, nullable = false)
+    @Transient
     private String password;
+
+    @Column(length = 60, columnDefinition = "BINARY(60)", nullable = false)
+    private String hashedPassword;
 
     @Column(name="active", nullable = false)
     private boolean isActive;
 
+    @OneToMany(mappedBy = "user")
+    List<Token> tokens;
 }
