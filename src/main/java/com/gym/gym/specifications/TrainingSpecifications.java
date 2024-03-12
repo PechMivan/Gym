@@ -84,10 +84,10 @@ public class TrainingSpecifications {
         return predicates;
     }
 
-    private static Date parseDate(String strDate){
+    public static Date parseDate(String dateString){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            return formatter.parse(strDate);
+            return formatter.parse(dateString);
         } catch (ParseException e) {
             throw new RuntimeException("Couldn't parse date");
         }

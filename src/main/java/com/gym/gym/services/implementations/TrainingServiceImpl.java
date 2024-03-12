@@ -1,5 +1,7 @@
 package com.gym.gym.services.implementations;
 
+import com.gym.gym.clients.Workload;
+import com.gym.gym.clients.WorkloadServiceClient;
 import com.gym.gym.dtos.request.TraineeTrainingFindRequest;
 import com.gym.gym.dtos.request.TrainerTrainingFindRequest;
 import com.gym.gym.entities.Trainee;
@@ -11,6 +13,7 @@ import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.TrainingService;
 import com.gym.gym.specifications.TrainingSpecifications;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class TrainingServiceImpl implements TrainingService {
 
@@ -32,6 +36,8 @@ public class TrainingServiceImpl implements TrainingService {
     TrainerServiceImpl trainerService;
     @Autowired
     TraineeServiceImpl traineeService;
+
+    private final WorkloadServiceClient workloadServiceClient;
 
     @Override
     public Training getTrainingById(long id) {
@@ -66,6 +72,16 @@ public class TrainingServiceImpl implements TrainingService {
                                 .build();
 
         saveTraining(newTraining);
+        Workload workload = Workload.builder()
+                        .username(newTraining.getTrainer().getUser().getUsername())
+                        .firstname(newTraining.getTrainer().getUser().getFirstname())
+                        .lastname(newTraining.getTrainer().getUser().getLastname())
+                        .isActive(newTraining.getTrainer().getUser().isActive())
+                        .trainingDate("2020-08-05")
+                        .trainingDuration(newTraining.getDuration())
+                        .actionType("ADD")
+                        .build();
+        workloadServiceClient.updateWorkload(workload);
         traineeService.updateTrainersList(existingTrainee.getId(), existingTrainer);
         log.info(String.format("Training successfully created with id %d ", newTraining.getId()));
         return newTraining;
