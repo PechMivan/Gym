@@ -30,7 +30,7 @@ public class LoggingServiceImpl implements LoggingService{
             reqMessage.append(" body = [").append(body).append("]");
         }
 
-        logger.info("log Request: {}", reqMessage);
+        logger.info("Request: {}", reqMessage);
     }
 
     @Override
@@ -46,9 +46,13 @@ public class LoggingServiceImpl implements LoggingService{
         if(!headers.isEmpty()) {
             respMessage.append(" ResponseHeaders = [").append(headers).append("]");
         }
-        respMessage.append(" responseBody = [").append(body).append("]");
+        if(!Objects.isNull(body)) {
+            respMessage.append(" responseBody = [").append(body).append("]");
+        }
 
-        logger.info("logResponse: {}",respMessage);
+        respMessage.append(" responseStatus = [").append(response.getStatus()).append("]");
+
+        logger.info("Response: {}",respMessage);
     }
 
     private Map<String,String> getHeaders(HttpServletResponse response) {

@@ -24,7 +24,7 @@ public class TransactionIdFilter implements Filter {
         try {
             chain.doFilter(request, response);
         } finally {
-            MDC.remove("transactionId");
+            MDC.remove(TRANSACTION_ID_HEADER);
         }
     }
 }
