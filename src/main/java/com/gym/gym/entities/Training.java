@@ -1,13 +1,11 @@
 package com.gym.gym.entities;
 
+import com.gym.gym.listeners.TrainingEventListener;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,6 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity
+@EntityListeners(TrainingEventListener.class)
 public class Training implements Serializable {
 
     @Id
