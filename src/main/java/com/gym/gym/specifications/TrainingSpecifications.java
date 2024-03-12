@@ -69,14 +69,14 @@ public class TrainingSpecifications {
         List<Predicate> predicates = new ArrayList<>();
 
         if(strPeriodFrom != null && strPeriodTo != null){
-            Date periodFrom = DateHelper.parseDate(strPeriodFrom);
-            Date periodTo= DateHelper.parseDate(strPeriodTo);
+            Date periodFrom = DateHelper.parseString(strPeriodFrom);
+            Date periodTo= DateHelper.parseString(strPeriodTo);
             predicates.add(criteriaBuilder.between(root.get("date"), periodFrom, periodTo));
         } else if (strPeriodFrom != null) {
-            Date periodFrom = DateHelper.parseDate(strPeriodFrom);
+            Date periodFrom = DateHelper.parseString(strPeriodFrom);
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("date"), periodFrom));
         } else if (strPeriodTo != null) {
-            Date periodTo = DateHelper.parseDate(strPeriodTo);
+            Date periodTo = DateHelper.parseString(strPeriodTo);
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), periodTo));
         }
 

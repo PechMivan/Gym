@@ -72,15 +72,7 @@ public class TrainingServiceImpl implements TrainingService {
                                 .build();
 
         saveTraining(newTraining);
-        Workload workload = Workload.builder()
-                        .username(newTraining.getTrainer().getUser().getUsername())
-                        .firstname(newTraining.getTrainer().getUser().getFirstname())
-                        .lastname(newTraining.getTrainer().getUser().getLastname())
-                        .isActive(newTraining.getTrainer().getUser().isActive())
-                        .trainingDate("2020-08-05")
-                        .trainingDuration(newTraining.getDuration())
-                        .actionType("ADD")
-                        .build();
+        Workload workload = Workload.buildWorkload(newTraining, "ADD");
         workloadServiceClient.updateWorkload(workload);
         traineeService.updateTrainersList(existingTrainee.getId(), existingTrainer);
         log.info(String.format("Training successfully created with id %d ", newTraining.getId()));
