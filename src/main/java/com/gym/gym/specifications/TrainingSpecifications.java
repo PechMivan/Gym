@@ -3,14 +3,13 @@ package com.gym.gym.specifications;
 import com.gym.gym.dtos.request.TraineeTrainingFindRequest;
 import com.gym.gym.dtos.request.TrainerTrainingFindRequest;
 import com.gym.gym.entities.*;
+import com.gym.gym.helpers.DateHelper;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,26 +69,17 @@ public class TrainingSpecifications {
         List<Predicate> predicates = new ArrayList<>();
 
         if(strPeriodFrom != null && strPeriodTo != null){
-            Date periodFrom = parseDate(strPeriodFrom);
-            Date periodTo= parseDate(strPeriodTo);
+            Date periodFrom = DateHelper.parseDate(strPeriodFrom);
+            Date periodTo= DateHelper.parseDate(strPeriodTo);
             predicates.add(criteriaBuilder.between(root.get("date"), periodFrom, periodTo));
         } else if (strPeriodFrom != null) {
-            Date periodFrom = parseDate(strPeriodFrom);
+            Date periodFrom = DateHelper.parseDate(strPeriodFrom);
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("date"), periodFrom));
         } else if (strPeriodTo != null) {
-            Date periodTo = parseDate(strPeriodTo);
+            Date periodTo = DateHelper.parseDate(strPeriodTo);
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), periodTo));
         }
 
         return predicates;
-    }
-
-    public static Date parseDate(String dateString){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            return formatter.parse(dateString);
-        } catch (ParseException e) {
-            throw new RuntimeException("Couldn't parse date");
-        }
     }
 }
