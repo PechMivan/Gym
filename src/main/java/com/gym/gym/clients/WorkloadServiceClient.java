@@ -12,5 +12,6 @@ public interface WorkloadServiceClient {
 
     @PostMapping("/workloads")
     ResponseEntity<HttpStatus> updateWorkload(@RequestBody Workload workload,
-                                              @RequestHeader("Transaction-ID") String transactionId);
+                                              @RequestHeader("Transaction-ID") String transactionId,
+                                              @RequestHeader("Authorization") String jwtToken);
 }

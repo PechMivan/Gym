@@ -16,7 +16,7 @@ public class TrainingEventListener {
     public void deleteTraining(Object entity) {
         if (entity instanceof Training existingTraining) {
             Workload workload = Workload.buildWorkload(existingTraining, "DELETE");
-            workloadServiceClient.updateWorkload(workload, MDC.get("Transaction-ID"));
+            workloadServiceClient.updateWorkload(workload, MDC.get("Transaction-ID"), MDC.get("Authorization"));
         }
     }
 }

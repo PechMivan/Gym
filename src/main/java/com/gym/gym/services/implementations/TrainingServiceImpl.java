@@ -74,7 +74,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         saveTraining(newTraining);
         Workload workload = Workload.buildWorkload(newTraining, "ADD");
-        workloadServiceClient.updateWorkload(workload, MDC.get("Transaction-ID"));
+        workloadServiceClient.updateWorkload(workload, MDC.get("Transaction-ID"), MDC.get("Authorization"));
         traineeService.updateTrainersList(existingTrainee.getId(), existingTrainer);
         log.info(String.format("Training successfully created with id %d ", newTraining.getId()));
         return newTraining;
