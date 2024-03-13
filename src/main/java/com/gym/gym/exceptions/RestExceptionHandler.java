@@ -67,4 +67,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
+    @ExceptionHandler(RestApiServerException.class)
+    public ResponseEntity<Object> handleRestApiServerException(RestApiServerException ex){
+        ApiError apiError = new ApiError(SERVICE_UNAVAILABLE);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(RestApiClientException.class)
+    public ResponseEntity<Object> handleRestApiClientException(RestApiClientException ex){
+        ApiError apiError = new ApiError(BAD_REQUEST);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
 }
