@@ -171,7 +171,7 @@ public class TraineeServiceImplTests {
         when(traineeRepository.findByUserUsername(anyString())).thenReturn(Optional.of(trainee));
         when(userService.updateUser(username, traineeUpdated.getUser())).thenReturn(userUpdated);
         // Act
-        Trainee updatedTrainee = traineeService.updateTrainee(username, traineeUpdated, credentials);
+        Trainee updatedTrainee = traineeService.updateTrainee(username, traineeUpdated);
         // Assert
         assertEquals("testName", updatedTrainee.getUser().getFirstname());
         assertEquals("testLastName", updatedTrainee.getUser().getLastname());
@@ -187,7 +187,7 @@ public class TraineeServiceImplTests {
         when(traineeRepository.deleteByUserUsername(user.getUsername())).thenReturn(user.getId());
         when(traineeRepository.findByUserUsername(user.getUsername())).thenReturn(Optional.of(trainee));
         // Act
-        long id = traineeService.deleteTraineeByUsername(user.getUsername(), new Credentials());
+        long id = traineeService.deleteTraineeByUsername(user.getUsername());
         // Assert
         assertEquals(user.getId(), id);
     }
@@ -198,7 +198,7 @@ public class TraineeServiceImplTests {
         when(traineeRepository.deleteByUserUsername(user.getUsername())).thenReturn(user.getId());
         when(traineeRepository.findByUserUsername(user.getUsername())).thenReturn(Optional.of(trainee));
         // Act and Assert
-        assertThrows(NotFoundException.class, () -> traineeService.deleteTraineeByUsername("wrongUsername", credentials));
+        assertThrows(NotFoundException.class, () -> traineeService.deleteTraineeByUsername("wrongUsername"));
     }
 
     @Test
@@ -230,13 +230,11 @@ public class TraineeServiceImplTests {
         when(traineeRepository.save(trainee)).thenReturn(trainee);
 
         // Act
-        List<Trainer> updatedTrainers = traineeService.updateTrainerList(username, trainerUsernames, credentials);
+        List<Trainer> updatedTrainers = traineeService.updateTrainerList(username, trainerUsernames);
 
         // Assert
         assertEquals(2, updatedTrainers.size());
 
-
-        verify(userService, times(1)).authenticateUser(credentials.getUsername(), credentials.getPassword());
         verify(traineeRepository, times(1)).findByUserUsername(username);
         verify(trainerService, times(1)).getTrainerByUsername("trainer1");
         verify(trainerService, times(1)).getTrainerByUsername("trainer2");

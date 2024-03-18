@@ -2,15 +2,16 @@ package com.gym.gym;
 
 import com.gym.gym.controllers.TraineeController;
 import com.gym.gym.dtos.Credentials;
+import com.gym.gym.dtos.CredentialsAndAccessToken;
 import com.gym.gym.dtos.TrainerDTO;
 import com.gym.gym.dtos.request.TraineeRegistrateRequest;
 import com.gym.gym.dtos.request.TraineeTrainersListUpdateRequest;
 import com.gym.gym.dtos.request.TraineeUpdateRequest;
 import com.gym.gym.dtos.response.TraineeFindResponse;
 import com.gym.gym.dtos.response.TraineeUpdateResponse;
+import com.gym.gym.entities.Token;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
-import com.gym.gym.entities.Training;
 import com.gym.gym.entities.User;
 import com.gym.gym.mappers.TraineeMapper;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
@@ -23,10 +24,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.*;
 
 public class TraineeControllerTests {
@@ -75,25 +77,32 @@ public class TraineeControllerTests {
     @Test
     public void createTrainee() {
         // Arrange
-        Trainee newTrainee = new Trainee();
-        Credentials newCredentials = new Credentials("username", "password");
-
         TraineeRegistrateRequest request = new TraineeRegistrateRequest();
+        User user = new User();
+        Trainee newTrainee = new Trainee();
+        Token accessToken = new Token();
+
+        accessToken.setToken("tokenString");
+        user.setUsername(username);
+        user.setPassword("password");
+        user.setTokens(Collections.singletonList(accessToken));
+        newTrainee.setUser(user);
+
         when(traineeMapper.mapFromRegistrateRequest(request)).thenReturn(trainee);
         when(traineeService.createTrainee(trainee)).thenReturn(newTrainee);
-        when(traineeMapper.mapToCredentials(newTrainee)).thenReturn(newCredentials);
 
         // Act
-        ResponseEntity<Credentials> responseEntity = traineeController.createTrainee(request);
+        ResponseEntity<CredentialsAndAccessToken> responseEntity = traineeController.createTrainee(request);
 
         // Assert
-        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode()); // Check status code
-        assertEquals(newCredentials, responseEntity.getBody()); // Check response body
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        assertInstanceOf(CredentialsAndAccessToken.class, responseEntity.getBody());
+        assertEquals(accessToken.getToken(), responseEntity.getBody().getAccessToken());
+        assertEquals(user.getUsername(), responseEntity.getBody().getCredentials().getUsername());
+        assertEquals(user.getPassword(), responseEntity.getBody().getCredentials().getPassword());
 
-        // Verify that the mapper method and service method were called
         verify(traineeMapper, times(1)).mapFromRegistrateRequest(request);
         verify(traineeService, times(1)).createTrainee(trainee);
-        verify(traineeMapper, times(1)).mapToCredentials(newTrainee);
     }
 
     @Test
@@ -103,7 +112,7 @@ public class TraineeControllerTests {
         Trainee updatedTrainee = new Trainee();
         TraineeUpdateResponse response = new TraineeUpdateResponse();
         when(traineeMapper.mapFromUpdateRequest(request)).thenReturn(trainee);
-        when(traineeService.updateTrainee(username, trainee, request.getCredentials())).thenReturn(updatedTrainee);
+        when(traineeService.updateTrainee(username, trainee)).thenReturn(updatedTrainee);
         when(traineeMapper.mapToUpdateResponse(updatedTrainee)).thenReturn(response);
 
         // Act
@@ -114,20 +123,20 @@ public class TraineeControllerTests {
         assertEquals(response, responseEntity.getBody());
 
         verify(traineeMapper, times(1)).mapFromUpdateRequest(request);
-        verify(traineeService, times(1)).updateTrainee(username, trainee, request.getCredentials());
+        verify(traineeService, times(1)).updateTrainee(username, trainee);
         verify(traineeMapper, times(1)).mapToUpdateResponse(updatedTrainee);
     }
 
     @Test
     public void deleteTraineeByUsername() {
         // Act
-        ResponseEntity<String> responseEntity = traineeController.deleteTraineeByUsername(username, credentials);
+        ResponseEntity<String> responseEntity = traineeController.deleteTraineeByUsername(username);
 
         // Assert
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode()); // Check status code
 
         // Verify that the service method was called with the expected parameters
-        verify(traineeService, times(1)).deleteTraineeByUsername(username, credentials);
+        verify(traineeService, times(1)).deleteTraineeByUsername(username);
     }
 
     @Test
@@ -136,7 +145,7 @@ public class TraineeControllerTests {
         TraineeTrainersListUpdateRequest request = new TraineeTrainersListUpdateRequest();
         List<Trainer> updatedTrainerList = new ArrayList<>();
         List<TrainerDTO> response = new ArrayList<>();
-        when(traineeService.updateTrainerList(username, request.getUsernames(), request.getCredentials())).thenReturn(updatedTrainerList);
+        when(traineeService.updateTrainerList(username, request.getUsernames())).thenReturn(updatedTrainerList);
         when(traineeMapper.trainerListToTrainerDTOList(updatedTrainerList)).thenReturn(response);
 
         // Act
@@ -146,7 +155,7 @@ public class TraineeControllerTests {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(response, responseEntity.getBody());
 
-        verify(traineeService, times(1)).updateTrainerList(username, request.getUsernames(), request.getCredentials());
+        verify(traineeService, times(1)).updateTrainerList(username, request.getUsernames());
         verify(traineeMapper, times(1)).trainerListToTrainerDTOList(updatedTrainerList);
     }
 }

@@ -29,15 +29,10 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public class TrainingServiceImpl implements TrainingService {
 
-    @Autowired
-    TrainingRepository trainingRepository;
-    @Autowired
-    TrainingTypeServiceImpl trainingTypeService;
-    @Autowired
-    TrainerServiceImpl trainerService;
-    @Autowired
-    TraineeServiceImpl traineeService;
-
+    private final TrainingRepository trainingRepository;
+    private final TrainingTypeServiceImpl trainingTypeService;
+    private final TrainerServiceImpl trainerService;
+    private final TraineeServiceImpl traineeService;
     private final WorkloadServiceClient workloadServiceClient;
 
     @Override

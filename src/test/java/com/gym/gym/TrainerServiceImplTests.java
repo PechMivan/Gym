@@ -184,7 +184,7 @@ public class TrainerServiceImplTests {
                 .thenReturn(trainingTypeUpdated);
         when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(trainer));
         // Act
-        Trainer updatedTrainer = trainerService.updateTrainer(username, updateTrainer, credentials);
+        Trainer updatedTrainer = trainerService.updateTrainer(username, updateTrainer);
         // Assert
         assertEquals("testName", updatedTrainer.getUser().getFirstname());
         assertEquals(updateTrainer.getSpecialization().getName(), updatedTrainer.getSpecialization().getName());

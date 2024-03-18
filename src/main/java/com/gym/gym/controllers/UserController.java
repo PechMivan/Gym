@@ -35,20 +35,37 @@ public class UserController {
     @Autowired
     TokenService tokenService;
 
-    //TODO: Rework login
     @GetMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid Credentials credentials){
+    public ResponseEntity<String> login(@RequestBody @Valid Credentials credentials) {
+        Authentication authentication = authenticateUser(credentials);
+        setAuthenticationInSecurityContext(authentication);
+        UserPrincipal principal = extractPrincipalFromAuthentication(authentication);
+        String jwtToken = generateJwtToken(principal);
+        saveTokenForUser(principal, jwtToken);
+        return ResponseEntity.ok(jwtToken);
+    }
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(credentials.username, credentials.password)
+    private Authentication authenticateUser(Credentials credentials) {
+        return authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(credentials.getUsername(), credentials.getPassword())
         );
+    }
 
+    private void setAuthenticationInSecurityContext(Authentication authentication) {
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserPrincipal principal = (UserPrincipal)authentication.getPrincipal();
-        String jwtToken = tokenService.generateToken(principal.getUserId(), principal.getUsername(), List.of("USER"));
+    }
+
+    private UserPrincipal extractPrincipalFromAuthentication(Authentication authentication) {
+        return (UserPrincipal) authentication.getPrincipal();
+    }
+
+    private String generateJwtToken(UserPrincipal principal) {
+        return tokenService.generateToken(principal.getUserId(), principal.getUsername(), List.of("USER"));
+    }
+
+    private void saveTokenForUser(UserPrincipal principal, String jwtToken) {
         User user = User.builder().id(principal.getUserId()).username(principal.getUsername()).build();
         tokenService.createToken(user, jwtToken);
-        return new ResponseEntity<>(jwtToken, HttpStatus.OK);
     }
 
     @PatchMapping("/active")

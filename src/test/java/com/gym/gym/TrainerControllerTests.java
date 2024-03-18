@@ -2,11 +2,14 @@ package com.gym.gym;
 
 import com.gym.gym.controllers.TrainerController;
 import com.gym.gym.dtos.Credentials;
+import com.gym.gym.dtos.CredentialsAndAccessToken;
 import com.gym.gym.dtos.request.TrainerRegistrateRequest;
 import com.gym.gym.dtos.request.TrainerUpdateRequest;
 import com.gym.gym.dtos.response.TrainerFindResponse;
 import com.gym.gym.dtos.response.TrainerUpdateResponse;
+import com.gym.gym.entities.Token;
 import com.gym.gym.entities.Trainer;
+import com.gym.gym.entities.User;
 import com.gym.gym.mappers.TrainerMapper;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +20,10 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.*;
 
 public class TrainerControllerTests {
@@ -70,22 +76,30 @@ public class TrainerControllerTests {
         // Arrange
         TrainerRegistrateRequest request = new TrainerRegistrateRequest();
         Trainer newTrainer = new Trainer();
-        Credentials newCredentials = new Credentials("username", "password");
+        User user = new User();
+        Token accessToken = new Token();
+
+        accessToken.setToken("tokenString");
+        user.setTokens(Collections.singletonList(accessToken));
+        user.setUsername(username);
+        user.setPassword("password");
+        newTrainer.setUser(user);
+
         when(trainerMapper.mapFromRegistrateRequest(request)).thenReturn(trainer);
         when(trainerService.createTrainer(trainer)).thenReturn(newTrainer);
-        when(trainerMapper.mapToCredentials(newTrainer)).thenReturn(newCredentials);
 
         // Act
-        ResponseEntity<Credentials> responseEntity = trainerController.createTrainer(request);
+        ResponseEntity<CredentialsAndAccessToken> responseEntity = trainerController.createTrainer(request);
 
         // Assert
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode()); // Check status code
-        assertEquals(newCredentials, responseEntity.getBody()); // Check response body
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertInstanceOf(CredentialsAndAccessToken.class, responseEntity.getBody());
+        assertEquals(accessToken.getToken(), responseEntity.getBody().getAccessToken());
+        assertEquals(user.getUsername(), responseEntity.getBody().getCredentials().getUsername());
+        assertEquals(user.getPassword(), responseEntity.getBody().getCredentials().getPassword());
 
-        // Verify that the mapper method and service method were called with the expected parameters
         verify(trainerMapper, times(1)).mapFromRegistrateRequest(request);
         verify(trainerService, times(1)).createTrainer(trainer);
-        verify(trainerMapper, times(1)).mapToCredentials(newTrainer);
     }
 
     @Test
@@ -95,7 +109,7 @@ public class TrainerControllerTests {
         Trainer updatedTrainer = new Trainer();
         TrainerUpdateResponse response = new TrainerUpdateResponse();
         when(trainerMapper.mapFromUpdateRequest(request)).thenReturn(trainer);
-        when(trainerService.updateTrainer(username, trainer, request.credentials)).thenReturn(updatedTrainer);
+        when(trainerService.updateTrainer(username, trainer)).thenReturn(updatedTrainer);
         when(trainerMapper.mapToUpdateResponse(updatedTrainer)).thenReturn(response);
 
         // Act
@@ -106,7 +120,7 @@ public class TrainerControllerTests {
         assertEquals(response, responseEntity.getBody());
 
         verify(trainerMapper, times(1)).mapFromUpdateRequest(request);
-        verify(trainerService, times(1)).updateTrainer(username, trainer, request.credentials);
+        verify(trainerService, times(1)).updateTrainer(username, trainer);
         verify(trainerMapper, times(1)).mapToUpdateResponse(updatedTrainer);
     }
 }
