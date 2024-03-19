@@ -14,32 +14,32 @@ import java.sql.Statement;
 @SuppressWarnings("unused")
 public class CustomDB implements HealthIndicator {
 
-    private final String DB_NAME;
-    private final String DB_URL;
-    private final String DB_USER;
-    private final String DB_PASS;
+    private final String dbName;
+    private final String dbUrl;
+    private final String dbUser;
+    private final String dbPass;
 
     CustomDB(@Value("${database.name}") String dbName,
               @Value("${spring.datasource.url}") String dbUrl,
               @Value("${spring.datasource.username}") String dbUser,
               @Value("${spring.datasource.password}") String dbPass){
 
-        this.DB_NAME = dbName;
-        this.DB_URL = dbUrl;
-        this.DB_USER= dbUser;
-        this.DB_PASS = dbPass;
+        this.dbName = dbName;
+        this.dbUrl = dbUrl;
+        this.dbUser = dbUser;
+        this.dbPass = dbPass;
     }
 
     @Override
     public Health health() {
         if(isDatabaseConnected()){
-            return Health.up().withDetail(DB_NAME, "Service is running...").build();
+            return Health.up().withDetail(dbName, "Service is running...").build();
         }
-        return Health.down().withDetail(DB_NAME, "Service is not available").build();
+        return Health.down().withDetail(dbName, "Service is not available").build();
     }
 
     private boolean isDatabaseConnected(){
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+        try (Connection connection = DriverManager.getConnection(dbUrl, dbUser, dbPass);
              Statement statement = connection.createStatement()){
             // Verify with a ping if server is available
             String pingQuery = "/* ping */ SELECT 1";

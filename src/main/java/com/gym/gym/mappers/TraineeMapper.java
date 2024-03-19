@@ -48,7 +48,7 @@ public interface TraineeMapper {
 
     default List<TrainerDTO> trainerListToTrainerDTOList(List<Trainer> list) {
         if ( list == null ) {
-            return null;
+            return new ArrayList<>();
         }
 
         List<TrainerDTO> list1 = new ArrayList<>( list.size() );

@@ -1,6 +1,8 @@
 package com.gym.gym.security;
 
 import com.gym.gym.entities.User;
+import com.gym.gym.exceptions.MaxLoginAttemptsException;
+import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws RuntimeException {
         if (loginAttemptService.isBlocked()) {
-            throw new RuntimeException("blocked");
+            //TODO: Handle this exception
+            throw new MaxLoginAttemptsException("Max number of login attempts reached. Try again in 5 minutes");
         }
 
         User user = userService.getUserByUsername(username);

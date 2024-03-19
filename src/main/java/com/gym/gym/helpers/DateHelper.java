@@ -1,5 +1,7 @@
 package com.gym.gym.helpers;
 
+import com.gym.gym.exceptions.InvalidDateFormatException;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,7 +18,7 @@ public class DateHelper {
         try {
             return formatter.parse(dateString);
         } catch (ParseException e) {
-            throw new RuntimeException(e); // TODO: throw something more meaningful
+            throw new InvalidDateFormatException(e.getMessage()); // TODO: handle this exception
         }
     }
 

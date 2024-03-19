@@ -1,6 +1,5 @@
 package com.gym.gym.repositories;
 
-import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.TrainingType;
 import org.springframework.data.repository.CrudRepository;
 
