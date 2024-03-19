@@ -1,4 +1,4 @@
-package com.gym.gym.exceptions;
+package com.gym.gym.exceptions.customExceptions;
 
 public class RestApiServerException extends RuntimeException{
 

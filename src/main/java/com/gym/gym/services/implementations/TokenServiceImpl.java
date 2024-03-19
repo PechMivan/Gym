@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.gym.gym.entities.Token;
 import com.gym.gym.entities.TokenType;
 import com.gym.gym.entities.User;
-import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TokenRepository;
 import com.gym.gym.services.TokenService;
 import jakarta.transaction.Transactional;

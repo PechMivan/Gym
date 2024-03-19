@@ -1,7 +1,7 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.entities.TrainingType;
-import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingTypeRepository;
 import com.gym.gym.services.TrainingTypeService;
 import lombok.RequiredArgsConstructor;

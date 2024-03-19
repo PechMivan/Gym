@@ -1,5 +1,7 @@
 package com.gym.gym.exceptions;
 
+import com.gym.gym.exceptions.customExceptions.RestApiClientException;
+import com.gym.gym.exceptions.customExceptions.RestApiServerException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import org.springframework.http.HttpStatus;

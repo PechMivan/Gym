@@ -1,7 +1,7 @@
 package com.gym.gym;
 
 import com.gym.gym.entities.TrainingType;
-import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingTypeRepository;
 import com.gym.gym.services.implementations.TrainingTypeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;

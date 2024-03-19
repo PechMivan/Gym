@@ -2,8 +2,8 @@ package com.gym.gym;
 
 import com.gym.gym.entities.Token;
 import com.gym.gym.entities.User;
-import com.gym.gym.exceptions.InvalidPasswordException;
-import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.customExceptions.InvalidPasswordException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.UserRepository;
 import com.gym.gym.services.TokenService;
 import com.gym.gym.services.implementations.UserServiceImpl;

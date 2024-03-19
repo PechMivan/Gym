@@ -4,7 +4,7 @@ import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.entities.User;
-import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TrainerRepository;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
 import com.gym.gym.services.implementations.TrainingTypeServiceImpl;

@@ -1,6 +1,6 @@
 package com.gym.gym.helpers;
 
-import com.gym.gym.exceptions.InvalidDateFormatException;
+import com.gym.gym.exceptions.customExceptions.InvalidDateFormatException;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

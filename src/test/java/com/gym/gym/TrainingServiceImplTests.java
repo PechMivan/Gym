@@ -2,7 +2,7 @@ package com.gym.gym;
 
 import com.gym.gym.clients.WorkloadServiceClient;
 import com.gym.gym.entities.*;
-import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.implementations.TraineeServiceImpl;
 import com.gym.gym.services.implementations.TrainerServiceImpl;

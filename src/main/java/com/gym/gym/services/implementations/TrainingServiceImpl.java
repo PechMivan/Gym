@@ -8,7 +8,7 @@ import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
 import com.gym.gym.entities.TrainingType;
-import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.TrainingService;
 import com.gym.gym.specifications.TrainingSpecifications;

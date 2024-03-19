@@ -1,6 +1,7 @@
 package com.gym.gym.exceptions;
 
 import com.gym.gym.exceptions.apierror.ApiError;
+import com.gym.gym.exceptions.customExceptions.*;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;

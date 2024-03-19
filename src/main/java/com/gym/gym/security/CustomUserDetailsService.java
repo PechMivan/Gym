@@ -1,8 +1,7 @@
 package com.gym.gym.security;
 
 import com.gym.gym.entities.User;
-import com.gym.gym.exceptions.MaxLoginAttemptsException;
-import com.gym.gym.exceptions.UnauthorizedAccessException;
+import com.gym.gym.exceptions.customExceptions.MaxLoginAttemptsException;
 import com.gym.gym.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
