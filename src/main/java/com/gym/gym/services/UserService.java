@@ -1,6 +1,5 @@
 package com.gym.gym.services;
 
-import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.User;
 
 import java.util.List;

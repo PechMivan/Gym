@@ -20,7 +20,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.*;
 
-public class TraineeServiceImplTests {
+class TraineeServiceImplTests {
 
     @Mock
     TraineeRepository traineeRepository;
@@ -40,7 +40,7 @@ public class TraineeServiceImplTests {
     Credentials credentials;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         MockitoAnnotations.openMocks(this);
 
         username = "John.Doe";
@@ -65,7 +65,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void getAllTrainees_withTrainees_successful(){
+    void getAllTrainees_withTrainees_successful(){
         // Arrange
         List<Trainee> trainees = Arrays.asList(new Trainee(), new Trainee());
         when(traineeRepository.findAll()).thenReturn(trainees);
@@ -77,7 +77,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void getAllTrainees_withoutTrainees_returnsEmptyList(){
+    void getAllTrainees_withoutTrainees_returnsEmptyList(){
         // Arrange
         List<Trainee> trainees = Collections.emptyList();
         when(traineeRepository.findAll()).thenReturn(trainees);
@@ -89,7 +89,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void getTrainee_validId_successful(){
+    void getTrainee_validId_successful(){
         // Arrange
         long traineeId = 1L;
         when(traineeRepository.findById(traineeId)).thenReturn(Optional.of(trainee));
@@ -102,13 +102,13 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void getTrainee_invalidId_throwsNotFoundException(){
+    void getTrainee_invalidId_throwsNotFoundException(){
         // Act and Assert
         assertThrows(NotFoundException.class, () -> traineeService.getTraineeById(100L));
     }
 
     @Test
-    public void getTrainee_validUsername_successful(){
+    void getTrainee_validUsername_successful(){
         // Arrange
         when(traineeRepository.findByUserUsername(username)).thenReturn(Optional.of(trainee));
         // Act
@@ -120,13 +120,13 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void getTrainee_invalidUsername_throwsNotFoundException(){
+    void getTrainee_invalidUsername_throwsNotFoundException(){
         // Act and Assert
         assertThrows(NotFoundException.class, () -> traineeService.getTraineeByUsername("wrongUsername"));
     }
 
     @Test
-    public void createTrainee(){
+    void createTrainee(){
         // Arrange
         Date dateOfBirth = trainee.getDateOfBirth();
         when(userService.createUser(trainee.getUser())).thenReturn(user);
@@ -142,7 +142,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void saveTrainee(){
+    void saveTrainee(){
         // Act
         traineeService.saveTrainee(trainee);
         // Assert
@@ -150,7 +150,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void updateTrainee(){
+    void updateTrainee(){
         // Arrange
 
         User userUpdated = User.builder()               // User service should return update user
@@ -182,7 +182,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void deleteTrainee_validUsername_successful(){
+    void deleteTrainee_validUsername_successful(){
         // Arrange
         when(traineeRepository.deleteByUserUsername(user.getUsername())).thenReturn(user.getId());
         when(traineeRepository.findByUserUsername(user.getUsername())).thenReturn(Optional.of(trainee));
@@ -193,7 +193,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void deleteTrainee_invalidUsername_throwNotFoundException(){
+    void deleteTrainee_invalidUsername_throwNotFoundException(){
         // Arrange
         when(traineeRepository.deleteByUserUsername(user.getUsername())).thenReturn(user.getId());
         when(traineeRepository.findByUserUsername(user.getUsername())).thenReturn(Optional.of(trainee));
@@ -202,7 +202,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void updateTrainersList_oneTrainer_successful(){
+    void updateTrainersList_oneTrainer_successful(){
         // Arrange
         Trainee trainee = Trainee.builder().trainers(new ArrayList<>()).build();
         when(traineeRepository.findById(anyLong())).thenReturn(Optional.of(trainee));
@@ -214,7 +214,7 @@ public class TraineeServiceImplTests {
     }
 
     @Test
-    public void updateTrainersList_multipleTrainers_successful(){
+    void updateTrainersList_multipleTrainers_successful(){
         // Arrange
         List<String> trainerUsernames = new ArrayList<>();
         trainerUsernames.add("trainer1");

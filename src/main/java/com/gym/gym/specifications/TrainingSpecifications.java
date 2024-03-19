@@ -16,6 +16,8 @@ import java.util.List;
 
 public class TrainingSpecifications {
 
+    private TrainingSpecifications(){}
+
     public static Specification<Training> getFilteredTrainingsForTrainee(TraineeTrainingFindRequest params) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();

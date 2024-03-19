@@ -8,8 +8,6 @@ public class CustomErrorDecoder implements ErrorDecoder {
 
     @Override
     public Exception decode(String methodKey, Response response) {
-        String requestUrl = response.request().url();
-        Response.Body responseBody = response.body();
         HttpStatus responseStatus = HttpStatus.valueOf(response.status());
 
         if (responseStatus.is5xxServerError()) {

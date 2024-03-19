@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.*;
 
-public class TrainerControllerTests {
+class TrainerControllerTests {
 
     @Mock
     TrainerServiceImpl trainerService;
@@ -43,7 +43,7 @@ public class TrainerControllerTests {
     Credentials credentials;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         MockitoAnnotations.openMocks(this);
 
         this.username = "username";
@@ -54,7 +54,7 @@ public class TrainerControllerTests {
     }
 
     @Test
-    public void getTrainerByUsername() {
+    void getTrainerByUsername() {
         // Arrange
         TrainerFindResponse response = new TrainerFindResponse();
         when(trainerService.getTrainerByUsername(username)).thenReturn(trainer);
@@ -72,7 +72,7 @@ public class TrainerControllerTests {
     }
 
     @Test
-    public void createTrainer() {
+    void createTrainer() {
         // Arrange
         TrainerRegistrateRequest request = new TrainerRegistrateRequest();
         Trainer newTrainer = new Trainer();
@@ -85,7 +85,7 @@ public class TrainerControllerTests {
         user.setPassword("password");
         newTrainer.setUser(user);
 
-        when(trainerMapper.mapFromRegistrateRequest(request)).thenReturn(trainer);
+        when(trainerMapper.mapFromRegisterRequest(request)).thenReturn(trainer);
         when(trainerService.createTrainer(trainer)).thenReturn(newTrainer);
 
         // Act
@@ -98,12 +98,12 @@ public class TrainerControllerTests {
         assertEquals(user.getUsername(), responseEntity.getBody().getCredentials().getUsername());
         assertEquals(user.getPassword(), responseEntity.getBody().getCredentials().getPassword());
 
-        verify(trainerMapper, times(1)).mapFromRegistrateRequest(request);
+        verify(trainerMapper, times(1)).mapFromRegisterRequest(request);
         verify(trainerService, times(1)).createTrainer(trainer);
     }
 
     @Test
-    public void updateTrainer() {
+    void updateTrainer() {
         // Arrange
         TrainerUpdateRequest request = new TrainerUpdateRequest();
         Trainer updatedTrainer = new Trainer();

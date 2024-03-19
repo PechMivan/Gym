@@ -18,7 +18,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class TrainingServiceImplTests {
+class TrainingServiceImplTests {
 
     @Mock
     TrainingRepository trainingRepository;
@@ -26,7 +26,6 @@ public class TrainingServiceImplTests {
     TrainerServiceImpl trainerService;
     @Mock
     TraineeServiceImpl traineeService;
-
     @Mock
     WorkloadServiceClient workloadServiceClient;
 
@@ -36,13 +35,13 @@ public class TrainingServiceImplTests {
     TrainingServiceImpl trainingService;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         MockitoAnnotations.openMocks(this);
         this.trainings = Arrays.asList(new Training(), new Training(), new Training());
     }
 
     @Test
-    public void getAllTrainings_withTrainings_succesful(){
+    void getAllTrainings_withTrainings_succesful(){
         // Arrange
         when(trainingRepository.findAll()).thenReturn(trainings);
         // Act
@@ -52,7 +51,7 @@ public class TrainingServiceImplTests {
     }
 
     @Test
-    public void getAllTrainings_withoutTrainings_returnsEmptyList(){
+    void getAllTrainings_withoutTrainings_returnsEmptyList(){
         // Arrange
         List<Training> emptyTrainingList = Collections.emptyList();
         when(trainingRepository.findAll()).thenReturn(emptyTrainingList);
@@ -63,7 +62,7 @@ public class TrainingServiceImplTests {
     }
 
     @Test
-    public void getTraining_validId_successful(){
+    void getTraining_validId_successful(){
         // Arrange
         long trainingId = 1L;
         Training training = new Training();
@@ -79,13 +78,13 @@ public class TrainingServiceImplTests {
     }
 
     @Test
-    public void getTraining_invalidId_throwsNotFoundException(){
+    void getTraining_invalidId_throwsNotFoundException(){
         // Act and Arrange
         assertThrows(NotFoundException.class, ()-> trainingService.getTrainingById(100L));
     }
 
     @Test
-    public void saveTraining(){
+    void saveTraining(){
         // Act
         trainingService.saveTraining(new Training());
         // Assert
@@ -94,7 +93,7 @@ public class TrainingServiceImplTests {
 
 
     @Test
-    public void testGetAllTrainersNotInTraineeTrainersListByUsername(){
+    void testGetAllTrainersNotInTraineeTrainersListByUsername(){
         // Arrange
 
         User userActive = User.builder().isActive(true).build();
@@ -121,9 +120,8 @@ public class TrainingServiceImplTests {
     }
 
     @Test
-    public void createTraining(){
+    void createTraining(){
         // Arrange
-
         User user = User.builder().username("username").build();
 
         Trainee trainee = Trainee.builder().user(user).build();

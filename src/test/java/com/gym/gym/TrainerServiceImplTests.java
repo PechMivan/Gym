@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-public class TrainerServiceImplTests {
+class TrainerServiceImplTests {
 
     @Mock
     UserServiceImpl userService;
@@ -44,7 +44,7 @@ public class TrainerServiceImplTests {
     Credentials credentials;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         MockitoAnnotations.openMocks(this);
 
         username = "John.Doe";
@@ -74,7 +74,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void getAllTrainers_withTrainers_successful(){
+    void getAllTrainers_withTrainers_successful(){
         // Arrange
         List<Trainer> trainers = Arrays.asList(new Trainer(), new Trainer());
         when(trainerRepository.findAll()).thenReturn(trainers);
@@ -85,7 +85,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void getAllTrainers_withoutTrainers_returnsEmptyList(){
+    void getAllTrainers_withoutTrainers_returnsEmptyList(){
         // Arrange
         List<Trainer> trainers = Collections.emptyList();
         when(trainerRepository.findAll()).thenReturn(trainers);
@@ -96,7 +96,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void getTrainer_validId_successful(){
+    void getTrainer_validId_successful(){
         // Arrange
         long trainerId = 1L;
         when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(trainer));
@@ -109,13 +109,13 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void getTrainerById_invalidId_throwsNotFoundException(){
+    void getTrainerById_invalidId_throwsNotFoundException(){
         // Act and Assert
         assertThrows(NotFoundException.class, () ->trainerService.getTrainerById(100L));
     }
 
     @Test
-    public void getTrainer_validUsername_successful(){
+    void getTrainer_validUsername_successful(){
         // Arrange
         String username = "John.Doe";
         when(trainerRepository.findByUserUsername(username)).thenReturn(Optional.of(trainer));
@@ -128,13 +128,13 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void getTrainer_invalidUsername_successful(){
+    void getTrainer_invalidUsername_successful(){
         // Act and Assert
         assertThrows(NotFoundException.class, ()-> trainerService.getTrainerByUsername("wrongUsername"));
     }
 
     @Test
-    public void createTrainer(){
+    void createTrainer(){
         // Arrange
         when(userService.createUser(trainer.getUser())).thenReturn(user);
         when(trainingTypeService
@@ -151,7 +151,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void saveTrainer(){
+    void saveTrainer(){
         // Act
         trainerService.saveTrainer(trainer);
         // Assert
@@ -159,7 +159,7 @@ public class TrainerServiceImplTests {
     }
 
     @Test
-    public void updateTrainer() {
+    void updateTrainer() {
         // Arrange
         String username = "John.Doe";
 

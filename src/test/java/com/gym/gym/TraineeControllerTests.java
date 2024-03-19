@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.mockito.Mockito.*;
 
-public class TraineeControllerTests {
+class TraineeControllerTests {
 
     @Mock
     TraineeServiceImpl traineeService;
@@ -47,7 +47,7 @@ public class TraineeControllerTests {
     Credentials credentials;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         MockitoAnnotations.openMocks(this);
 
         username = "testUser";
@@ -56,7 +56,7 @@ public class TraineeControllerTests {
     }
 
     @Test
-    public void getTraineeByUsername() {
+    void getTraineeByUsername() {
         // Arrange
         TraineeFindResponse findResponse = new TraineeFindResponse(); // Create a response object
         when(traineeService.getTraineeByUsername(username)).thenReturn(trainee);
@@ -75,7 +75,7 @@ public class TraineeControllerTests {
     }
 
     @Test
-    public void createTrainee() {
+    void createTrainee() {
         // Arrange
         TraineeRegistrateRequest request = new TraineeRegistrateRequest();
         User user = new User();
@@ -88,7 +88,7 @@ public class TraineeControllerTests {
         user.setTokens(Collections.singletonList(accessToken));
         newTrainee.setUser(user);
 
-        when(traineeMapper.mapFromRegistrateRequest(request)).thenReturn(trainee);
+        when(traineeMapper.mapFromRegisterRequest(request)).thenReturn(trainee);
         when(traineeService.createTrainee(trainee)).thenReturn(newTrainee);
 
         // Act
@@ -101,12 +101,12 @@ public class TraineeControllerTests {
         assertEquals(user.getUsername(), responseEntity.getBody().getCredentials().getUsername());
         assertEquals(user.getPassword(), responseEntity.getBody().getCredentials().getPassword());
 
-        verify(traineeMapper, times(1)).mapFromRegistrateRequest(request);
+        verify(traineeMapper, times(1)).mapFromRegisterRequest(request);
         verify(traineeService, times(1)).createTrainee(trainee);
     }
 
     @Test
-    public void updateTrainee() {
+    void updateTrainee() {
         // Arrange
         TraineeUpdateRequest request = new TraineeUpdateRequest();
         Trainee updatedTrainee = new Trainee();
@@ -128,7 +128,7 @@ public class TraineeControllerTests {
     }
 
     @Test
-    public void deleteTraineeByUsername() {
+    void deleteTraineeByUsername() {
         // Act
         ResponseEntity<String> responseEntity = traineeController.deleteTraineeByUsername(username);
 
@@ -140,7 +140,7 @@ public class TraineeControllerTests {
     }
 
     @Test
-    public void updateTrainerList() {
+    void updateTrainerList() {
         // Arrange
         TraineeTrainersListUpdateRequest request = new TraineeTrainersListUpdateRequest();
         List<Trainer> updatedTrainerList = new ArrayList<>();

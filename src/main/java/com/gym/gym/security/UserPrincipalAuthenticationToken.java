@@ -1,9 +1,9 @@
 package com.gym.gym.security;
 
+import lombok.EqualsAndHashCode;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-import java.util.Collection;
-
+@EqualsAndHashCode(callSuper = true)
 public class UserPrincipalAuthenticationToken extends AbstractAuthenticationToken {
 
     UserPrincipal principal;

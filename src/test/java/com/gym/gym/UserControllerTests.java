@@ -1,9 +1,9 @@
 package com.gym.gym;
+
 import com.gym.gym.controllers.UserController;
 import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.request.ActiveStateChangeRequest;
 import com.gym.gym.dtos.request.PasswordChangeRequest;
-import com.gym.gym.entities.User;
 import com.gym.gym.security.UserPrincipal;
 import com.gym.gym.services.TokenService;
 import com.gym.gym.services.implementations.UserServiceImpl;
@@ -23,7 +23,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class UserControllerTests {
+class UserControllerTests {
 
     @Mock
     UserServiceImpl userService;
@@ -40,14 +40,14 @@ public class UserControllerTests {
     Credentials credentials;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         MockitoAnnotations.openMocks(this);
 
         this.credentials = new Credentials("username", "password");
     }
 
     @Test
-    public void testLogin_Success() {
+    void testLogin_Success() {
         // Given
         Credentials credentials = new Credentials("test_username", "test_password");
         Authentication authentication = mock(Authentication.class);
@@ -67,7 +67,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void changeActiveState() {
+    void changeActiveState() {
         // Arrange
         ActiveStateChangeRequest request = new ActiveStateChangeRequest();
 
@@ -80,7 +80,7 @@ public class UserControllerTests {
     }
 
     @Test
-    public void testChangePassword() {
+    void testChangePassword() {
         // Arrange
         PasswordChangeRequest request = new PasswordChangeRequest();
 

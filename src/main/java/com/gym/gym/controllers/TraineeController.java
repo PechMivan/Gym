@@ -46,7 +46,7 @@ public class TraineeController {
     @PostMapping
     @Timed(value = "create-trainee.time", description = "Time taken to create a trainee")
     public  ResponseEntity<CredentialsAndAccessToken> createTrainee(@RequestBody @Valid TraineeRegistrateRequest request) {
-        Trainee trainee = traineeMapper.mapFromRegistrateRequest(request);
+        Trainee trainee = traineeMapper.mapFromRegisterRequest(request);
         Trainee newTrainee = traineeService.createTrainee(trainee);
         // Gets the one and only token saved at the moment of creation.
         Token accessToken = newTrainee.getUser().getTokens().get(0);

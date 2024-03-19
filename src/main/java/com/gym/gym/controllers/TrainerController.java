@@ -38,7 +38,7 @@ public class TrainerController {
     @PostMapping
     @Timed(value = "create-trainer.time", description = "Time taken to create a trainer")
     public ResponseEntity<CredentialsAndAccessToken> createTrainer(@RequestBody @Valid TrainerRegistrateRequest request){
-        Trainer trainer = trainerMapper.mapFromRegistrateRequest(request);
+        Trainer trainer = trainerMapper.mapFromRegisterRequest(request);
         Trainer newTrainer = trainerService.createTrainer(trainer);
         Token accessToken = newTrainer.getUser().getTokens().get(0);
         CredentialsAndAccessToken newCredentials = new CredentialsAndAccessToken

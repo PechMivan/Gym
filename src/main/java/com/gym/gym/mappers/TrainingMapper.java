@@ -16,17 +16,15 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface TrainingMapper {
 
-    @Mappings({
-            @Mapping(source = "traineeUsername", target = "trainee.user.username"),
-            @Mapping(source = "trainerUsername", target = "trainer.user.username"),
-            @Mapping(source = "date", target = "date", dateFormat = "yyyy-MM-dd")
-    })
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "trainingType", ignore = true)
+    @Mapping(source = "traineeUsername", target = "trainee.user.username")
+    @Mapping(source = "trainerUsername", target = "trainer.user.username")
+    @Mapping(source = "date", target = "date", dateFormat = "yyyy-MM-dd")
     Training mapFromCreateRequest(TrainingCreateRequest request);
 
-    @Mappings({
-            @Mapping(source = "trainer.user.firstname", target = "trainerName"),
-            @Mapping(source = "trainingType.name", target = "trainingTypeName")
-    })
+    @Mapping(source = "trainer.user.firstname", target = "trainerName")
+    @Mapping(source = "trainingType.name", target = "trainingTypeName")
     TraineeTrainingFindResponse mapToFindTraineeTrainingResponse(Training training);
 
     List<TraineeTrainingFindResponse> mapToFindTraineeTrainingResponseList(List<Training> training);
@@ -37,10 +35,8 @@ public interface TrainingMapper {
         response.trainerName = String.format("%s %s", trainer.getUser().getFirstname(), trainer.getUser().getLastname());
     }
 
-    @Mappings({
-            @Mapping(source = "trainee.user.firstname", target = "traineeName"),
-            @Mapping(source = "trainingType.name", target = "trainingTypeName"),
-    })
+    @Mapping(source = "trainee.user.firstname", target = "traineeName")
+    @Mapping(source = "trainingType.name", target = "trainingTypeName")
     TrainerTrainingFindResponse mapToFindTrainerTrainingResponse(Training training);
 
     List<TrainerTrainingFindResponse> mapToFindTrainerTrainingResponseList(List<Training> training);

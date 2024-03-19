@@ -35,7 +35,7 @@ public class LoginAttemptService {
         int attempts;
         try {
             attempts = attemptsCache.get(key);
-            log.error(String.format("Error: %s", String.valueOf(attempts)));
+            log.error(String.format("Error: %s", attempts));
         } catch (final ExecutionException e) {
             attempts = 0;
         }
