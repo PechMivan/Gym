@@ -5,6 +5,7 @@ import com.gym.gym.entities.Training;
 import com.gym.gym.senders.WorkloadSenderService;
 import jakarta.persistence.PreRemove;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.MDC;
 
 @RequiredArgsConstructor
 public class TrainingEventListener {
@@ -15,7 +16,7 @@ public class TrainingEventListener {
     public void deleteTraining(Object entity) {
         if (entity instanceof Training existingTraining) {
             Workload workload = Workload.buildWorkload(existingTraining, "DELETE");
-            workloadSenderService.sendMessage(workload);
+            workloadSenderService.sendMessage(workload, MDC.get("Transaction-ID"));
         }
     }
 }

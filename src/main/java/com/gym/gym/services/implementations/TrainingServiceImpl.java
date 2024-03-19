@@ -15,6 +15,7 @@ import com.gym.gym.specifications.TrainingSpecifications;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +68,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         saveTraining(newTraining);
         Workload workload = Workload.buildWorkload(newTraining, "ADD");
-        sender.sendMessage(workload);
+        sender.sendMessage(workload, MDC.get("Transaction-ID"));
         traineeService.updateTrainersList(existingTrainee.getId(), existingTrainer);
         log.info(String.format("Training successfully created with id %d ", newTraining.getId()));
         return newTraining;
