@@ -1,7 +1,6 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.clients.Workload;
-import com.gym.gym.clients.WorkloadServiceClient;
 import com.gym.gym.dtos.request.TraineeTrainingFindRequest;
 import com.gym.gym.dtos.request.TrainerTrainingFindRequest;
 import com.gym.gym.entities.Trainee;
@@ -16,7 +15,6 @@ import com.gym.gym.specifications.TrainingSpecifications;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +31,6 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingTypeServiceImpl trainingTypeService;
     private final TrainerServiceImpl trainerService;
     private final TraineeServiceImpl traineeService;
-    private final WorkloadServiceClient workloadServiceClient;
     private final WorkloadSenderService sender;
 
     @Override
