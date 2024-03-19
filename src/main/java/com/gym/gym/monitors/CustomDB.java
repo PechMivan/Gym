@@ -38,11 +38,7 @@ public class CustomDB implements HealthIndicator {
     }
 
     private boolean isDatabaseConnected(){
-        Connection connection = null;
-        try {
-            // Verify if db is connected
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)){
             // Verify with a ping if server is available
             String pingQuery = "/* ping */ SELECT 1";
             connection.createStatement().executeQuery(pingQuery);
@@ -50,15 +46,6 @@ public class CustomDB implements HealthIndicator {
         } catch (SQLException e) {
             // Not connected or available
             return false;
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    System.err.println("Error closing JDBC connection: " + e.getMessage());
-                    //TODO: Throw and manage this kind of exception.
-                }
-            }
         }
     }
 }
