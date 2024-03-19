@@ -1,11 +1,9 @@
 package com.gym.gym.services.implementations;
 
-import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Token;
 import com.gym.gym.entities.User;
 import com.gym.gym.exceptions.InvalidPasswordException;
 import com.gym.gym.exceptions.NotFoundException;
-import com.gym.gym.exceptions.UnauthorizedAccessException;
 import com.gym.gym.repositories.UserRepository;
 import com.gym.gym.services.TokenService;
 import com.gym.gym.services.UserService;
@@ -15,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @Slf4j
@@ -32,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     TokenService tokenService;
 
-    Random random = new Random();
+    SecureRandom random = new SecureRandom();
 
     @Override
     public List<User> getAllUsers(){
