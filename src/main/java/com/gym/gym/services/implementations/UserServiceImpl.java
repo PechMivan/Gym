@@ -160,7 +160,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    //TODO: Modify unit testing.
     @Override
     public Boolean changeActiveState(String username, boolean activeState){
         User existingUser = getUserByUsername(username);

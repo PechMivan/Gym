@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 public class TrainingSpecifications {
+
     public static Specification<Training> getFilteredTrainingsForTrainee(TraineeTrainingFindRequest params) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -69,14 +70,14 @@ public class TrainingSpecifications {
         List<Predicate> predicates = new ArrayList<>();
 
         if(strPeriodFrom != null && strPeriodTo != null){
-            Date periodFrom = DateHelper.parseString(strPeriodFrom);
-            Date periodTo= DateHelper.parseString(strPeriodTo);
+            Date periodFrom = DateHelper.parseDateString(strPeriodFrom);
+            Date periodTo= DateHelper.parseDateString(strPeriodTo);
             predicates.add(criteriaBuilder.between(root.get("date"), periodFrom, periodTo));
         } else if (strPeriodFrom != null) {
-            Date periodFrom = DateHelper.parseString(strPeriodFrom);
+            Date periodFrom = DateHelper.parseDateString(strPeriodFrom);
             predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("date"), periodFrom));
         } else if (strPeriodTo != null) {
-            Date periodTo = DateHelper.parseString(strPeriodTo);
+            Date periodTo = DateHelper.parseDateString(strPeriodTo);
             predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("date"), periodTo));
         }
 
