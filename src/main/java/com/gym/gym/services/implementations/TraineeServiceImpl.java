@@ -1,6 +1,5 @@
 package com.gym.gym.services.implementations;
 
-import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.User;
@@ -9,8 +8,8 @@ import com.gym.gym.repositories.TraineeRepository;
 import com.gym.gym.services.TraineeService;
 import com.gym.gym.services.TrainerService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,15 +17,13 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class TraineeServiceImpl implements TraineeService {
 
-    @Autowired
-    private TraineeRepository traineeRepository;
-    @Autowired
-    private TrainerService trainerService;
-    @Autowired
-    private UserServiceImpl userService;
+    private final TraineeRepository traineeRepository;
+    private final TrainerService trainerService;
+    private final UserServiceImpl userService;
 
     @Override
     public Trainee getTraineeById(long id) {

@@ -8,7 +8,7 @@ import com.gym.gym.security.UserPrincipal;
 import com.gym.gym.services.TokenService;
 import com.gym.gym.services.implementations.UserServiceImpl;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,18 +22,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("gym/user")
+@RequiredArgsConstructor
 @Validated
 @SuppressWarnings("unused")
 public class UserController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    UserServiceImpl userService;
-
-    @Autowired
-    TokenService tokenService;
+    private final AuthenticationManager authenticationManager;
+    private final UserServiceImpl userService;
+    private final TokenService tokenService;
 
     @GetMapping("/login")
     public ResponseEntity<String> login(@RequestBody @Valid Credentials credentials) {

@@ -19,15 +19,15 @@ public class CustomDB implements HealthIndicator {
     private final String DB_USER;
     private final String DB_PASS;
 
-    CustomDB(@Value("${database.name}") String DB_NAME,
-              @Value("${spring.datasource.url}") String DB_URL,
-              @Value("${spring.datasource.username}") String DB_USER,
-              @Value("${spring.datasource.password}") String DB_PASS){
+    CustomDB(@Value("${database.name}") String dbName,
+              @Value("${spring.datasource.url}") String dbUrl,
+              @Value("${spring.datasource.username}") String dbUser,
+              @Value("${spring.datasource.password}") String dbPass){
 
-        this.DB_NAME = DB_NAME;
-        this.DB_URL = DB_URL;
-        this.DB_USER= DB_USER;
-        this.DB_PASS = DB_PASS;
+        this.DB_NAME = dbName;
+        this.DB_URL = dbUrl;
+        this.DB_USER= dbUser;
+        this.DB_PASS = dbPass;
     }
 
     @Override

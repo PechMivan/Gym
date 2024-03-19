@@ -13,7 +13,7 @@ import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.implementations.TrainingServiceImpl;
 import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,18 +23,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("gym/trainings")
+@RequiredArgsConstructor
 @Validated
 @SuppressWarnings("unused")
 public class TrainingController {
 
-    @Autowired
-    TrainingServiceImpl trainingService;
-
-    @Autowired
-    TrainingRepository trainingRepository;
-
-    @Autowired
-    TrainingMapper trainingMapper;
+    private final TrainingServiceImpl trainingService;
+    private final TrainingRepository trainingRepository;
+    private final TrainingMapper trainingMapper;
 
     @PostMapping
     @Timed(value = "create-training.time", description = "Time taken to create a training")

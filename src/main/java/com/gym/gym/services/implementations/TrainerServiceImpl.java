@@ -1,6 +1,5 @@
 package com.gym.gym.services.implementations;
 
-import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.entities.User;
@@ -9,22 +8,20 @@ import com.gym.gym.repositories.TrainerRepository;
 import com.gym.gym.services.TrainerService;
 import com.gym.gym.services.TrainingTypeService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class TrainerServiceImpl implements TrainerService {
 
-    @Autowired
-    TrainerRepository trainerRepository;
-    @Autowired
-    UserServiceImpl userService;
-    @Autowired
-    TrainingTypeService trainingTypeService;
+    private final TrainerRepository trainerRepository;
+    private final UserServiceImpl userService;
+    private final TrainingTypeService trainingTypeService;
 
     @Override
     public Trainer getTrainerById(long id) {

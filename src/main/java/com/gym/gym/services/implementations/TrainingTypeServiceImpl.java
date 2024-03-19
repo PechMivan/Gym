@@ -4,16 +4,17 @@ import com.gym.gym.entities.TrainingType;
 import com.gym.gym.exceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingTypeRepository;
 import com.gym.gym.services.TrainingTypeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TrainingTypeServiceImpl implements TrainingTypeService {
 
-    @Autowired
-    TrainingTypeRepository trainingTypeRepository;
+    private final TrainingTypeRepository trainingTypeRepository;
 
     @Override
     public TrainingType getTrainingTypeById(long id) {
