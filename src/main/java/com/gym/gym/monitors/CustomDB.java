@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 @Component
 @SuppressWarnings("unused")
@@ -38,10 +39,11 @@ public class CustomDB implements HealthIndicator {
     }
 
     private boolean isDatabaseConnected(){
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)){
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+             Statement statement = connection.createStatement()){
             // Verify with a ping if server is available
             String pingQuery = "/* ping */ SELECT 1";
-            connection.createStatement().executeQuery(pingQuery);
+            statement.executeQuery(pingQuery);
             return true;
         } catch (SQLException e) {
             // Not connected or available
