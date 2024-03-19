@@ -2,7 +2,7 @@ package com.gym.gym.controllers;
 
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.services.TrainingTypeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("gym/training-type")
+@RequiredArgsConstructor
 public class TrainingTypeController {
 
-    @Autowired
-    TrainingTypeService trainingTypeService;
+    private final TrainingTypeService trainingTypeService;
 
     @GetMapping
     public ResponseEntity< List<TrainingType> > getAllTrainingTypes(){

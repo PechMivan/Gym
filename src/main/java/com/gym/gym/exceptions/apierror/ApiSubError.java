@@ -1,4 +1,4 @@
 package com.gym.gym.exceptions.apierror;
 
-public abstract class ApiSubError {
+public interface ApiSubError {
 }

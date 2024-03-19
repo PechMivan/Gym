@@ -5,7 +5,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutionException;
@@ -16,14 +15,13 @@ import java.util.concurrent.TimeUnit;
 public class LoginAttemptService {
 
     public static final int MAX_ATTEMPT = 3;
-    private LoadingCache<String, Integer> attemptsCache;
+    private final LoadingCache<String, Integer> attemptsCache;
 
-    @Autowired
-    private HttpServletRequest request;
+    private final HttpServletRequest request;
 
-    public LoginAttemptService() {
-        super();
-        attemptsCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build(new CacheLoader<String, Integer>() {
+    public LoginAttemptService(HttpServletRequest request) {
+        this.request = request;
+        attemptsCache = CacheBuilder.newBuilder().expireAfterWrite(5, TimeUnit.MINUTES).build(new CacheLoader<>() {
             @Override
             public Integer load(final String key) {
                 return 0;
@@ -35,7 +33,7 @@ public class LoginAttemptService {
         int attempts;
         try {
             attempts = attemptsCache.get(key);
-            log.error(String.format("Error: %s", String.valueOf(attempts)));
+            log.error(String.format("Error: %s", attempts));
         } catch (final ExecutionException e) {
             attempts = 0;
         }

@@ -1,21 +1,21 @@
 package com.gym.gym.logger;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 @Component
+@RequiredArgsConstructor
 public class InterceptLog implements HandlerInterceptor {
 
-    @Autowired
-    LoggingService loggingService;
+    private final LoggingService loggingService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         if(request.getMethod().equals(HttpMethod.GET.name()))    {
             loggingService.displayReq(request,null);
         }

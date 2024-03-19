@@ -25,7 +25,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class TrainingControllerTests {
+class TrainingControllerTests {
 
     @Mock
     TrainingServiceImpl trainingService;
@@ -39,14 +39,14 @@ public class TrainingControllerTests {
     Training training;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         MockitoAnnotations.openMocks(this);
 
         this.training = new Training();
     }
 
     @Test
-    public void createTraining() {
+    void createTraining() {
         // Arrange
         TrainingCreateRequest request = new TrainingCreateRequest();
         Training newTraining = new Training();
@@ -63,7 +63,7 @@ public class TrainingControllerTests {
     }
 
     @Test
-    public void getAllTrainersNotInTraineeTrainersListByUsername() {
+    void getAllTrainersNotInTraineeTrainersListByUsername() {
         // Arrange
         String username = "testUser";
         List<Trainer> trainers = new ArrayList<>();
@@ -82,7 +82,7 @@ public class TrainingControllerTests {
     }
 
     @Test
-    public void testGetFilteredTrainingsForTrainee() {
+    void testGetFilteredTrainingsForTrainee() {
         // Arrange
         TraineeTrainingFindRequest request = new TraineeTrainingFindRequest();
         List<Training> trainings = new ArrayList<>();
@@ -101,7 +101,7 @@ public class TrainingControllerTests {
     }
 
     @Test
-    public void testGetFilteredTrainingsForTrainer() {
+    void testGetFilteredTrainingsForTrainer() {
         // Arrange
         TrainerTrainingFindRequest request = new TrainerTrainingFindRequest();
         List<Training> trainings = new ArrayList<>();

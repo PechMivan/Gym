@@ -1,6 +1,7 @@
 package com.gym.gym.exceptions;
 
 import com.gym.gym.exceptions.apierror.ApiError;
+import com.gym.gym.exceptions.customExceptions.*;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -63,6 +64,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     public ResponseEntity<Object> handleNoResourceFoundException(NoResourceFoundException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request){
         ApiError apiError = new ApiError(NOT_FOUND);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(RestApiServerException.class)
+    public ResponseEntity<Object> handleRestApiServerException(RestApiServerException ex){
+        ApiError apiError = new ApiError(SERVICE_UNAVAILABLE);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(RestApiClientException.class)
+    public ResponseEntity<Object> handleRestApiClientException(RestApiClientException ex){
+        ApiError apiError = new ApiError(BAD_REQUEST);
         apiError.setMessage(ex.getMessage());
         return buildResponseEntity(apiError);
     }

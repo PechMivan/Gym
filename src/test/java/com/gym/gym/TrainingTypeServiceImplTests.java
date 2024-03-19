@@ -1,7 +1,7 @@
 package com.gym.gym;
 
 import com.gym.gym.entities.TrainingType;
-import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingTypeRepository;
 import com.gym.gym.services.implementations.TrainingTypeServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-public class TrainingTypeServiceImplTests {
+class TrainingTypeServiceImplTests {
 
     @Mock
     TrainingTypeRepository trainingTypeRepository;
@@ -29,7 +29,7 @@ public class TrainingTypeServiceImplTests {
     TrainingType trainingType;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         MockitoAnnotations.openMocks(this);
 
         this.trainingType = TrainingType.builder()
@@ -39,7 +39,7 @@ public class TrainingTypeServiceImplTests {
     }
 
     @Test
-    public void getAllTrainingTypes_withTrainingTypes_successful(){
+    void getAllTrainingTypes_withTrainingTypes_successful(){
         // Arrange
         List<TrainingType> trainingTypes = Arrays.asList(new TrainingType(), new TrainingType(), new TrainingType());
         when(trainingTypeRepository.findAll()).thenReturn(trainingTypes);
@@ -50,7 +50,7 @@ public class TrainingTypeServiceImplTests {
     }
 
     @Test
-    public void getAll_withoutTrainingTypes_returnsEmptyList(){
+    void getAll_withoutTrainingTypes_returnsEmptyList(){
         // Arrange
         List<TrainingType> trainingTypes = Collections.emptyList();
         when(trainingTypeRepository.findAll()).thenReturn(trainingTypes);
@@ -61,7 +61,7 @@ public class TrainingTypeServiceImplTests {
     }
 
     @Test
-    public void getTrainingTypeById(){
+    void getTrainingTypeById(){
         // Arrange
         long trainingTypeId = 1L;
         when(trainingTypeRepository.findById(trainingTypeId)).thenReturn(Optional.of(trainingType));
@@ -73,7 +73,7 @@ public class TrainingTypeServiceImplTests {
     }
 
     @Test
-    public void getTrainingType_validId_successful(){
+    void getTrainingType_validId_successful(){
         // Arrange
         long trainingTypeId = 1L;
         when(trainingTypeRepository.findById(trainingTypeId)).thenReturn(Optional.of(trainingType));
@@ -85,13 +85,13 @@ public class TrainingTypeServiceImplTests {
     }
 
     @Test
-    public void getTrainingType_invalidId_throwsNotFoundException(){
+    void getTrainingType_invalidId_throwsNotFoundException(){
         // Act and Arrange
         assertThrows(NotFoundException.class, () -> trainingTypeService.getTrainingTypeById(100L));
     }
 
     @Test
-    public void getTrainingType_validName_successful(){
+    void getTrainingType_validName_successful(){
         // Arrange
         String name = "name";
         when(trainingTypeRepository.findByName(name)).thenReturn(Optional.of(trainingType));
@@ -103,7 +103,7 @@ public class TrainingTypeServiceImplTests {
     }
 
     @Test
-    public void getTrainingType_invalidName_throwsNotFoundException(){
+    void getTrainingType_invalidName_throwsNotFoundException(){
         // Act and Assert
         assertThrows(NotFoundException.class, () -> trainingTypeService.getTrainingTypeByName("wrongName"));
     }

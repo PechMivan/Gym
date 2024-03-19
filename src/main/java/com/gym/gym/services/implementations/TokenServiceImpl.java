@@ -5,11 +5,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.gym.gym.entities.Token;
 import com.gym.gym.entities.TokenType;
 import com.gym.gym.entities.User;
-import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TokenRepository;
 import com.gym.gym.services.TokenService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +19,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TokenServiceImpl implements TokenService {
 
-    @Autowired
-    TokenRepository tokenRepository;
+    private final TokenRepository tokenRepository;
 
     @Value("${security.jwt.secret-key}")
     String secretKey;

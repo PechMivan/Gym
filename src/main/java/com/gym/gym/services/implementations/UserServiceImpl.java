@@ -1,38 +1,32 @@
 package com.gym.gym.services.implementations;
 
-import com.gym.gym.dtos.Credentials;
 import com.gym.gym.entities.Token;
 import com.gym.gym.entities.User;
-import com.gym.gym.exceptions.InvalidPasswordException;
-import com.gym.gym.exceptions.NotFoundException;
-import com.gym.gym.exceptions.UnauthorizedAccessException;
+import com.gym.gym.exceptions.customExceptions.InvalidPasswordException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.UserRepository;
 import com.gym.gym.services.TokenService;
 import com.gym.gym.services.UserService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    TokenService tokenService;
-
-    Random random = new Random();
+    SecureRandom random = new SecureRandom();
 
     @Override
     public List<User> getAllUsers(){
@@ -160,7 +154,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    //TODO: Modify unit testing.
     @Override
     public Boolean changeActiveState(String username, boolean activeState){
         User existingUser = getUserByUsername(username);

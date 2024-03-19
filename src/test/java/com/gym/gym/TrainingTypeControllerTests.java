@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TrainingTypeControllerTests {
+class TrainingTypeControllerTests {
 
     @Mock
     TrainingTypeService trainingTypeService;
@@ -27,7 +27,7 @@ public class TrainingTypeControllerTests {
     TrainingTypeController trainingTypeController;
 
     @Test
-    public void getAllTrainingTypes() {
+    void getAllTrainingTypes() {
         // Arrange
         List<TrainingType> trainingTypes = new ArrayList<>();
         trainingTypes.add(new TrainingType());

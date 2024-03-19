@@ -1,4 +1,4 @@
-package com.gym.gym.exceptions;
+package com.gym.gym.exceptions.customExceptions;
 
 public class NotFoundException extends RuntimeException{
     public NotFoundException(String message){

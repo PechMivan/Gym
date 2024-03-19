@@ -1,18 +1,21 @@
 package com.gym.gym.services.implementations;
 
+import com.gym.gym.clients.Workload;
+import com.gym.gym.clients.WorkloadServiceClient;
 import com.gym.gym.dtos.request.TraineeTrainingFindRequest;
 import com.gym.gym.dtos.request.TrainerTrainingFindRequest;
 import com.gym.gym.entities.Trainee;
 import com.gym.gym.entities.Trainer;
 import com.gym.gym.entities.Training;
 import com.gym.gym.entities.TrainingType;
-import com.gym.gym.exceptions.NotFoundException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingRepository;
 import com.gym.gym.services.TrainingService;
 import com.gym.gym.specifications.TrainingSpecifications;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.MDC;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -21,17 +24,15 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class TrainingServiceImpl implements TrainingService {
 
-    @Autowired
-    TrainingRepository trainingRepository;
-    @Autowired
-    TrainingTypeServiceImpl trainingTypeService;
-    @Autowired
-    TrainerServiceImpl trainerService;
-    @Autowired
-    TraineeServiceImpl traineeService;
+    private final TrainingRepository trainingRepository;
+    private final TrainingTypeServiceImpl trainingTypeService;
+    private final TrainerServiceImpl trainerService;
+    private final TraineeServiceImpl traineeService;
+    private final WorkloadServiceClient workloadServiceClient;
 
     @Override
     public Training getTrainingById(long id) {
@@ -66,6 +67,8 @@ public class TrainingServiceImpl implements TrainingService {
                                 .build();
 
         saveTraining(newTraining);
+        Workload workload = Workload.buildWorkload(newTraining, "ADD");
+        workloadServiceClient.updateWorkload(workload, MDC.get("Transaction-ID"), MDC.get("Authorization"));
         traineeService.updateTrainersList(existingTrainee.getId(), existingTrainer);
         log.info(String.format("Training successfully created with id %d ", newTraining.getId()));
         return newTraining;

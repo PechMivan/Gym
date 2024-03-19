@@ -1,25 +1,33 @@
 package com.gym.gym;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.util.*;
-
+import com.gym.gym.entities.Token;
 import com.gym.gym.entities.User;
-import com.gym.gym.exceptions.InvalidPasswordException;
-import com.gym.gym.exceptions.NotFoundException;
-import com.gym.gym.exceptions.UnauthorizedAccessException;
+import com.gym.gym.exceptions.customExceptions.InvalidPasswordException;
+import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.UserRepository;
+import com.gym.gym.services.TokenService;
 import com.gym.gym.services.implementations.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class UserServiceImplTests {
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class UserServiceImplTests {
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private TokenService tokenService;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -27,7 +35,7 @@ public class UserServiceImplTests {
     User newUser;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
 
         this.user = User.builder()
@@ -35,7 +43,7 @@ public class UserServiceImplTests {
                 .firstname("John")
                 .lastname("Doe")
                 .username("John.Doe")
-                .password("passtest")
+                .password("validPass10Chars")
                 .build();
 
         this.newUser = User.builder()
@@ -43,13 +51,13 @@ public class UserServiceImplTests {
                 .firstname("John")
                 .lastname("Doe")
                 .username("John.Doe")
-                .password("passtest")
+                .password("validPass10Chars")
                 .isActive(true)
                 .build();
     }
 
     @Test
-    public void getAllUsers_withUsers_succesful() {
+    void getAllUsers_withUsers_successful() {
         // Arrange
         List<User> users = Arrays.asList(new User(), new User(), new User());
         when(userRepository.findAll()).thenReturn(users);
@@ -63,7 +71,7 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void getAllUsers_withoutUsers_returnsEmptyList() {
+    void getAllUsers_withoutUsers_returnsEmptyList() {
         // Arrange
         List<User> users = Collections.emptyList();
         when(userRepository.findAll()).thenReturn(users);
@@ -77,7 +85,7 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void getUser_validId_successful() {
+    void getUser_validId_successful() {
         // Arrange
         long userId = 1L;
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -91,13 +99,13 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void getUser_invalidId_ThrowsNotFoundException() {
+    void getUser_invalidId_ThrowsNotFoundException() {
         // Act and Assert
         assertThrows(NotFoundException.class, () -> userService.getUserById(100L));
     }
 
     @Test
-    public void getUser_validUsername_successful() {
+    void getUser_validUsername_successful() {
         // Arrange
         String username = "John.Doe";
         when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
@@ -111,30 +119,40 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void getUser_invalidUsername_throwsNotFoundException() {
+    void getUser_invalidUsername_throwsNotFoundException() {
         // Act and Assert
         assertThrows(NotFoundException.class, () -> userService.getUserByUsername("invalidUsername"));
     }
 
     @Test
-    public void createUser(){
+    void createUser(){
         // Arrange
+        String accessToken = "jwtToken";
+
         when(userRepository.save(any(User.class))).thenReturn(newUser);
+        when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
+        when(tokenService.generateToken(newUser.getId(), newUser.getUsername(), List.of("USER")))
+                .thenReturn(accessToken);
+        when(tokenService.createToken(newUser, accessToken)).thenReturn(new Token());
 
         // Act
         User result = userService.createUser(user);
 
         // Assert
         assertNotNull(result);
+        assertNotNull(result.getPassword());
         assertEquals(user.getFirstname(), result.getFirstname());
         assertEquals(user.getLastname(), result.getLastname());
         assertEquals(user.getUsername().toLowerCase(), result.getUsername());
+        assertEquals("hashedPassword", result.getHashedPassword());
         assertEquals(10, result.getPassword().length());
+        assertFalse(result.getTokens().isEmpty());
+
         verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    public void updateUser(){
+    void updateUser(){
         // Arrange
         String username = "John.Doe";
 
@@ -143,7 +161,6 @@ public class UserServiceImplTests {
                             .firstname("newName")
                             .lastname("newLastname")
                             .username(username)
-                            .password("passtest")
                             .isActive(false)
                             .build();
 
@@ -155,12 +172,11 @@ public class UserServiceImplTests {
         assertEquals("newName", result.getFirstname());
         assertEquals("newLastname", result.getLastname());
         assertEquals("John.Doe", result.getUsername());
-        assertEquals("passtest", result.getPassword());        // Password shouldn't be updated here.
         verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    public void saveUser(){
+    void saveUser(){
         // Act
         userService.saveUser(user);
         // Assert
@@ -168,7 +184,7 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void createPassword(){
+    void createPassword(){
         // Act
         String result = userService.createPassword();
         // Assert
@@ -177,7 +193,7 @@ public class UserServiceImplTests {
 
 
     @Test
-    public void createUsername(){
+    void createUsername(){
         // Arrange
         User userTest1 = User.builder().id(1L).firstname("test").lastname("user").username("test.user").build();
         User userTest2 = User.builder().id(2L).firstname("test").lastname("user").username("test.user1").build();
@@ -196,97 +212,58 @@ public class UserServiceImplTests {
     }
 
     @Test
-    public void authenticateUser_validData_succesful(){
-        // Arrange
-        when(userRepository.findByUsername("John.Doe")).thenReturn(Optional.of(user));
-
-        // Act and Assert
-        assertDoesNotThrow(()-> userService.authenticateUser("John.Doe", "passtest"));
-    }
-
-    @Test
-    public void authenticateUser_invalidUsername_throwsNotFoundException(){
+    void changePassword_validData_successful(){
         // Arrange
         when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
-
-        // Act and Assert
-        assertThrows(NotFoundException.class,
-            () -> userService.authenticateUser("wrongUser", "passtest"));
-    }
-
-    @Test
-    public void authenticateUser_invalidPassword_throwsUnauthorizedAccessException(){
-        // Arrange
-        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
-
-        // Act and Assert
-        assertThrows(UnauthorizedAccessException.class,
-            () -> userService.authenticateUser("John", "Wrongpass"));
-    }
-
-    @Test
-    public void changePassword_validData_successful(){
-        // Arrange
-        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
-        String newpass = "newpass10"; // Greather than 8 and lower than 10 to pass validation.
+        String newpass = "validPass10Chars"; // Greater or equal to 10 to pass validation.
         // Act
-        boolean passwordChangedSuccessfully = userService.changePassword("John", "passtest", newpass);
+        boolean passwordChangedSuccessfully = userService.changePassword("John", "validPass10Chars", newpass);
         // Assert
         assertTrue(passwordChangedSuccessfully);
     }
 
     @Test
-    public void changePassword_invalidUser_throwsNotFoundException(){
+    void changePassword_invalidUser_throwsNotFoundException(){
         // Arrange
         when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
         // Act and Assert
         assertThrows(NotFoundException.class,
-            ()-> userService.changePassword("wrongUser", "passtest", "validPass"));
+            ()-> userService.changePassword("wrongUser", "moreThanTenCharacters", "validPass10Chars"));
     }
 
     @Test
-    public void changePassword_wrongPass_throwsUnauthorizedAccessException(){
-        // Assert
-        when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
-
-        // Act and Assert
-        assertThrows(UnauthorizedAccessException.class,
-            ()-> userService.changePassword("John", "wrongPass", "validPass"));
-    }
-
-    @Test
-    public void changePassword_invalidPass_throwsInvalidPasswordException(){
+    void changePassword_invalidPass_throwsInvalidPasswordException(){
         // Assert
         when(userRepository.findByUsername("John")).thenReturn(Optional.of(user));
         String invalidPass = "123";
 
         // Act and Assert
-        assertThrows(UnauthorizedAccessException.class,
-                ()-> userService.changePassword("John", "wrongPass", invalidPass));
+        assertThrows(InvalidPasswordException.class,
+                ()-> userService.changePassword("John", "validPass10Chars", invalidPass));
     }
 
     @Test
-    public void validatePassword_validPassword_successful(){
+    void validatePassword_validPassword_successful(){
         // Arrange
-        String betweenEightAndTen = "newpass10";
+        String greaterOrEqualThan10 = "validPass10Chars";
         // Act and Assert
-        assertDoesNotThrow(() -> userService.validatePassword(betweenEightAndTen));
+        assertDoesNotThrow(() -> userService.validatePassword(greaterOrEqualThan10));
     }
 
     @Test
-    public void validatePassword_nullPassword_throwsInvalidPasswordException(){
+    void validatePassword_nullPassword_throwsInvalidPasswordException(){
         // Act and Assert
         assertThrows(InvalidPasswordException.class, () -> userService.validatePassword(null));
     }
 
     @Test
-    public void validatePassword_emptyPassword_throwsInvalidPasswordException(){
+    void validatePassword_emptyPassword_throwsInvalidPasswordException(){
         // Act and Assert
         assertThrows(InvalidPasswordException.class, () -> userService.validatePassword(""));
     }
 
     @Test
-    public void validatePassword_outOfBoundsPassword_throwsInvalidPasswordException(){
+    void validatePassword_outOfBoundsPassword_throwsInvalidPasswordException(){
         // Arrange
         String lessThanEight = "1234567"; // < 8 characters
         // Act and Assert

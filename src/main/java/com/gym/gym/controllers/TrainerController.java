@@ -12,7 +12,7 @@ import com.gym.gym.mappers.TrainerMapper;
 import com.gym.gym.services.implementations.TrainerServiceImpl;
 import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,15 +20,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("gym/trainers")
+@RequiredArgsConstructor
 @Validated
 @SuppressWarnings("unused")
 public class TrainerController {
 
-    @Autowired
-    TrainerServiceImpl trainerService;
-
-    @Autowired
-    TrainerMapper trainerMapper;
+    private final TrainerServiceImpl trainerService;
+    private final TrainerMapper trainerMapper;
 
     @GetMapping("{username}")
     public ResponseEntity<TrainerFindResponse> getTrainerByUsername(@PathVariable String username){
@@ -40,7 +38,7 @@ public class TrainerController {
     @PostMapping
     @Timed(value = "create-trainer.time", description = "Time taken to create a trainer")
     public ResponseEntity<CredentialsAndAccessToken> createTrainer(@RequestBody @Valid TrainerRegistrateRequest request){
-        Trainer trainer = trainerMapper.mapFromRegistrateRequest(request);
+        Trainer trainer = trainerMapper.mapFromRegisterRequest(request);
         Trainer newTrainer = trainerService.createTrainer(trainer);
         Token accessToken = newTrainer.getUser().getTokens().get(0);
         CredentialsAndAccessToken newCredentials = new CredentialsAndAccessToken

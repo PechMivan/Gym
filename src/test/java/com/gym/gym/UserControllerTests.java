@@ -1,8 +1,11 @@
 package com.gym.gym;
+
 import com.gym.gym.controllers.UserController;
 import com.gym.gym.dtos.Credentials;
 import com.gym.gym.dtos.request.ActiveStateChangeRequest;
 import com.gym.gym.dtos.request.PasswordChangeRequest;
+import com.gym.gym.security.UserPrincipal;
+import com.gym.gym.services.TokenService;
 import com.gym.gym.services.implementations.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,14 +14,25 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class UserControllerTests {
+class UserControllerTests {
 
     @Mock
     UserServiceImpl userService;
+
+    @Mock
+    private AuthenticationManager authenticationManager;
+
+    @Mock
+    private TokenService tokenService;
 
     @InjectMocks
     UserController userController;
@@ -26,24 +40,34 @@ public class UserControllerTests {
     Credentials credentials;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
         MockitoAnnotations.openMocks(this);
 
         this.credentials = new Credentials("username", "password");
     }
 
     @Test
-    public void login() {
-        // Act
-        ResponseEntity<HttpStatus> responseEntity = userController.login(credentials);
+    void testLogin_Success() {
+        // Given
+        Credentials credentials = new Credentials("test_username", "test_password");
+        Authentication authentication = mock(Authentication.class);
+        UserPrincipal principal = UserPrincipal.builder().userId(1L).username("username").build();
+        String jwtToken = "jwt_token";
 
-        // Assert
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        verify(userService, times(1)).authenticateUser(credentials.getUsername(), credentials.getPassword());
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(principal);
+        when(tokenService.generateToken(principal.getUserId(), principal.getUsername(), List.of("USER"))).thenReturn(jwtToken);
+
+        // When
+        ResponseEntity<String> response = userController.login(credentials);
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(jwtToken, response.getBody());
     }
 
     @Test
-    public void changeActiveState() {
+    void changeActiveState() {
         // Arrange
         ActiveStateChangeRequest request = new ActiveStateChangeRequest();
 
@@ -52,11 +76,11 @@ public class UserControllerTests {
 
         // Assert
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        verify(userService, times(1)).changeActiveState(request.getUsername(), request.isActive(), request.getCredentials());
+        verify(userService, times(1)).changeActiveState(request.getUsername(), request.isActive());
     }
 
     @Test
-    public void testChangePassword() {
+    void testChangePassword() {
         // Arrange
         PasswordChangeRequest request = new PasswordChangeRequest();
 
