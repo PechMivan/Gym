@@ -1,26 +1,19 @@
 package com.gym.gym.config;
 
-import jakarta.jms.ConnectionFactory;
+import com.gym.gym.clients.Workload;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
-import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
+import org.springframework.jms.support.converter.MessageConverter;
+import org.springframework.jms.support.converter.MessageType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class JmsConfig {
-
-    @Bean
-    public JmsListenerContainerFactory<?> gymFactory(ConnectionFactory connectionFactory,
-                                                  DefaultJmsListenerContainerFactoryConfigurer configurer){
-        DefaultJmsListenerContainerFactory factory =
-                new DefaultJmsListenerContainerFactory();
-        configurer.configure(factory, connectionFactory);
-
-        return factory;
-    }
 
     @Bean
     public ActiveMQConnectionFactory connectionFactory(){
@@ -28,7 +21,15 @@ public class JmsConfig {
     }
 
     @Bean
-    public JmsTemplate jmsTemplate(){
-        return new JmsTemplate(connectionFactory());
+    public MessageConverter jacksonJmsMessageConverter(){
+        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+
+        Map<String, Class<?>> typeIdMappings = new HashMap<>();
+        typeIdMappings.put("JMS_TYPE", Workload.class);
+
+        converter.setTypeIdMappings(typeIdMappings);
+        converter.setTargetType(MessageType.TEXT);
+        converter.setTypeIdPropertyName("_type");
+        return converter;
     }
 }
