@@ -1,6 +1,5 @@
 package com.gym.gym;
 
-import com.gym.gym.clients.WorkloadServiceClient;
 import com.gym.gym.entities.*;
 import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingRepository;
@@ -26,8 +25,6 @@ class TrainingServiceImplTests {
     TrainerServiceImpl trainerService;
     @Mock
     TraineeServiceImpl traineeService;
-    @Mock
-    WorkloadServiceClient workloadServiceClient;
 
     List<Training>trainings;
 

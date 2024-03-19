@@ -1,7 +1,6 @@
 package com.gym.gym.services.implementations;
 
 import com.gym.gym.clients.Workload;
-import com.gym.gym.clients.WorkloadServiceClient;
 import com.gym.gym.dtos.request.TraineeTrainingFindRequest;
 import com.gym.gym.dtos.request.TrainerTrainingFindRequest;
 import com.gym.gym.entities.Trainee;
@@ -10,6 +9,7 @@ import com.gym.gym.entities.Training;
 import com.gym.gym.entities.TrainingType;
 import com.gym.gym.exceptions.customExceptions.NotFoundException;
 import com.gym.gym.repositories.TrainingRepository;
+import com.gym.gym.senders.WorkloadSenderService;
 import com.gym.gym.services.TrainingService;
 import com.gym.gym.specifications.TrainingSpecifications;
 import jakarta.transaction.Transactional;
@@ -32,7 +32,7 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingTypeServiceImpl trainingTypeService;
     private final TrainerServiceImpl trainerService;
     private final TraineeServiceImpl traineeService;
-    private final WorkloadServiceClient workloadServiceClient;
+    private final WorkloadSenderService sender;
 
     @Override
     public Training getTrainingById(long id) {
@@ -68,7 +68,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         saveTraining(newTraining);
         Workload workload = Workload.buildWorkload(newTraining, "ADD");
-        workloadServiceClient.updateWorkload(workload, MDC.get("Transaction-ID"), MDC.get("Authorization"));
+        sender.sendMessage(workload, MDC.get("Transaction-ID"));
         traineeService.updateTrainersList(existingTrainee.getId(), existingTrainer);
         log.info(String.format("Training successfully created with id %d ", newTraining.getId()));
         return newTraining;
