@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Workload {
-    public String username;
-    public String firstname;
-    public String lastname;
-    public boolean isActive;
-    public String trainingDate;
-    public int trainingDuration;
-    public String actionType;
+    private String username;
+    private String firstname;
+    private String lastname;
+    private boolean isActive;
+    private String trainingDate;
+    private int trainingDuration;
+    private String actionType;
 
     public static Workload buildWorkload(Training training, String actionType){
         return Workload.builder()
